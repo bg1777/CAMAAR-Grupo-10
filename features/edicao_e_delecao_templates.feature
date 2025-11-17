@@ -5,25 +5,34 @@ Feature: Edição e deleção de templates
 
   Background:
     Given que estou autenticado como administrador
-    And existe um template criado previamente
+    And existe um template com o nome "Template Turma Antiga"
 
   Scenario: Editar o nome de um template com sucesso (feliz)
-    When eu edito o template alterando seu nome para "Template Atualizado"
+    When eu clico para editar o template 
+    And eu altero seu nome para "Template Turma Atualizada"
     Then o template deve ser salvo com o novo nome
     And os formulários já criados anteriormente não devem ser modificados
     And eu devo ver a mensagem "Template atualizado com sucesso"
 
   Scenario: Editar as perguntas de um template com sucesso (feliz)
-    When eu edito o template alterando suas perguntas
+    When eu clico para editar o template
+    And eu altero suas perguntas
     Then o template deve ser salvo com as novas perguntas
     And os formulários já criados anteriormente não devem ser modificados
     And eu devo ver a mensagem "Template atualizado com sucesso"
 
   Scenario: Deletar um template com sucesso (feliz)
-    When eu deleto o template
+    When eu clico para deletar o template
     Then o template deve ser removido do sistema
     And os formulários já criados anteriormente devem permanecer intactos
     And eu devo ver a mensagem "Template excluído com sucesso"
+
+  Scenario: Tentativa de salvar com nome em branco (triste)
+    Given que eu clico para editar o template
+    When eu apago o nome do template, deixando-o em branco
+    And eu salvo as alterações
+    Then eu devo ver a mensagem "Nome do template não pode ficar em branco"
+    And o template deve continuar com o nome "Template Turma Antiga"
 
   Scenario: Tentar editar um template que está em uso por um formulário ativo (triste)
     Given que o template está vinculado a um formulário ativo
