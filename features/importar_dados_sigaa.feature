@@ -13,8 +13,8 @@ Feature: Importar dados do SIGAA
     And eu devo ver a mensagem "Importação concluída com sucesso"
 
   Scenario: Dados já existentes na base (triste)
-    Given que alguns dados do SIGAA já existem na base local
-    When eu tento importar novamente
+    Given que "Turma Engenharia de Software" do SIGAA já existem na base local
+    When eu tento importar novamente "Turma Engenharia de Software"
     Then o sistema deve ignorar os registros duplicados
     And eu devo ver a mensagem "Nenhum dado novo foi importado"
 
