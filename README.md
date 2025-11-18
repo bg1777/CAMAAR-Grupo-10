@@ -132,6 +132,7 @@ O CAMAAR é uma **plataforma web para avaliação de cursos e disciplinas** inte
 - Visualizar formulários não respondidos
 - Responder questionário
 - Submeter respostas
+- Filtrar respostas de turmas
 
 **Regras de Negócio:**
 - Participante visualiza apenas formulários de turmas onde está matriculado
@@ -280,7 +281,6 @@ A fim de submeter minha avaliação da turma
 Critérios de Aceitação:
 - Visualiza questionário da turma
 - Preenche questões obrigatórias
-- Salva como rascunho (auto-save a cada 30s)
 - Submete respostas finais
 - Não pode responder 2 vezes o mesmo formulário
 ```
@@ -337,7 +337,7 @@ A fim de gerar formulários de avaliações reutilizáveis
 Critérios de Aceitação:
 - Template com nome único
 - Mínimo 1 questão obrigatória
-- Suporta múltiplos tipos: múltipla escolha, Likert, texto, V/F
+- Suporta múltiplos tipos: múltipla escolha, texto, V/F
 - Apenas criador pode editar
 - Edições não afetam formulários já criados
 ```
@@ -356,7 +356,6 @@ A fim de avaliar o desempenho das turmas no semestre atual
 Critérios de Aceitação:
 - Seleciona template
 - Escolhe múltiplas turmas (mínimo 1)
-- Define datas de abertura/fechamento
 - Escolhe tipo de avaliador (docentes/discentes)
 - Formulário herda questões do template
 - Notificação enviada aos participantes
@@ -370,15 +369,13 @@ Critérios de Aceitação:
 
 ```
 Como Usuário do sistema
-Quero acessar o sistema utilizando email ou matrícula e senha
+Quero acessar o sistema utilizando email e senha
 A fim de responder formulários ou gerenciar o sistema
 
 Critérios de Aceitação:
 - Login com email funciona
-- Login com matrícula funciona
 - Validação de credenciais
 - Redirecionamento para painel
-- Bloqueio após 5 tentativas falhadas por 15 minutos
 ```
 
 **Pontos:** 3 | **Responsável:** [Nome]
@@ -393,7 +390,6 @@ Quero definir uma senha para o meu usuário a partir do email de cadastro
 A fim de acessar o sistema
 
 Critérios de Aceitação:
-- Link de ativação válido por 48 horas
 - Senha deve cumprir critérios de segurança
 - Senhas devem conferir
 - Redirecionamento para login após sucesso
@@ -414,7 +410,6 @@ Critérios de Aceitação:
 - Visualiza apenas turmas do departamento
 - Criar formulário apenas com turmas do departamento
 - Erro 403 para tentativas de acesso não autorizado
-- Logs de tentativas não autorizadas
 ```
 
 **Pontos:** 5 | **Responsável:** [Nome]
@@ -429,7 +424,6 @@ Quero redefinir uma senha a partir do email recebido
 A fim de recuperar meu acesso ao sistema
 
 Critérios de Aceitação:
-- Link de recuperação válido por 24 horas
 - Validação de senha
 - Email de confirmação enviado
 - Redirecionamento para login
@@ -449,7 +443,6 @@ A fim de corrigir a base de dados do sistema
 Critérios de Aceitação:
 - Sincroniza dados existentes
 - Adiciona novos dados
-- Marca turmas como inativas
 - Atualiza mudanças de turmas
 - Mantém histórico de atualizações
 ```
@@ -468,7 +461,6 @@ A fim de poder escolher qual irei responder
 Critérios de Aceitação:
 - Lista apenas formulários não respondidos
 - Mostra turma, disciplina, datas
-- Filtra por turma
 - Formulários respondidos não aparecem
 ```
 
@@ -521,11 +513,8 @@ Quero editar e/ou deletar um template que eu criei sem afetar formulários já c
 A fim de organizar os templates existentes
 
 Critérios de Aceitação:
-- Editar template não afeta formulários existentes
-- Deletar template não deleta formulários
 - Confirmação de exclusão
-- Apenas criador pode editar
-- Histórico de versões mantido
+- Apenas criador pode editar e excluir
 ```
 
 **Pontos:** 3 | **Responsável:** [Nome]
@@ -544,7 +533,6 @@ Critérios de Aceitação:
 - Professores veem apenas formulários para Docentes
 - Alunos veem apenas formulários para Discentes
 - Múltiplos formulários podem coexistir para mesma turma
-- Notificação apenas para tipo correto
 ```
 
 **Pontos:** 3 | **Responsável:** [Nome]
