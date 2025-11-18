@@ -9,7 +9,7 @@
 | **Nome do Projeto** | CAMAAR - Plataforma de Avaliação de Cursos |
 | **Disciplina** | Engenharia de Software |
 | **Período** | 2025.2 |
-| **Integrantes do Grupo** | Bernardo Gomes Rodrigues - 231034190 <br> [Nome 2 - Matrícula 2] <br> [Nome 3 - Matrícula 3] <br> [Nome 4 - Matrícula 4] |
+| **Integrantes do Grupo** | Bernardo Gomes Rodrigues - 231034190 <br> Isaac Silva - 231025216 <br> Filipe Abadia Marcelino - 190087161 <br> Maria Carolina Burgum Abreu Jorge - 231013547 |
 
 ---
 
@@ -18,7 +18,7 @@
 | Papel | Responsável | Matrícula |
 |-------|-------------|-----------|
 | **Scrum Master** | Bernardo Gomes Rodrigues | 231034190 |
-| **Product Owner** | [Nome do Product Owner] | [Matrícula] |
+| **Product Owner** | Maria Carolina Burgum Abreu Jorge | 231013547 |
 
 ---
 
@@ -52,14 +52,12 @@ O CAMAAR é uma **plataforma web para avaliação de cursos e disciplinas** inte
 **Funcionalidades:**
 - Login com email ou matrícula + senha
 - Definir senha após convite de cadastro
+- Email de boas vindas informando a senha (se aplicável)
 - Recuperar acesso através de email (redefinir senha)
 
 **Regras de Negócio:**
-- Senhas devem ter no mínimo 8 caracteres
+- Senhas devem ter no mínimo 4 caracteres
 - Senhas devem conter pelo menos: 1 letra maiúscula, 1 letra minúscula, 1 número e 1 caractere especial
-- Link de ativação de conta válido por 48 horas
-- Link de redefinição de senha válido por 24 horas
-- Máximo de 5 tentativas de login falhadas antes de bloquear por 15 minutos
 - Email de boas-vindas enviado automaticamente após criação de usuário
 - Usuário deve alterar senha temporária no primeiro acesso
 
@@ -94,17 +92,15 @@ O CAMAAR é uma **plataforma web para avaliação de cursos e disciplinas** inte
 **Funcionalidades:**
 - Criar templates com múltiplos tipos de questões
 - Visualizar templates criados
-- Editar templates sem afetar formulários já criados
-- Deletar templates sem afetar formulários existentes
+- Editar templates
+- Deletar templates
 
 **Regras de Negócio:**
 - Template deve ter no mínimo 1 questão
 - Nome do template deve ser único por administrador
 - Apenas o criador do template pode editá-lo (ou outro admin do mesmo departamento)
-- Tipos de questões suportados: Múltipla escolha, Escala Likert, Texto aberto, Verdadeiro/Falso
+- Tipos de questões suportados: Múltipla escolha, Texto aberto, Verdadeiro/Falso
 - Edições em template afetam apenas novos formulários criados, não retroativamente
-- Template deletado não afeta formulários já criados baseados nele
-- Histórico de versões do template é mantido
 - Administrador só pode gerenciar templates do seu departamento
 
 **Responsável:** [Nome do desenvolvedor]
@@ -117,19 +113,14 @@ O CAMAAR é uma **plataforma web para avaliação de cursos e disciplinas** inte
 - Criar formulário baseado em template
 - Selecionar turmas para aplicar o formulário
 - Escolher tipo de avaliador (docentes ou discentes)
-- Definir data de abertura e fechamento
 - Visualizar formulários criados
 
 **Regras de Negócio:**
 - Formulário herda todas as questões do template no momento da criação
 - Deve selecionar no mínimo 1 turma
 - Deve escolher tipo de avaliador (obrigatório)
-- Data de fechamento deve ser posterior à data de abertura
-- Formulário não pode ser editado após criação (apenas deletado e recriado)
 - Apenas turmas do departamento do administrador podem ser selecionadas
-- Formulário ativo quando data atual está entre abertura e fechamento
 - Mesmo formulário não pode ser respondido 2 vezes pelo mesmo participante
-- Notificação automática enviada aos participantes quando formulário é criado
 
 **Responsável:** [Nome do desenvolvedor]
 
@@ -140,14 +131,11 @@ O CAMAAR é uma **plataforma web para avaliação de cursos e disciplinas** inte
 **Funcionalidades:**
 - Visualizar formulários não respondidos
 - Responder questionário
-- Salvar progresso como rascunho
 - Submeter respostas
 
 **Regras de Negócio:**
 - Participante visualiza apenas formulários de turmas onde está matriculado
-- Formulário deve estar dentro do período de abertura/fechamento para responder
 - Todos os campos obrigatórios devem ser preenchidos antes de enviar
-- Rascunho é salvo automaticamente a cada 30 segundos
 - Participante pode editar respostas enquanto rascunho não foi enviado
 - Uma vez enviado, não pode ser alterado
 - Resposta não pode ser submetida duas vezes pelo mesmo participante
@@ -161,13 +149,13 @@ O CAMAAR é uma **plataforma web para avaliação de cursos e disciplinas** inte
 
 **Funcionalidades:**
 - Exportar respostas em formato CSV
-- Filtrar por turma específica
+- Filtrar por formulário
 - Download do arquivo
 
 **Regras de Negócio:**
 - Apenas administrador pode exportar resultados
 - Arquivo CSV deve conter: ID da resposta, Participante, Data de resposta, Respostas individuais
-- Formato CSV deve ser compatível com Excel e planilhas
+- Formato CSV deve ser compatível com planilhas
 - Caracteres especiais devem estar codificados corretamente (UTF-8)
 - Arquivo só pode ser gerado se houver respostas
 - Apenas respostas de formulários do departamento do admin são exportadas
@@ -192,7 +180,6 @@ O CAMAAR é uma **plataforma web para avaliação de cursos e disciplinas** inte
 - Erro 403 (Acesso Negado) deve ser retornado para tentativas não autorizadas
 - Super Admin pode gerenciar múltiplos departamentos (se aplicável)
 - Departamento é definido no perfil do usuário durante importação do SIGAA
-- Logs de tentativas de acesso não autorizado devem ser registrados
 
 **Responsável:** [Nome do desenvolvedor]
 
@@ -228,9 +215,8 @@ O CAMAAR é uma **plataforma web para avaliação de cursos e disciplinas** inte
 - Usuários são criados automaticamente durante importação do SIGAA
 - Usuário inativo não pode fazer login
 - Quando participante é removido do SIGAA, status muda para inativo
-- Email de boas-vindas é enviado automaticamente
-- Senha temporária é gerada e enviada por email
-- Usuário pode ter múltiplos papéis (aluno em uma turma, professor em outra, admin de disciplina)
+- Email de boas-vindas é enviado automaticamente (se aplicável)
+- Senha temporária é gerada e enviada no email de boas vindas
 - Histórico de mudanças de status é mantido
 
 **Responsável:** [Nome do desenvolvedor]
