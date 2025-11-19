@@ -78,10 +78,8 @@ O CAMAAR é uma **plataforma web para avaliação de cursos e disciplinas** inte
 - Registros duplicados são ignorados (validação por ID único do SIGAA)
 - Ao importar novos usuários, criar contas com senha temporária
 - Dados importados não devem sobrescrever informações customizadas no sistema
-- Cada importação deve ser registrada com: data, hora, usuário responsável, quantidade de registros processados
 - Participantes removidos do SIGAA devem ter acesso desativado
 - Atualização de mudanças de turmas de alunos/professores
-- Máximo 1 importação simultânea (evitar condições de corrida)
 
 **Responsável:** [Nome do desenvolvedor]
 
@@ -137,7 +135,7 @@ O CAMAAR é uma **plataforma web para avaliação de cursos e disciplinas** inte
 **Regras de Negócio:**
 - Participante visualiza apenas formulários de turmas onde está matriculado
 - Todos os campos obrigatórios devem ser preenchidos antes de enviar
-- Participante pode editar respostas enquanto rascunho não foi enviado
+- Participante pode editar respostas enquanto formulário não foi enviado
 - Uma vez enviado, não pode ser alterado
 - Resposta não pode ser submetida duas vezes pelo mesmo participante
 - Sistema valida tipo de resposta conforme tipo de questão
