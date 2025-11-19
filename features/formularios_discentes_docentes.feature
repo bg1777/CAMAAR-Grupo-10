@@ -37,4 +37,3 @@ Feature: Escolher criar formulário para docentes ou discentes
     And eu crio outro formulário para "Docentes"
     Then os dois formulários devem coexistir
     And cada grupo receberá apenas o formulário destinado a ele
-```

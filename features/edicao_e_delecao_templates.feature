@@ -45,3 +45,20 @@ Feature: Edição e deleção de templates
     When eu tento deletar o template
     Then a remoção deve ser bloqueada
     And eu devo ver a mensagem "Não é possível remover um template em uso"
+
+  Scenario: Edições em template não afetam formulários já criados (feliz)
+    Given que criei Template V1 com 3 perguntas
+    And criei Formulário A baseado em Template V1
+    When eu edito Template V1 adicionando 1 pergunta
+    And crio Formulário B baseado em Template V1 (agora com 4 perguntas)
+    Then Formulário A deve manter as 3 perguntas originais
+    And Formulário B deve ter as 4 novas perguntas
+
+  Scenario: Admin de outro departamento não pode editar template (triste)
+    Given que Admin A criou um template no Dept. X
+    And Admin B pertence ao Dept. Y
+    When Admin B tenta editar template de Admin A
+    Then o sistema retorna erro 403
+    And mensagem "Acesso negado"
+
+
