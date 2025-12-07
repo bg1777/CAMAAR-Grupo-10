@@ -550,12 +550,257 @@ Baseado na velocity média, para próxima sprint:
 
 ---
 
-## Próximos Passos
+### Estrutura do Banco de Dados:
 
-- [X] Preencher nomes e matrículas dos integrantes
-- [ ] Definir duração de cada sprint
-- [ ] Criar backlog com priorização
-- [X] Configurar repositório Git
-- [X] Configurar ambiente de desenvolvimento
-- [X] Criar estrutura inicial do Rails
-- [X] Iniciar Sprint 1
+```
+
+// CAMAAR - Database Schema (DbDiagram.io format)
+// Plataforma de Avaliação de Cursos
+// Versão: 1.0 (Pós-Remoções)
+// Data: 07/12/2025
+
+// ============================================
+// ENUMS
+// ============================================
+
+Enum user_role {
+  aluno
+  professor
+  admin
+}
+
+Enum form_evaluator_type {
+  aluno
+  professor
+}
+
+Enum form_status {
+  rascunho
+  ativo
+  finalizado
+}
+
+Enum response_status {
+  rascunho
+  submetido
+}
+
+// ============================================
+// TABELAS PRINCIPAIS
+// ============================================
+
+Table users {
+  id integer [pk, increment]
+  name varchar(255) [not null, note: 'Nome completo do usuário']
+  email varchar(255) [not null, unique, note: 'Email único do usuário']
+  matricula varchar(50) [not null, unique, note: 'Matrícula do SIGAA']
+  password_digest varchar [not null, note: 'Senha criptografada (bcrypt)']
+  role user_role [not null, note: 'Tipo de usuário: aluno, professor ou admin']
+  department_id integer [not null, ref: > departments.id, note: 'Departamento do usuário']
+  active boolean [not null, default: true, note: 'Usuário ativo no sistema']
+  created_at timestamp [not null, default: 'now()']
+  updated_at timestamp [not null, default: 'now()']
+  
+  indexes {
+    (email) [unique, name: 'idx_users_email']
+    (matricula) [unique, name: 'idx_users_matricula']
+    (department_id) [name: 'idx_users_department_id']
+    (role) [name: 'idx_users_role']
+  }
+  
+  Note: 'Usuários do sistema (alunos, professores, administradores)'
+}
+
+
+Table departments {
+  id integer [pk, increment]
+  name varchar(255) [not null, note: 'Nome do departamento']
+  code varchar(20) [not null, unique, note: 'Sigla/código do departamento (ex: CIC, ENE)']
+  sigaa_id varchar(50) [note: 'ID do departamento no SIGAA (opcional)']
+  created_at timestamp [not null, default: 'now()']
+  updated_at timestamp [not null, default: 'now()']
+  
+  indexes {
+    (code) [unique, name: 'idx_departments_code']
+    (sigaa_id) [name: 'idx_departments_sigaa_id']
+  }
+  
+  Note: 'Departamentos acadêmicos'
+}
+
+
+Table courses {
+  id integer [pk, increment]
+  name varchar(255) [not null, note: 'Nome da disciplina']
+  code varchar(20) [not null, note: 'Código da disciplina (ex: FGA0208)']
+  department_id integer [not null, ref: > departments.id, note: 'Departamento responsável']
+  sigaa_id varchar(50) [note: 'ID da disciplina no SIGAA (opcional)']
+  created_at timestamp [not null, default: 'now()']
+  updated_at timestamp [not null, default: 'now()']
+  
+  indexes {
+    (code, department_id) [unique, name: 'idx_courses_code_dept']
+    (department_id) [name: 'idx_courses_department_id']
+    (sigaa_id) [name: 'idx_courses_sigaa_id']
+  }
+  
+  Note: 'Disciplinas/Cursos oferecidos'
+}
+
+
+Table classes {
+  id integer [pk, increment]
+  course_id integer [not null, ref: > courses.id, note: 'Disciplina da turma']
+  professor_id integer [not null, ref: > users.id, note: 'Professor responsável (role=professor)']
+  semester varchar(10) [not null, note: 'Semestre/período (ex: 2025.2)']
+  turma_code varchar(10) [not null, note: 'Código da turma (ex: A, B, 01)']
+  sigaa_id varchar(50) [note: 'ID da turma no SIGAA (opcional)']
+  active boolean [not null, default: true, note: 'Turma ativa']
+  created_at timestamp [not null, default: 'now()']
+  updated_at timestamp [not null, default: 'now()']
+  
+  indexes {
+    (course_id, semester, turma_code) [unique, name: 'idx_classes_unique']
+    (course_id) [name: 'idx_classes_course_id']
+    (professor_id) [name: 'idx_classes_professor_id']
+    (semester) [name: 'idx_classes_semester']
+    (sigaa_id) [name: 'idx_classes_sigaa_id']
+    (active) [name: 'idx_classes_active']
+  }
+  
+  Note: 'Turmas específicas de um curso em um semestre'
+}
+
+
+Table templates {
+  id integer [pk, increment]
+  title varchar(255) [not null, note: 'Título do template']
+  description text [note: 'Descrição/instruções do template']
+  questions jsonb [not null, note: 'Array JSON com questões estruturadas']
+  creator_id integer [not null, ref: > users.id, note: 'Admin que criou o template (role=admin)']
+  department_id integer [not null, ref: > departments.id, note: 'Departamento proprietário']
+  created_at timestamp [not null, default: 'now()']
+  updated_at timestamp [not null, default: 'now()']
+  
+  indexes {
+    (creator_id) [name: 'idx_templates_creator_id']
+    (department_id) [name: 'idx_templates_department_id']
+    (title, department_id) [unique, name: 'idx_templates_title_dept']
+  }
+  
+  Note: '''Template reutilizável de formulário de avaliação
+  
+  Estrutura esperada do campo questions:
+  [
+    {
+      "id": "q1",
+      "text": "Pergunta?",
+      "type": "multiple_choice | text | boolean",
+      "required": true,
+      "options": ["Op1", "Op2"] // se multiple_choice
+    }
+  ]'''
+}
+
+
+Table forms {
+  id integer [pk, increment]
+  title varchar(255) [not null, note: 'Título do formulário']
+  description text [note: 'Descrição/instruções do formulário']
+  questions jsonb [not null, note: 'Array JSON com questões estruturadas (cópia do template)']
+  evaluator_type form_evaluator_type [not null, note: 'Quem deve responder: aluno ou professor']
+  creator_id integer [not null, ref: > users.id, note: 'Admin que criou o formulário (role=admin)']
+  template_id integer [ref: > templates.id, note: 'Template usado como base (rastreamento)']
+  status form_status [not null, default: 'rascunho', note: 'Estado do formulário']
+  start_date date [note: 'Data de início da avaliação']
+  end_date date [note: 'Data limite da avaliação']
+  created_at timestamp [not null, default: 'now()']
+  updated_at timestamp [not null, default: 'now()']
+  
+  indexes {
+    (status) [name: 'idx_forms_status']
+    (start_date, end_date) [name: 'idx_forms_date_range']
+    (creator_id) [name: 'idx_forms_creator_id']
+    (template_id) [name: 'idx_forms_template_id']
+  }
+  
+  Note: '''Formulários de avaliação
+  
+  Estrutura esperada do campo questions:
+  [
+    {
+      "id": "q1",
+      "text": "Pergunta?",
+      "type": "multiple_choice | text | boolean",
+      "required": true,
+      "options": ["Op1", "Op2"] // se multiple_choice
+    }
+  ]'''
+}
+
+
+Table responses {
+  id integer [pk, increment]
+  form_id integer [not null, ref: > forms.id, note: 'Formulário respondido']
+  user_id integer [not null, ref: > users.id, note: 'Usuário que respondeu']
+  class_id integer [ref: > classes.id, note: 'Turma avaliada (opcional)']
+  answers jsonb [not null, note: 'Array JSON com respostas']
+  status response_status [not null, default: 'rascunho', note: 'Estado da resposta']
+  submitted_at timestamp [note: 'Data/hora de submissão']
+  created_at timestamp [not null, default: 'now()']
+  updated_at timestamp [not null, default: 'now()']
+  
+  indexes {
+    (form_id, user_id) [unique, name: 'idx_responses_unique']
+    (user_id) [name: 'idx_responses_user_id']
+    (status) [name: 'idx_responses_status']
+    (submitted_at) [name: 'idx_responses_submitted_at']
+  }
+  
+  Note: '''Respostas dos participantes a formulários
+  
+  Estrutura esperada do campo answers:
+  [
+    {
+      "question_id": "q1",
+      "value": "Resposta"
+    }
+  ]
+  
+  Constraint: um usuário responde apenas uma vez por formulário (unique em form_id, user_id)'''
+}
+
+
+// ============================================
+// TABELAS DE JUNÇÃO (Many-to-Many)
+// ============================================
+
+
+Table classes_users {
+  class_id integer [not null, ref: > classes.id, note: 'Turma']
+  user_id integer [not null, ref: > users.id, note: 'Aluno (role=aluno) matriculado']
+  created_at timestamp [not null, default: 'now()']
+  
+  indexes {
+    (class_id, user_id) [pk, unique, name: 'idx_classes_users_pk']
+    (user_id) [name: 'idx_classes_users_user_id']
+  }
+  
+  Note: 'Relacionamento muitos-para-muitos: alunos matriculados em turmas'
+}
+
+
+Table forms_classes {
+  form_id integer [not null, ref: > forms.id, note: 'Formulário de avaliação']
+  class_id integer [not null, ref: > classes.id, note: 'Turma que deve responder']
+  created_at timestamp [not null, default: 'now()']
+  
+  indexes {
+    (form_id, class_id) [pk, unique, name: 'idx_forms_classes_pk']
+    (class_id) [name: 'idx_forms_classes_class_id']
+  }
+  
+  Note: 'Relacionamento muitos-para-muitos: turmas associadas a formulários'
+}
+
+```
