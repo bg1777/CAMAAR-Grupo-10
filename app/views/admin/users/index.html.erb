@@ -1,0 +1,36 @@
+<!-- app/views/admin/users/index.html.erb -->
+
+<div class="container mt-5">
+  <h1>Gerenciar Usuários</h1>
+  
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Criado em</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @users.each do |user| %>
+        <tr>
+          <td><%= user.id %></td>
+          <td><%= user.name %></td>
+          <td><%= user.email %></td>
+          <td><%= user.role %></td>
+          <td><%= user.created_at.strftime("%d/%m/%Y") %></td>
+          <td>
+            <%= link_to 'Ver', admin_user_path(user), class: 'btn btn-sm btn-info' %>
+            <%= link_to 'Editar', edit_admin_user_path(user), class: 'btn btn-sm btn-warning' %>
+            <%= link_to 'Deletar', admin_user_path(user), method: :delete, data: { confirm: 'Tem certeza?' }, class: 'btn btn-sm btn-danger' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  
+  <%= link_to 'Dashboard', admin_root_path, class: 'btn btn-secondary' %>
+</div>

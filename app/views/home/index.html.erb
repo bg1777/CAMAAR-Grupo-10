@@ -1,0 +1,9 @@
+<!-- app/views/home/index.html.erb -->
+
+<div class="container mt-5">
+  <h1>Bem-vindo, <%= current_user.name %>!</h1>
+  <p>Email: <%= current_user.email %></p>
+  <p>Role: <%= current_user.role %></p>
+  
+  <%= link_to 'Sair', destroy_user_session_path, method: :delete, class: 'btn btn-danger' %>
+</div>
