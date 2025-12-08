@@ -78,7 +78,8 @@ class ImportService
       return user
     end
 
-    password = SecureRandom.hex(12)
+    # Usa matrícula como senha (Opção A)
+    password = user_data['matricula']
 
     user = User.new(
       email: user_data['email'],

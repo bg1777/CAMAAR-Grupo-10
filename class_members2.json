@@ -1,0 +1,22 @@
+[
+  {
+    "code": "CIC0105",
+    "name": "ENGENHARIA DE SOFTWARE",
+    "class": {
+      "classCode": "TA",
+      "semester": "2025.2",
+      "time": "24N34"
+    },
+    "dicente": [
+      {
+        "nome": "Bernardo Gomes Rodrigues",
+        "curso": "ENGENHARIA DA COMPUTAÇÃO/CIC",
+        "matricula": "231034190",
+        "usuario": "231034190",
+        "formacao": "graduando",
+        "ocupacao": "dicente",
+        "email": "bgrodrigues2005@gmail.com"
+      }
+    ]
+  }
+]
