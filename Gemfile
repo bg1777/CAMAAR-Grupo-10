@@ -38,6 +38,7 @@ group :development, :test do
   gem "factory_bot_rails", "~> 6.2"
   gem "faker", "~> 3.2"
   gem "shoulda-matchers", "~> 5.1"
+  gem "csv"
 end
 
 group :development do

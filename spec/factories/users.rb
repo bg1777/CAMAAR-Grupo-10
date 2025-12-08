@@ -1,0 +1,11 @@
+# spec/factories/users.rb
+
+FactoryBot.define do
+  factory :user do
+    name { Faker::Name.name }
+    email { Faker::Internet.email }
+    password { 'senha123' }
+    password_confirmation { 'senha123' }
+    role { :user }
+  end
+end
