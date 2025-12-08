@@ -1,0 +1,67 @@
+<!-- app/views/admin/form_templates/show.html.erb -->
+
+<div class="container mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><%= @form_template.name %></h1>
+    <div>
+      <%= link_to 'Editar', edit_admin_form_template_path(@form_template), class: 'btn btn-warning' %>
+      <%= link_to 'Voltar', admin_form_templates_path, class: 'btn btn-secondary' %>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Informações</h5>
+      <p class="card-text">
+        <strong>Descrição:</strong> <%= @form_template.description %>
+      </p>
+      <p class="card-text">
+        <strong>Total de Campos:</strong> <%= @form_template.form_template_fields.count %>
+      </p>
+      <p class="card-text">
+        <strong>Criado em:</strong> <%= l(@form_template.created_at, format: :long) %>
+      </p>
+    </div>
+  </div>
+
+  <h3>Campos do Template</h3>
+  <% if @form_template.form_template_fields.any? %>
+    <div class="table-responsive">
+      <table class="table">
+        <thead class="table-light">
+          <tr>
+            <th>Posição</th>
+            <th>Label</th>
+            <th>Tipo</th>
+            <th>Obrigatório</th>
+            <th>Opções</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @form_template.form_template_fields.order(:position).each do |field| %>
+            <tr>
+              <td><%= field.position %></td>
+              <td><%= field.label %></td>
+              <td><span class="badge bg-secondary"><%= field.field_type %></span></td>
+              <td>
+                <% if field.required %>
+                  <span class="badge bg-danger">Sim</span>
+                <% else %>
+                  <span class="badge bg-secondary">Não</span>
+                <% end %>
+              </td>
+              <td><%= field.options.present? ? truncate(field.options, length: 30) : '-' %></td>
+              <td>
+                <%= link_to 'Editar', edit_admin_form_template_path(@form_template, id: field.id), class: 'btn btn-sm btn-warning' %>
+                <%= link_to 'Deletar', admin_form_template_form_template_field_path(@form_template, field), method: :delete, data: { confirm: 'Tem certeza?' }, class: 'btn btn-sm btn-danger' %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="alert alert-warning">Este template não possui campos.</div>
+  <% end %>
+</div>

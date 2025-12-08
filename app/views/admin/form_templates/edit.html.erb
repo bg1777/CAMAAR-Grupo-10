@@ -1,0 +1,48 @@
+<!-- app/views/admin/form_templates/edit.html.erb -->
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <h1 class="mb-4">Editar Template</h1>
+
+      <%= form_with(model: [:admin, @form_template], local: true) do |form| %>
+        <% if @form_template.errors.any? %>
+          <div class="alert alert-danger">
+            <h4><%= pluralize(@form_template.errors.count, "erro") %> encontrado:</h4>
+            <ul>
+              <% @form_template.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="mb-3">
+          <%= form.label :name, "Nome do Template" %>
+          <%= form.text_field :name, class: 'form-control' %>
+        </div>
+
+        <div class="mb-3">
+          <%= form.label :description, "Descrição" %>
+          <%= form.text_area :description, class: 'form-control', rows: 4 %>
+        </div>
+
+        <h4 class="mt-4 mb-3">Campos</h4>
+        <div id="fields-container">
+          <%= form.fields_for :form_template_fields do |field_form| %>
+            <%= render 'field_form', f: field_form %>
+          <% end %>
+        </div>
+
+        <div class="mb-3">
+          <%= link_to_add_fields "Adicionar Campo", form, :form_template_fields, class: 'btn btn-sm btn-info' %>
+        </div>
+
+        <div class="d-flex gap-2">
+          <%= form.submit "Atualizar Template", class: 'btn btn-success' %>
+          <%= link_to 'Cancelar', admin_form_templates_path, class: 'btn btn-secondary' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
