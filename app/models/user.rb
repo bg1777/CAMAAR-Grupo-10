@@ -9,6 +9,8 @@ class User < ApplicationRecord
   # Associações
   has_many :class_members, dependent: :destroy
   has_many :klasses, through: :class_members
+  has_many :form_templates, dependent: :destroy
+  has_many :form_responses, dependent: :destroy
 
   # Validações
   validates :name, presence: true
