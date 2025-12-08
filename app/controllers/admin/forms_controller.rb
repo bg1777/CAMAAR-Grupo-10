@@ -11,8 +11,8 @@ module Admin
     end
 
     def show
-      @pending_count = @form.pending_responses.count
-      @completed_count = @form.completed_responses.count
+      @pending_count = @form.form_responses.where(submitted_at: nil).count
+      @completed_count = @form.form_responses.where.not(submitted_at: nil).count
     end
 
     def new
@@ -22,19 +22,13 @@ module Admin
     end
 
     def create
-      template = FormTemplate.find(form_params[:form_template_id])
-      klass = Klass.find(form_params[:klass_id])
-      
-      @form = template.create_form_instance(
-        klass,
-        form_params[:title],
-        form_params[:description],
-        form_params[:due_date]
-      )
+      @form = Form.new(form_params)
 
       if @form.save
         redirect_to admin_form_path(@form), notice: 'Formulário criado com sucesso!'
       else
+        @form_templates = FormTemplate.all
+        @klasses = Klass.all
         render :new, status: :unprocessable_entity
       end
     end
@@ -45,6 +39,9 @@ module Admin
     end
 
     def update
+      @form_templates = FormTemplate.all
+      @klasses = Klass.all
+
       if @form.update(form_params)
         redirect_to admin_form_path(@form), notice: 'Formulário atualizado com sucesso!'
       else

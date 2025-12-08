@@ -1,0 +1,58 @@
+<!-- app/views/admin/forms/new.html.erb -->
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <h1 class="mb-4">Novo Formulário</h1>
+
+      <%= form_with(model: [:admin, @form], local: true, method: :post) do |form| %>
+        
+        <% if @form.errors.any? %>
+          <div class="alert alert-danger">
+            <h4><%= pluralize(@form.errors.count, "erro") %> encontrado:</h4>
+            <ul>
+              <% @form.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="mb-3">
+          <%= form.label :form_template_id, "Template" %>
+          <%= form.collection_select :form_template_id, @form_templates, :id, :name, 
+              { prompt: 'Selecione um template' }, class: 'form-select' %>
+          <small class="text-muted d-block mt-1">Escolha um template para criar o formulário</small>
+        </div>
+
+        <div class="mb-3">
+          <%= form.label :klass_id, "Turma" %>
+          <%= form.collection_select :klass_id, @klasses, :id, :name, 
+              { prompt: 'Selecione uma turma' }, class: 'form-select' %>
+          <small class="text-muted d-block mt-1">Selecione a turma que responderá este formulário</small>
+        </div>
+
+        <div class="mb-3">
+          <%= form.label :title, "Título do Formulário" %>
+          <%= form.text_field :title, class: 'form-control', placeholder: 'Ex: Avaliação de Desempenho' %>
+        </div>
+
+        <div class="mb-3">
+          <%= form.label :description, "Descrição" %>
+          <%= form.text_area :description, class: 'form-control', rows: 4, 
+              placeholder: 'Descreva o propósito deste formulário...' %>
+        </div>
+
+        <div class="mb-3">
+          <%= form.label :due_date, "Prazo (opcional)" %>
+          <%= form.datetime_select :due_date, class: 'form-control' %>
+        </div>
+
+        <div class="d-flex gap-2">
+          <%= form.submit "Criar Formulário", class: 'btn btn-success' %>
+          <%= link_to 'Cancelar', admin_forms_path, class: 'btn btn-secondary' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
