@@ -10,6 +10,9 @@ class Form < ApplicationRecord
   validates :title, presence: true
 
   enum :status, { draft: 0, published: 1, closed: 2 }
+  
+  # Definir status padrão
+  before_create :set_default_status
 
   # Retorna todos os alunos da turma que ainda não responderam o formulário
   def pending_responses
@@ -19,5 +22,11 @@ class Form < ApplicationRecord
   # Retorna alunos que já responderam
   def completed_responses
     form_responses.map(&:user)
+  end
+
+  private
+
+  def set_default_status
+    self.status ||= :draft
   end
 end

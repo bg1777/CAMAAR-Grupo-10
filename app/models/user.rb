@@ -24,4 +24,23 @@ class User < ApplicationRecord
   def user?
     role == 'user'
   end
+
+  # Formulários pendentes (não respondidos e no prazo)
+  def pending_forms
+    # Pega todos os forms publicados das turmas do usuário
+    all_forms = Form
+      .where(klass_id: klasses.pluck(:id), status: :published)
+      .where('due_date > ? OR due_date IS NULL', Time.current)
+    
+    # Remove apenas os que foram RESPONDIDOS (submitted_at NOT NULL)
+    all_forms.where.not(
+      id: form_responses.where.not(submitted_at: nil).pluck(:form_id)
+    )
+  end
+
+  # Formulários já respondidos
+  def completed_forms
+    Form
+      .where(id: form_responses.where.not(submitted_at: nil).pluck(:form_id))
+  end
 end

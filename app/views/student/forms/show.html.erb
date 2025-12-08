@@ -1,0 +1,57 @@
+<!-- app/views/student/forms/show.html.erb -->
+
+<div class="container mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1><%= @form.title %></h1>
+      <p class="text-muted"><%= @form.klass.name %></p>
+    </div>
+    <%= link_to 'Voltar', student_forms_path, class: 'btn btn-secondary' %>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Informações</h5>
+      <p><strong>Descrição:</strong> <%= @form.description %></p>
+      <p>
+        <strong>Prazo:</strong> 
+        <% if @form.due_date.present? %>
+          <%= l(@form.due_date, format: :long) %>
+        <% else %>
+          Sem prazo
+        <% end %>
+      </p>
+    </div>
+  </div>
+
+  <% if @form_response&.completed? %>
+    <div class="alert alert-success">
+      <strong>✓ Formulário respondido em:</strong> <%= l(@form_response.submitted_at, format: :long) %>
+    </div>
+
+    <h3>Suas Respostas</h3>
+    <div class="table-responsive">
+      <table class="table">
+        <thead class="table-light">
+          <tr>
+            <th>Pergunta</th>
+            <th>Sua Resposta</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @form_response.form_answers.each do |answer| %>
+            <tr>
+              <td><strong><%= answer.form_template_field.label %></strong></td>
+              <td><%= answer.answer %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="alert alert-warning">
+      <strong>Este formulário ainda não foi respondido.</strong>
+      <%= link_to 'Responder agora', answer_student_form_path(@form), class: 'btn btn-primary' %>
+    </div>
+  <% end %>
+</div>

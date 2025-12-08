@@ -1,67 +1,131 @@
-<!-- app/views/admin/form_templates/show.html.erb -->
+<!-- app/views/admin/forms/show.html.erb - CORRIGIDO -->
 
 <div class="container mt-5">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1><%= @form_template.name %></h1>
     <div>
-      <%= link_to 'Editar', edit_admin_form_template_path(@form_template), class: 'btn btn-warning' %>
-      <%= link_to 'Voltar', admin_form_templates_path, class: 'btn btn-secondary' %>
+      <h1><%= @form.title %></h1>
+      <p class="text-muted"><%= @form.form_template.name %> • <%= @form.klass.name %></p>
+    </div>
+    <div>
+      <% if @form.draft? %>
+        <%= link_to 'Editar', edit_admin_form_path(@form), class: 'btn btn-warning' %>
+        <%= button_to 'Publicar', publish_admin_form_path(@form), method: :patch, class: 'btn btn-success' %>
+      <% end %>
+      <% if @form.published? %>
+        <%= button_to 'Fechar', close_admin_form_path(@form), method: :patch, class: 'btn btn-danger' %>
+      <% end %>
+      <%= link_to 'Voltar', admin_forms_path, class: 'btn btn-secondary' %>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Status</h5>
+          <% case @form.status %>
+            <% when 'draft' %>
+              <span class="badge bg-secondary">Rascunho</span>
+            <% when 'published' %>
+              <span class="badge bg-success">Publicado</span>
+            <% when 'closed' %>
+              <span class="badge bg-danger">Fechado</span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Respondidos</h5>
+          <h3><%= @completed_count %> / <%= @form.klass.students.count %></h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Pendentes</h5>
+          <h3><%= @pending_count %></h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Prazo</h5>
+          <p><%= @form.due_date.present? ? l(@form.due_date, format: :long) : 'Sem prazo' %></p>
+        </div>
+      </div>
     </div>
   </div>
 
   <div class="card mb-4">
     <div class="card-body">
-      <h5 class="card-title">Informações</h5>
-      <p class="card-text">
-        <strong>Descrição:</strong> <%= @form_template.description %>
-      </p>
-      <p class="card-text">
-        <strong>Total de Campos:</strong> <%= @form_template.form_template_fields.count %>
-      </p>
-      <p class="card-text">
-        <strong>Criado em:</strong> <%= l(@form_template.created_at, format: :long) %>
-      </p>
+      <h5 class="card-title">Descrição</h5>
+      <p><%= @form.description %></p>
     </div>
   </div>
 
-  <h3>Campos do Template</h3>
-  <% if @form_template.form_template_fields.any? %>
-    <div class="table-responsive">
-      <table class="table">
-        <thead class="table-light">
+  <h3>Campos do Formulário</h3>
+  <div class="table-responsive">
+    <table class="table">
+      <thead class="table-light">
+        <tr>
+          <th>Posição</th>
+          <th>Label</th>
+          <th>Tipo</th>
+          <th>Obrigatório</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @form.form_template.form_template_fields.order(:position).each do |field| %>
           <tr>
-            <th>Posição</th>
-            <th>Label</th>
-            <th>Tipo</th>
-            <th>Obrigatório</th>
-            <th>Opções</th>
-            <th>Ações</th>
+            <td><%= field.position %></td>
+            <td><%= field.label %></td>
+            <td><span class="badge bg-secondary"><%= field.field_type %></span></td>
+            <td>
+              <% if field.required %>
+                <span class="badge bg-danger">Sim</span>
+              <% else %>
+                <span class="badge bg-secondary">Não</span>
+              <% end %>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          <% @form_template.form_template_fields.order(:position).each do |field| %>
-            <tr>
-              <td><%= field.position %></td>
-              <td><%= field.label %></td>
-              <td><span class="badge bg-secondary"><%= field.field_type %></span></td>
-              <td>
-                <% if field.required %>
-                  <span class="badge bg-danger">Sim</span>
-                <% else %>
-                  <span class="badge bg-secondary">Não</span>
-                <% end %>
-              </td>
-              <td><%= field.options.present? ? truncate(field.options, length: 30) : '-' %></td>
-              <td>
-                <%= link_to 'Editar', edit_admin_form_template_path(@form_template, id: field.id), class: 'btn btn-sm btn-warning' %>
-                <%= link_to 'Deletar', admin_form_template_form_template_field_path(@form_template, field), method: :delete, data: { confirm: 'Tem certeza?' }, class: 'btn btn-sm btn-danger' %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  <% else %>
-    <div class="alert alert-warning">Este template não possui campos.</div>
-  <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="mt-5">Respostas</h3>
+  <div class="table-responsive">
+    <table class="table table-sm">
+      <thead class="table-light">
+        <tr>
+          <th>Aluno</th>
+          <th>Status</th>
+          <th>Respondido em</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @form.form_responses.each do |response| %>
+          <tr>
+            <td><%= response.user.name %></td>
+            <td>
+              <% if response.completed? %>
+                <span class="badge bg-success">Respondido</span>
+              <% else %>
+                <span class="badge bg-warning">Pendente</span>
+              <% end %>
+            </td>
+            <td><%= response.submitted_at.present? ? l(response.submitted_at, format: :short) : '-' %></td>
+            <td>
+              <%= link_to 'Ver Respostas', '#', class: 'btn btn-sm btn-info' %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 </div>
