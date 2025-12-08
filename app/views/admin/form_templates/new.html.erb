@@ -36,7 +36,9 @@
         </div>
 
         <div class="mb-3">
-          <%= link_to_add_fields "Adicionar Campo", form, :form_template_fields, class: 'btn btn-sm btn-info' %>
+          <button type="button" class="btn btn-sm btn-info" onclick="addField()">
+            Adicionar Campo
+          </button>
         </div>
 
         <div class="d-flex gap-2">
@@ -47,3 +49,56 @@
     </div>
   </div>
 </div>
+
+<script>
+function addField() {
+  const container = document.getElementById('fields-container');
+  const newId = new Date().getTime();
+  
+  const fieldHtml = `
+    <div class="card mb-3 field-item">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-2">
+              <label class="form-label">Posição</label>
+              <input class="form-control" min="1" name="form_template[form_template_fields_attributes][${newId}][position]" type="number">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-2">
+              <label class="form-label">Tipo de Campo</label>
+              <select class="form-select" name="form_template[form_template_fields_attributes][${newId}][field_type]">
+                <option value="">Selecione um tipo</option>
+                <option value="text">text</option>
+                <option value="textarea">textarea</option>
+                <option value="email">email</option>
+                <option value="number">number</option>
+                <option value="date">date</option>
+                <option value="select">select</option>
+                <option value="radio">radio</option>
+                <option value="checkbox">checkbox</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Rótulo do Campo</label>
+          <input class="form-control" placeholder="Ex: Seu Nome" name="form_template[form_template_fields_attributes][${newId}][label]" type="text">
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Opções (JSON - apenas para select/radio/checkbox)</label>
+          <small class="text-muted d-block mb-1">Ex: ["Opção 1", "Opção 2"] - deixe em branco para outros tipos</small>
+          <textarea class="form-control" placeholder='["Opção 1", "Opção 2"]' name="form_template[form_template_fields_attributes][${newId}][options]" rows="2"></textarea>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" name="form_template[form_template_fields_attributes][${newId}][required]" type="checkbox" value="1" id="required_${newId}">
+          <label class="form-check-label" for="required_${newId}">Campo obrigatório?</label>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  container.insertAdjacentHTML('beforeend', fieldHtml);
+}
+</script>
