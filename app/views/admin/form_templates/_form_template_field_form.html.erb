@@ -1,4 +1,4 @@
-<!-- app/views/admin/form_templates/_field_form.html.erb -->
+<!-- app/views/admin/form_templates/_form_template_field_form.html.erb -->
 
 <div class="card mb-3 field-item">
   <div class="card-body">
@@ -27,7 +27,8 @@
     </div>
 
     <div class="mb-2">
-      <%= f.label :options, "Opções (JSON - para select/radio/checkbox)" %>
+      <%= f.label :options, "Opções (JSON - apenas para select/radio/checkbox)" %>
+      <small class="text-muted d-block mb-1">Ex: ["Opção 1", "Opção 2"] - deixe em branco para outros tipos</small>
       <%= f.text_area :options, class: 'form-control', rows: 2, placeholder: '["Opção 1", "Opção 2"]' %>
     </div>
 

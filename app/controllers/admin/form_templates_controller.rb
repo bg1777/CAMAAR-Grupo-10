@@ -15,7 +15,7 @@ module Admin
 
     def new
       @form_template = FormTemplate.new
-      5.times { @form_template.form_template_fields.build }
+      @form_template.form_template_fields.build  # ← Apenas 1 campo
     end
 
     def create
@@ -29,6 +29,7 @@ module Admin
     end
 
     def edit
+      # Se não tiver campos, adiciona 1
       @form_template.form_template_fields.build if @form_template.form_template_fields.empty?
     end
 

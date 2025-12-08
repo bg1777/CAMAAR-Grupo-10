@@ -3,7 +3,10 @@
 <div class="container mt-5">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Templates de Formulários</h1>
-    <%= link_to 'Novo Template', new_admin_form_template_path, class: 'btn btn-primary' %>
+    <div class="d-flex gap-2">
+      <%= link_to 'Novo Template', new_admin_form_template_path, class: 'btn btn-primary' %>
+      <%= link_to 'Voltar ao Dashboard', admin_root_path, class: 'btn btn-secondary' %>
+    </div>
   </div>
 
   <% if @form_templates.any? %>
@@ -41,4 +44,8 @@
       <%= link_to 'Criar seu primeiro template', new_admin_form_template_path, class: 'alert-link' %>
     </div>
   <% end %>
+
+  <div class="mt-4">
+    <%= link_to 'Voltar ao Dashboard', admin_root_path, class: 'btn btn-secondary' %>
+  </div>
 </div>

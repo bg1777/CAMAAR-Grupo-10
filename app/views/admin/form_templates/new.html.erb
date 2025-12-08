@@ -5,7 +5,8 @@
     <div class="col-lg-8">
       <h1 class="mb-4">Novo Template de Formulário</h1>
 
-      <%= form_with(model: [:admin, @form_template], local: true) do |form| %>
+      <%= form_with(model: [:admin, @form_template], local: true, method: :post) do |form| %>
+        
         <% if @form_template.errors.any? %>
           <div class="alert alert-danger">
             <h4><%= pluralize(@form_template.errors.count, "erro") %> encontrado:</h4>
@@ -32,7 +33,6 @@
           <%= form.fields_for :form_template_fields do |field_form| %>
             <%= render 'form_template_field_form', f: field_form %>
           <% end %>
-
         </div>
 
         <div class="mb-3">

@@ -2,10 +2,17 @@
 
 class FormTemplateField < ApplicationRecord
   belongs_to :form_template
-  has_many :form_answers, dependent: :destroy
-
-  validates :field_type, presence: true, inclusion: { in: %w(text textarea number email multiple_choice), message: '%{value} is not a valid field type' }
+  
   validates :label, presence: true
-  validates :position, presence: true
-  validates :form_template_id, presence: true
+  validates :field_type, presence: true
+  validates :position, presence: true, numericality: { only_integer: true }
+  
+  # Validar options apenas para tipos que precisam
+  validates :options, presence: true, if: :requires_options?
+  
+  private
+  
+  def requires_options?
+    ['select', 'radio', 'checkbox'].include?(field_type)
+  end
 end
