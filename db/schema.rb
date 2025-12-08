@@ -10,7 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_07_235542) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_08_005930) do
+  create_table "class_members", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "klass_id", null: false
+    t.string "role"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["klass_id"], name: "index_class_members_on_klass_id"
+    t.index ["user_id"], name: "index_class_members_on_user_id"
+  end
+
+  create_table "klasses", force: :cascade do |t|
+    t.string "code"
+    t.string "name"
+    t.string "semester"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -21,7 +40,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_07_235542) do
     t.integer "role", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "matricula"
+    t.string "curso"
+    t.string "formacao"
+    t.string "ocupacao"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
+
+  add_foreign_key "class_members", "klasses"
+  add_foreign_key "class_members", "users"
 end
