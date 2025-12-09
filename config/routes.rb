@@ -24,6 +24,7 @@ Rails.application.routes.draw do
       member do
         patch :publish
         patch :close
+        get :view_response
       end
     end
   end

@@ -1,0 +1,66 @@
+<!-- app/views/admin/forms/view_response.html.erb -->
+
+<div class="container mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1>Respostas de <%= @form_response.user.name %></h1>
+      <p class="text-muted"><%= @form.title %></p>
+    </div>
+    <%= link_to 'Voltar', admin_form_path(@form), class: 'btn btn-secondary' %>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Aluno</h5>
+          <p><strong><%= @form_response.user.name %></strong></p>
+          <p class="text-muted"><%= @form_response.user.email %></p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Data de Resposta</h5>
+          <p><%= l(@form_response.submitted_at, format: :long) %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Respostas</h3>
+  <div class="table-responsive">
+    <table class="table">
+      <thead class="table-light">
+        <tr>
+          <th>Pergunta</th>
+          <th>Resposta</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @form_response.form_answers.each do |answer| %>
+          <tr>
+            <td>
+              <strong><%= answer.form_template_field.label %></strong>
+              <% if answer.form_template_field.required %>
+                <span class="text-danger">*</span>
+              <% end %>
+            </td>
+            <td>
+              <% if answer.answer.present? %>
+                <%= answer.answer %>
+              <% else %>
+                <span class="text-muted">-</span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-4">
+    <%= link_to 'Voltar', admin_form_path(@form), class: 'btn btn-secondary' %>
+  </div>
+</div>

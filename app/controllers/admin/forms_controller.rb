@@ -4,15 +4,16 @@ module Admin
   class FormsController < ApplicationController
     before_action :authenticate_user!
     before_action :check_admin
-    before_action :set_form, only: [:show, :edit, :update, :destroy, :publish, :close]
+    before_action :set_form, only: [:show, :edit, :update, :destroy, :publish, :close, :view_response]
+    before_action :set_form_response, only: [:view_response]
 
     def index
       @forms = Form.all.order(created_at: :desc)
     end
 
     def show
-      @pending_count = @form.form_responses.where(submitted_at: nil).count
-      @completed_count = @form.form_responses.where.not(submitted_at: nil).count
+      @pending_count = @form.pending_responses.count
+      @completed_count = @form.completed_responses.count
     end
 
     def new
@@ -22,7 +23,17 @@ module Admin
     end
 
     def create
-      @form = Form.new(form_params)
+      template = FormTemplate.find(form_params[:form_template_id])
+      klass = Klass.find(form_params[:klass_id])
+      
+      @form = Form.new(
+        form_template: template,
+        klass: klass,
+        title: form_params[:title],
+        description: form_params[:description],
+        due_date: form_params[:due_date],
+        status: :draft
+      )
 
       if @form.save
         redirect_to admin_form_path(@form), notice: 'Formulário criado com sucesso!'
@@ -39,12 +50,11 @@ module Admin
     end
 
     def update
-      @form_templates = FormTemplate.all
-      @klasses = Klass.all
-
       if @form.update(form_params)
         redirect_to admin_form_path(@form), notice: 'Formulário atualizado com sucesso!'
       else
+        @form_templates = FormTemplate.all
+        @klasses = Klass.all
         render :edit, status: :unprocessable_entity
       end
     end
@@ -70,10 +80,18 @@ module Admin
       end
     end
 
+    def view_response
+      # @form_response já é setado pelo before_action
+    end
+
     private
 
     def set_form
       @form = Form.find(params[:id])
+    end
+
+    def set_form_response
+      @form_response = FormResponse.find(params[:response_id])
     end
 
     def form_params
