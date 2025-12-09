@@ -1,0 +1,31 @@
+[
+  {
+    "code": "CIC0189",
+    "name": "Projeto e Analise de Algoritmos",
+    "class": {
+      "classCode": "TA",
+      "semester": "2025.2",
+      "time": "24T23"
+    },
+    "dicente": [
+      {
+        "nome": "Bernardo Gomes Rodrigues",
+        "curso": "ENGENHARIA DA COMPUTAÇÃO/CIC",
+        "matricula": "231034191",
+        "usuario": "231034191",
+        "formacao": "graduando",
+        "ocupacao": "dicente",
+        "email": "bgrodrigues2005@gmail.com"
+      },
+      {
+        "nome": "Ana Clara Jordao Perna",
+        "curso": "CIÊNCIA DA COMPUTAÇÃO/CIC",
+        "matricula": "190084006",
+        "usuario": "190084006",
+        "formacao": "graduando",
+        "ocupacao": "dicente",
+        "email": "acjpjvjp@gmail.com"
+      }
+    ]
+  }
+]
