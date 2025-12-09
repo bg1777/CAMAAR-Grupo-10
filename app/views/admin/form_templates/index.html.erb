@@ -31,7 +31,10 @@
               <td>
                 <%= link_to 'Ver', admin_form_template_path(template), class: 'btn btn-sm btn-info' %>
                 <%= link_to 'Editar', edit_admin_form_template_path(template), class: 'btn btn-sm btn-warning' %>
-                <%= link_to 'Deletar', admin_form_template_path(template), method: :delete, data: { confirm: 'Tem certeza?' }, class: 'btn btn-sm btn-danger' %>
+                <%= button_to 'Deletar', admin_form_template_path(template), method: :delete, 
+                onclick: "return confirm('Tem certeza que deseja apagar este template?');",
+                class: 'btn btn-link text-danger p-0 border-0 text-decoration-none align-baseline',
+                form: { style: 'display:inline-block;' } %>
               </td>
             </tr>
           <% end %>
