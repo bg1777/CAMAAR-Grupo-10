@@ -1,9 +1,94 @@
 <!-- app/views/home/index.html.erb -->
 
 <div class="container mt-5">
-  <h1>Bem-vindo, <%= current_user.name %>!</h1>
-  <p>Email: <%= current_user.email %></p>
-  <p>Role: <%= current_user.role %></p>
-  
-  <%= link_to 'Sair', destroy_user_session_path, method: :delete, class: 'btn btn-danger' %>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1>Bem-vindo, <%= current_user.name %>!</h1>
+      <p class="text-muted">Email: <%= current_user.email %></p>
+    </div>
+    <%= button_to 'Sair', destroy_user_session_path, method: :delete, class: 'btn btn-danger' %>
+  </div>
+
+  <!-- Formulários Pendentes -->
+  <div class="mb-5">
+    <h2 class="mb-3">📋 Formulários Pendentes</h2>
+    
+    <% if @pending_forms.any? %>
+      <div class="row">
+        <% @pending_forms.each do |form| %>
+          <div class="col-md-6 col-lg-4 mb-3">
+            <div class="card h-100 shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title"><%= form.title %></h5>
+                <p class="card-text text-muted">
+                  <small><strong>Turma:</strong> <%= form.klass.name %></small>
+                </p>
+                <p class="card-text">
+                  <%= truncate(form.description, length: 100) %>
+                </p>
+                
+                <% if form.due_date.present? %>
+                  <p class="card-text">
+                    <small>
+                      <strong>Prazo:</strong>
+                      <span class="badge bg-warning">
+                        <%= l(form.due_date, format: :short) %>
+                      </span>
+                    </small>
+                  </p>
+                <% end %>
+
+                <div class="d-grid gap-2">
+                  <%= link_to 'Responder Formulário', answer_student_form_path(form), class: 'btn btn-primary btn-sm' %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="alert alert-info">
+        <strong>✓ Parabéns!</strong> Você respondeu todos os formulários pendentes.
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Formulários Respondidos -->
+  <div class="mb-5">
+    <h2 class="mb-3">✓ Formulários Respondidos</h2>
+    
+    <% if @completed_forms.any? %>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead class="table-light">
+            <tr>
+              <th>Título</th>
+              <th>Turma</th>
+              <th>Respondido em</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @completed_forms.each do |form| %>
+              <tr>
+                <td><strong><%= form.title %></strong></td>
+                <td><%= form.klass.name %></td>
+                <td>
+                  <% response = form.form_responses.find_by(user: current_user) %>
+                  <%= l(response.submitted_at, format: :short) if response&.submitted_at %>
+                </td>
+                <td>
+                  <%= link_to 'Ver', student_form_path(form), class: 'btn btn-sm btn-info' %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="alert alert-secondary">
+        Nenhum formulário respondido ainda.
+      </div>
+    <% end %>
+  </div>
 </div>

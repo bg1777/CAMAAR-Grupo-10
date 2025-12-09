@@ -1,11 +1,11 @@
 [
   {
-    "code": "CIC0105",
-    "name": "ENGENHARIA DE SOFTWARE",
+    "code": "CIC0104",
+    "name": "SOFTWARE BASICO",
     "class": {
       "classCode": "TA",
       "semester": "2025.2",
-      "time": "24N34"
+      "time": "24M34"
     },
     "dicente": [
       {

@@ -4,6 +4,7 @@ class Klass < ApplicationRecord
   # Associações
   has_many :class_members, dependent: :destroy
   has_many :users, through: :class_members
+  has_many :forms, dependent: :destroy
 
   # Validações
   validates :code, presence: true, uniqueness: true

@@ -1,0 +1,74 @@
+<!-- app/views/admin/forms/index.html.erb - CORRIGIDO -->
+
+<div class="container mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Formulários</h1>
+    <div class="d-flex gap-2">
+      <%= link_to 'Novo Formulário', new_admin_form_path, class: 'btn btn-primary' %>
+      <%= link_to 'Voltar ao Dashboard', admin_root_path, class: 'btn btn-secondary' %>
+    </div>
+  </div>
+
+  <% if @forms.any? %>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th>Título</th>
+            <th>Template</th>
+            <th>Turma</th>
+            <th>Status</th>
+            <th>Respostas</th>
+            <th>Prazo</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @forms.each do |form| %>
+            <tr>
+              <td><strong><%= form.title %></strong></td>
+              <td><%= form.form_template.name %></td>
+              <td><%= form.klass.name %></td>
+              <td>
+                <% case form.status %>
+                  <% when 'draft' %>
+                    <span class="badge bg-secondary">Rascunho</span>
+                  <% when 'published' %>
+                    <span class="badge bg-success">Publicado</span>
+                  <% when 'closed' %>
+                    <span class="badge bg-danger">Fechado</span>
+                <% end %>
+              </td>
+              <td>
+                <span class="badge bg-info"><%= form.completed_responses.count %></span>
+                /
+                <span class="badge bg-warning"><%= form.klass.students.count %></span>
+              </td>
+              <td><%= form.due_date.present? ? l(form.due_date, format: :short) : '-' %></td>
+              <td>
+                <%= link_to 'Ver', admin_form_path(form), class: 'btn btn-sm btn-info' %>
+                <% if form.draft? %>
+                  <%= link_to 'Editar', edit_admin_form_path(form), class: 'btn btn-sm btn-warning' %>
+                  <%= button_to 'Publicar', publish_admin_form_path(form), method: :patch, class: 'btn btn-sm btn-success', form_class: 'd-inline' %>
+                <% end %>
+                <% if form.published? %>
+                  <%= button_to 'Fechar', close_admin_form_path(form), method: :patch, class: 'btn btn-sm btn-danger', form_class: 'd-inline' %>
+                <% end %>
+                <%= link_to 'Deletar', admin_form_path(form), method: :delete, data: { confirm: 'Tem certeza?' }, class: 'btn btn-sm btn-outline-danger' %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="alert alert-info">
+      <strong>Nenhum formulário criado ainda.</strong>
+      <%= link_to 'Criar seu primeiro formulário', new_admin_form_path, class: 'alert-link' %>
+    </div>
+  <% end %>
+
+  <div class="mt-4">
+    <%= link_to 'Voltar ao Dashboard', admin_root_path, class: 'btn btn-secondary' %>
+  </div>
+</div>
