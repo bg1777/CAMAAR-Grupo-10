@@ -1,83 +1,112 @@
 <!-- app/views/admin/imports/index.html.erb -->
 
 <div class="container mt-5">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Importar Dados do SIGAA</h1>
-    <%= link_to 'Sair', destroy_user_session_path, method: :delete, class: 'btn btn-danger' %>
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+      <h1 class="mb-1">Importar Dados do SIGAA</h1>
+      <p class="text-muted mb-0">
+        Gerencie a importação de turmas e alunos a partir do JSON do SIGAA
+      </p>
+    </div>
+
+    <%= link_to 'Sair',
+      destroy_user_session_path,
+      method: :delete,
+      class: 'btn btn-outline-danger'
+    %>
   </div>
 
-  <!-- Cards de Status -->
-  <div class="row mb-4">
+  <!-- Status Cards -->
+  <div class="row g-4 mb-4">
+    
     <div class="col-md-6">
-      <div class="card">
+      <div class="card shadow-sm border-0 h-100">
         <div class="card-body">
-          <h5 class="card-title">Total de Turmas</h5>
-          <p class="card-text">
-            <span class="badge bg-primary" style="font-size: 1.5rem;">
-              <%= @total_klasses %>
-            </span>
-          </p>
+          <h5 class="card-title text-primary mb-2">Total de Turmas</h5>
+          <span class="badge bg-primary px-3 py-2" style="font-size: 1.4rem;">
+            <%= @total_klasses %>
+          </span>
         </div>
       </div>
     </div>
 
     <div class="col-md-6">
-      <div class="card">
+      <div class="card shadow-sm border-0 h-100">
         <div class="card-body">
-          <h5 class="card-title">Total de Alunos</h5>
-          <p class="card-text">
-            <span class="badge bg-success" style="font-size: 1.5rem;">
-              <%= @total_users %>
-            </span>
-          </p>
+          <h5 class="card-title text-success mb-2">Total de Alunos</h5>
+          <span class="badge bg-success px-3 py-2" style="font-size: 1.4rem;">
+            <%= @total_users %>
+          </span>
         </div>
       </div>
     </div>
+
   </div>
 
-  <!-- Formulário de Upload -->
-  <div class="card">
+  <!-- Upload Form -->
+  <div class="card shadow-sm border-0">
     <div class="card-header bg-primary text-white">
       <h5 class="mb-0">📤 Importar Arquivo JSON</h5>
     </div>
+
     <div class="card-body">
-      <%= form_with url: import_klasses_admin_imports_path, method: :post, local: true, multipart: true do |f| %>
-        <div class="mb-3">
-          <label for="file" class="form-label">
-            <strong>Selecione o arquivo JSON (class_members.json)</strong>
+
+      <%= form_with url: import_klasses_admin_imports_path,
+                    method: :post,
+                    local: true,
+                    multipart: true do |f| %>
+
+        <!-- File Input -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold">
+            Selecione o arquivo JSON (class_members.json)
           </label>
-          <%= f.file_field :file, class: 'form-control', accept: '.json', required: true %>
-          <small class="form-text text-muted">
-            Formato: JSON com estrutura de turmas e alunos do SIGAA
+
+          <%= f.file_field :file,
+                class: 'form-control',
+                accept: '.json',
+                required: true %>
+
+          <small class="text-muted d-block mt-1">
+            O arquivo deve seguir a estrutura oficial do SIGAA.
           </small>
         </div>
 
-        <div class="mb-3">
-          <div class="alert alert-info" role="alert">
-            <strong>ℹ️ Informações:</strong>
-            <ul class="mb-0">
-              <li>As senhas dos alunos serão suas matrículas</li>
-              <li>Alunos já existentes não serão duplicados</li>
-              <li>Turmas já existentes serão atualizadas</li>
-              <li>Alunos duplicados em turmas não serão adicionados novamente</li>
-            </ul>
-          </div>
+        <!-- Info Box -->
+        <div class="alert alert-info mb-4 shadow-sm">
+          <strong class="mb-2 d-inline-block">ℹ️ Informações Importantes</strong>
+
+          <ul class="mb-0 ms-2">
+            <li>As senhas dos alunos serão suas matrículas.</li>
+            <li>Alunos já existentes não serão duplicados.</li>
+            <li>Turmas existentes serão atualizadas.</li>
+            <li>Alunos repetidos na mesma turma serão ignorados.</li>
+          </ul>
         </div>
 
-        <div class="d-grid gap-2">
-          <%= f.submit "🚀 Importar Turmas e Alunos", class: 'btn btn-primary btn-lg' %>
+        <!-- Submit -->
+        <div class="d-grid">
+          <%= f.submit "🚀 Importar Turmas e Alunos",
+                class: 'btn btn-primary btn-lg' %>
         </div>
+
       <% end %>
+
     </div>
   </div>
 
-  <!-- Instruções -->
-  <div class="card mt-4">
-    <div class="card-header">
+  <!-- Instructions -->
+  <div class="card shadow-sm border-0 mt-4">
+    <div class="card-header bg-light">
       <h5 class="mb-0">📋 Instruções de Uso</h5>
     </div>
+
     <div class="card-body">
-      <h6>Estrutura do arquivo JSON esperada:</h6>
+
+      <h6 class="fw-bold">Estrutura esperada do JSON:</h6>
+
       <pre><code>[
   {
     "code": "CIC0097",
@@ -101,48 +130,44 @@
   }
 ]</code></pre>
 
-      <h6 class="mt-3">Após a importação:</h6>
+      <h6 class="mt-4 fw-bold">Após a importação:</h6>
       <ul>
-        <li>✅ Turmas serão criadas/atualizadas</li>
-        <li>✅ Alunos serão criados com sua matrícula como senha inicial</li>
-        <li>✅ Alunos serão vinculados às turmas</li>
-        <li>ℹ️ Qualquer erro será reportado para verificação</li>
+        <li>✅ Turmas serão criadas ou atualizadas.</li>
+        <li>✅ Alunos receberão senha inicial igual à matrícula.</li>
+        <li>✅ Alunos serão vinculados às suas turmas.</li>
+        <li>ℹ️ Erros ou inconsistências serão informados.</li>
       </ul>
 
-      <h6 class="mt-3">Acesso dos alunos:</h6>
+      <h6 class="mt-4 fw-bold">Acesso dos alunos:</h6>
       <ul>
-        <li><strong>Email:</strong> conforme especificado no JSON</li>
-        <li><strong>Senha:</strong> sua matrícula (ex: 190084006)</li>
-        <li>⚠️ Aluno pode mudar a senha após primeiro login</li>
+        <li><strong>Email:</strong> conforme especificado no JSON.</li>
+        <li><strong>Senha:</strong> matrícula (ex: 190084006).</li>
+        <li>⚠️ Recomenda-se que o aluno altere a senha no primeiro acesso.</li>
       </ul>
+
     </div>
   </div>
 
-  <!-- Botão Voltar -->
+  <!-- Back Button -->
   <div class="mt-4">
-    <%= link_to '← Voltar ao Dashboard', admin_root_path, class: 'btn btn-secondary' %>
+    <%= link_to '← Voltar ao Dashboard',
+          admin_root_path,
+          class: 'btn btn-secondary' %>
   </div>
 </div>
 
+<!-- Custom Styling for JSON block -->
 <style>
   pre {
-    background-color: #f5f5f5;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 12px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    padding: 14px;
+    border: 1px solid #dee2e6;
     overflow-x: auto;
   }
 
   code {
     font-family: 'Courier New', monospace;
-    font-size: 0.9em;
-  }
-
-  .alert ul {
-    padding-left: 20px;
-  }
-
-  .alert li {
-    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
   }
 </style>
