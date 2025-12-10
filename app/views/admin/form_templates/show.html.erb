@@ -1,69 +1,129 @@
-<!-- app/views/admin/forms/show.html.erb - CORRIGIDO -->
+<!-- app/views/admin/forms/show.html.erb -->
 
-<div class="container mt-5">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-      <h1><%= @form_template.name %></h1>
-      <p class="text-muted"><%= @form_template.description %></p>
-    </div>
-    <div>
-      <%= link_to 'Editar Template', edit_admin_form_template_path(@form_template), class: 'btn btn-warning' %>
-      <%= link_to 'Voltar', admin_form_templates_path, class: 'btn btn-secondary' %>
-    </div>
-  </div>
+<div class="page-wrapper py-5">
+  <div class="container">
 
-  <div class="card mb-4">
-    <div class="card-header bg-light">
-      <h5 class="mb-0">Perguntas configuradas neste template</h5>
-    </div>
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-hover mb-0">
-          <thead class="table-light">
-            <tr>
-              <th style="width: 10%">Posição</th>
-              <th style="width: 40%">Pergunta (Label)</th>
-              <th style="width: 20%">Tipo de Resposta</th>
-              <th style="width: 15%">Obrigatório?</th>
-              <th style="width: 15%">Opções</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @form_template.form_template_fields.order(:position).each do |field| %>
-              <tr>
-                <td class="text-center"><span class="badge bg-light text-dark border"><%= field.position %></span></td>
-                <td><strong><%= field.label %></strong></td>
-                <td>
-                  <span class="badge bg-info text-dark">
-                    <%= field.field_type %>
-                  </span>
-                </td>
-                <td>
-                  <% if field.required %>
-                    <span class="badge bg-danger">Sim</span>
-                  <% else %>
-                    <span class="badge bg-success">Opcional</span>
-                  <% end %>
-                </td>
-                <td>
-                  <% if ['select', 'radio', 'checkbox'].include?(field.field_type) && field.options.present? %>
-                    <small class="text-muted"><%= field.options %></small>
-                  <% else %>
-                    <span class="text-muted">-</span>
-                  <% end %>
-                </td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+      <div>
+        <h1 class="page-title mb-1"><%= @form_template.name %></h1>
+        <p class="page-subtitle"><%= @form_template.description %></p>
+      </div>
+
+      <div class="d-flex gap-2">
+        <%= link_to 'Editar Template', 
+              edit_admin_form_template_path(@form_template),
+              class: 'btn btn-outline-primary px-4 py-2' %>
+
+        <%= link_to 'Voltar', 
+              admin_form_templates_path,
+              class: 'btn btn-secondary px-4 py-2' %>
       </div>
     </div>
-  </div>
 
-  <% if @form_template.form_template_fields.empty? %>
-    <div class="alert alert-warning">
-      Este template ainda não possui nenhuma pergunta cadastrada.
-      <%= link_to "Adicionar perguntas", edit_admin_form_template_path(@form_template), class: "alert-link" %>
+    <!-- Table Card -->
+    <div class="card shadow-lg border-0 rounded-4 mb-4">
+      <div class="card-header bg-white py-3 border-0">
+        <h4 class="mb-0 fw-semibold" style="color: #2f4b77;">
+          Perguntas configuradas neste template
+        </h4>
+      </div>
+
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th style="width: 8%">Posição</th>
+                <th style="width: 40%">Pergunta</th>
+                <th style="width: 18%">Tipo</th>
+                <th style="width: 14%">Obrigatório?</th>
+                <th style="width: 20%">Opções</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <% @form_template.form_template_fields.order(:position).each do |field| %>
+                <tr>
+                  <td class="text-center">
+                    <span class="badge bg-light text-dark border fw-semibold px-3">
+                      <%= field.position %>
+                    </span>
+                  </td>
+
+                  <td class="fw-semibold"><%= field.label %></td>
+
+                  <td>
+                    <span class="badge bg-primary-subtle text-primary fw-semibold px-3 py-2"
+                          style="font-size: 0.9rem;">
+                      <%= field.field_type %>
+                    </span>
+                  </td>
+
+                  <td>
+                    <% if field.required %>
+                      <span class="badge bg-danger text-white fw-semibold px-3 py-2">
+                        Sim
+                      </span>
+                    <% else %>
+                      <span class="badge bg-success text-white fw-semibold px-3 py-2">
+                        Opcional
+                      </span>
+                    <% end %>
+                  </td>
+
+                  <td>
+                    <% if ['select', 'radio', 'checkbox'].include?(field.field_type) && field.options.present? %>
+                      <code class="text-muted small"><%= field.options %></code>
+                    <% else %>
+                      <span class="text-muted">—</span>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+
+          </table>
+        </div>
+      </div>
     </div>
-  <% end %>
+
+    <% if @form_template.form_template_fields.empty? %>
+      <div class="alert alert-warning rounded-3 shadow-sm">
+        Este template ainda não possui nenhuma pergunta cadastrada.
+        <%= link_to "Adicionar perguntas", 
+              edit_admin_form_template_path(@form_template),
+              class: "alert-link fw-semibold" %>
+      </div>
+    <% end %>
+
+  </div>
 </div>
+
+<style>
+  .page-wrapper {
+    background: #f5f8fc;
+    min-height: 100vh;
+  }
+
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #22314f;
+  }
+
+  .page-subtitle {
+    color: #5f6b7c;
+    max-width: 700px;
+    margin-top: -0.2rem;
+  }
+
+  .badge.bg-primary-subtle {
+    background: #e1ecff;
+  }
+
+  table td, table th {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+</style>

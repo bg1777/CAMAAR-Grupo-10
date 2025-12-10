@@ -1,47 +1,71 @@
 <!-- app/views/admin/form_templates/_form_template_field_form.html.erb -->
 
-<div class="card mb-3 field-item">
-  <div class="card-body">
-    <div class="row">
+<div class="card shadow-sm border-0 rounded-4 mb-4 field-item">
+  <div class="card-body p-4">
+
+    <h5 class="fw-bold mb-4 text-primary">Configuração do Campo</h5>
+
+    <!-- Row: Position + Type -->
+    <div class="row g-3 mb-3">
+
       <div class="col-md-6">
-        <div class="mb-2">
-          <%= f.label :position, "Posição" %>
-          <%= f.number_field :position, class: 'form-control', min: 1 %>
-        </div>
+        <%= f.label :position, "Posição", class: "form-label fw-semibold" %>
+        <%= f.number_field :position, class: "form-control form-control-lg", min: 1 %>
       </div>
 
       <div class="col-md-6">
-        <div class="mb-2">
-          <%= f.label :field_type, "Tipo de Campo" %>
-          <%= f.select :field_type, 
-              ['text', 'textarea', 'email', 'number', 'date', 'select', 'radio', 'checkbox'],
-              { prompt: 'Selecione um tipo' },
-              class: 'form-select' %>
-        </div>
+        <%= f.label :field_type, "Tipo de Campo", class: "form-label fw-semibold" %>
+        <%= f.select :field_type,
+            ['text', 'textarea', 'email', 'number', 'date', 'select', 'radio', 'checkbox'],
+            { prompt: "Selecione um tipo" },
+            class: "form-select form-select-lg" %>
       </div>
+
     </div>
 
-    <div class="mb-2">
-      <%= f.label :label, "Rótulo do Campo" %>
-      <%= f.text_field :label, class: 'form-control', placeholder: 'Ex: Seu Nome' %>
+
+    <!-- Label -->
+    <div class="mb-4">
+      <%= f.label :label, "Rótulo do Campo", class: "form-label fw-semibold" %>
+      <%= f.text_field :label,
+          class: "form-control form-control-lg",
+          placeholder: "Ex: Seu Nome" %>
     </div>
 
-    <div class="mb-2">
-      <%= f.label :options, "Opções (JSON - apenas para select/radio/checkbox)" %>
-      <small class="text-muted d-block mb-1">Ex: ["Opção 1", "Opção 2"] - deixe em branco para outros tipos</small>
-      <%= f.text_area :options, class: 'form-control', rows: 2, placeholder: '["Opção 1", "Opção 2"]' %>
+
+    <!-- Options -->
+    <div class="mb-4">
+      <%= f.label :options, "Opções (JSON)", class: "form-label fw-semibold" %>
+      <small class="text-muted d-block mb-2">
+        Necessário apenas para <strong>select</strong>, <strong>radio</strong> e <strong>checkbox</strong>.  
+        Exemplo: <code>["Opção 1", "Opção 2"]</code>.
+      </small>
+
+      <%= f.text_area :options,
+          class: "form-control",
+          rows: 3,
+          placeholder: '["Opção 1", "Opção 2"]' %>
     </div>
 
-    <div class="form-check">
-      <%= f.check_box :required %>
-      <%= f.label :required, "Campo obrigatório?" %>
+
+    <!-- Required -->
+    <div class="mb-3 form-check ps-0">
+      <label class="fw-semibold d-flex align-items-center gap-2">
+        <%= f.check_box :required, class: "form-check-input me-2" %>
+        Campo obrigatório?
+      </label>
     </div>
 
+
+    <!-- Destroy -->
     <% if f.object.persisted? %>
-      <div class="mt-2">
-        <%= f.check_box :_destroy %>
-        <%= f.label :_destroy, "Remover este campo" %>
+      <div class="pt-3 border-top mt-4">
+        <label class="text-danger fw-semibold d-flex align-items-center gap-2">
+          <%= f.check_box :_destroy, class: "form-check-input me-2" %>
+          Remover este campo
+        </label>
       </div>
     <% end %>
+
   </div>
 </div>
