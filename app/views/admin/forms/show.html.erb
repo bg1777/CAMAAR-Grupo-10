@@ -1,59 +1,125 @@
 <!-- app/views/admin/forms/show.html.erb -->
 
 <div class="container mt-5">
-  <div class="d-flex justify-content-between align-items-center mb-4">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-start mb-4">
     <div>
-      <h1><%= @form.title %></h1>
-      <p class="text-muted">
-        Turma: <strong><%= @form.klass.name %></strong> | 
-        Template: <strong><%= @form.form_template.name %></strong>
-      </p>
+      <h1 class="mb-1"><%= @form.title %></h1>
+
+      <!-- Form Metadata -->
+      <div class="text-muted">
+        <span class="me-3">
+          Turma: <strong><%= @form.klass.name %></strong>
+        </span>
+
+        <span class="me-3">
+          Template: <strong><%= @form.form_template.name %></strong>
+        </span>
+
+        <span>
+          Status:
+          <% case @form.status %>
+            <% when 'draft' %>
+              <span class="badge bg-secondary">Rascunho</span>
+            <% when 'published' %>
+              <span class="badge bg-success">Publicado</span>
+            <% when 'closed' %>
+              <span class="badge bg-danger">Fechado</span>
+          <% end %>
+        </span>
+      </div>
+
+      <!-- Optional Due Date -->
+      <div class="mt-2">
+        <small class="text-muted">
+          Prazo:
+          <strong>
+            <%= @form.due_date.present? ? l(@form.due_date, format: :long) : 'Sem prazo definido' %>
+          </strong>
+        </small>
+      </div>
     </div>
+
+    <!-- Action Buttons -->
     <div class="d-flex gap-2">
-      <%= link_to 'Voltar', admin_forms_path, class: 'btn btn-secondary' %>
+      <%= link_to 'Voltar', admin_forms_path, class: 'btn btn-outline-secondary' %>
+
       <% if @form.draft? %>
-        <%= button_to 'Publicar', publish_admin_form_path(@form), method: :patch, class: 'btn btn-success' %>
+        <%= button_to 'Publicar', publish_admin_form_path(@form),
+              method: :patch,
+              class: 'btn btn-success' %>
+
+        <%= link_to 'Editar', edit_admin_form_path(@form),
+              class: 'btn btn-warning' %>
       <% elsif @form.published? %>
-        <%= button_to 'Fechar', close_admin_form_path(@form), method: :patch, class: 'btn btn-danger' %>
+        <%= button_to 'Fechar', close_admin_form_path(@form),
+              method: :patch,
+              class: 'btn btn-danger' %>
       <% end %>
     </div>
   </div>
 
-  <!-- Restante do conteúdo da página -->
-  <h3 class="mt-5">Respostas</h3>
-  <div class="table-responsive">
-    <table class="table table-sm">
-      <thead class="table-light">
-        <tr>
-          <th>Aluno</th>
-          <th>Status</th>
-          <th>Respondido em</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @form.form_responses.each do |response| %>
-          <tr>
-            <td><%= response.user.name %></td>
-            <td>
-              <% if response.completed? %>
-                <span class="badge bg-success">Respondido</span>
-              <% else %>
-                <span class="badge bg-warning">Pendente</span>
-              <% end %>
-            </td>
-            <td><%= response.submitted_at.present? ? l(response.submitted_at, format: :short) : '-' %></td>
-            <td>
-              <% if response.completed? %>
-                <%= link_to 'Ver Respostas', view_response_admin_form_path(@form, response_id: response.id), class: 'btn btn-sm btn-info' %>
-              <% end %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+  <!-- Divider -->
+  <hr>
+
+  <!-- Responses Section -->
+  <div class="mt-4">
+    <h3 class="mb-3">Respostas</h3>
+
+    <% if @form.form_responses.any? %>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-dark">
+            <tr>
+              <th>Aluno</th>
+              <th>Status</th>
+              <th>Respondido em</th>
+              <th class="text-center">Ações</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% @form.form_responses.each do |response| %>
+              <tr>
+                <td class="fw-semibold"><%= response.user.name %></td>
+
+                <td>
+                  <% if response.completed? %>
+                    <span class="badge bg-success">Respondido</span>
+                  <% else %>
+                    <span class="badge bg-warning text-dark">Pendente</span>
+                  <% end %>
+                </td>
+
+                <td>
+                  <%= response.submitted_at.present? ?
+                        l(response.submitted_at, format: :short) :
+                        '-' %>
+                </td>
+
+                <td class="text-center">
+                  <% if response.completed? %>
+                    <%= link_to 'Ver Respostas',
+                          view_response_admin_form_path(@form, response_id: response.id),
+                          class: 'btn btn-sm btn-info' %>
+                  <% else %>
+                    <span class="text-muted small">—</span>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="alert alert-info">
+        Nenhum aluno respondeu ainda.
+      </div>
+    <% end %>
   </div>
 
+  <!-- Back Button -->
   <div class="mt-4">
     <%= link_to 'Voltar', admin_forms_path, class: 'btn btn-secondary' %>
   </div>
