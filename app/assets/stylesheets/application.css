@@ -1,10 +1,225 @@
-/*
- * This is a manifest file that'll be compiled into application.css.
- *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
- *
- * Consider organizing styles into separate files for maintainability.
- */
+/* ---------------------------------------------------
+   GLOBAL DESIGN SYSTEM
+--------------------------------------------------- */
+
+:root {
+  /* Marine blue palette */
+  --blue-900: #072b44;
+  --blue-800: #0a3d62;
+  --blue-700: #0f527f;
+  --blue-600: #1d6fa1;
+  --blue-300: #aed7f3;
+  --blue-100: #e8f5ff;
+
+  /* Light green palette */
+  --green-500: #78e08f;
+  --green-600: #62c977;
+  --green-100: #e8fbe9;
+
+  /* Neutrals */
+  --gray-900: #1c1f21;
+  --gray-700: #4b5258;
+  --gray-500: #7d858c;
+  --gray-200: #e5e9ef;
+  --gray-100: #f7f9fb;
+
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --shadow-1: 0 4px 14px rgba(0, 0, 0, 0.08);
+  --shadow-2: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* ---------------------------------------------------
+   PAGE WRAPPER
+--------------------------------------------------- */
+
+.page-wrapper {
+  background: var(--gray-100);
+  min-height: 100vh;
+}
+
+/* ---------------------------------------------------
+   HERO
+--------------------------------------------------- */
+
+.hero {
+  padding: 80px 0;
+  background: linear-gradient(135deg, var(--blue-900), var(--blue-600));
+  color: white;
+}
+
+.hero-title {
+  font-size: 2.8rem;
+  font-weight: 700;
+}
+
+.hero-subtitle {
+  opacity: 0.85;
+  font-size: 1.3rem;
+}
+
+.hero-back-btn {
+  margin-top: 22px;
+  display: inline-block;
+  padding: 10px 22px;
+  border-radius: var(--radius-md);
+  background: var(--green-500);
+  color: var(--blue-900) !important;
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.hero-back-btn:hover {
+  background: var(--green-600);
+}
+
+/* ---------------------------------------------------
+   CONTENT
+--------------------------------------------------- */
+
+.content-section {
+  margin-top: -35px;
+  padding-bottom: 60px;
+}
+
+.shadow-layer {
+  box-shadow: var(--shadow-1);
+}
+
+/* Cards */
+.info-card,
+.responses-card,
+.status-card {
+  border-radius: var(--radius-lg);
+  background: white;
+  padding: 32px;
+  margin-bottom: 40px;
+}
+
+.section-title {
+  font-weight: 700;
+  color: var(--blue-800);
+  margin-bottom: 24px;
+  letter-spacing: -0.5px;
+}
+
+/* ---------------------------------------------------
+   INFO GRID
+--------------------------------------------------- */
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.info-label {
+  font-size: 0.9rem;
+  color: var(--gray-700);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.info-value {
+  font-size: 1.15rem;
+  color: var(--gray-900);
+}
+
+/* ---------------------------------------------------
+   STATUS CARDS
+--------------------------------------------------- */
+
+.status-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.status-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.completed .status-icon {
+  background: var(--green-100);
+  color: var(--green-600);
+}
+
+.pending .status-icon {
+  background: #fff3cd;
+  color: #d39e00;
+}
+
+.status-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.status-date {
+  font-size: 0.95rem;
+  color: var(--gray-700);
+}
+
+/* Primary action */
+.primary-action-btn {
+  margin-left: auto;
+  padding: 10px 26px;
+  border-radius: var(--radius-md);
+  background: var(--green-500);
+  color: var(--blue-900);
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.primary-action-btn:hover {
+  background: var(--green-600);
+}
+
+/* ---------------------------------------------------
+   TABLE
+--------------------------------------------------- */
+
+.modern-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+.modern-table thead tr {
+  background: var(--blue-900);
+  color: white;
+}
+
+.modern-table th {
+  padding: 14px 16px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.modern-table tbody tr {
+  background: white;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-1);
+}
+
+.modern-table td {
+  padding: 16px;
+  color: var(--gray-900);
+}
+
+/* Rounded table rows */
+.modern-table tbody tr td:first-child {
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+.modern-table tbody tr td:last-child {
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
