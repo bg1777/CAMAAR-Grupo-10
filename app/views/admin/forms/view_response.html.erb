@@ -1,66 +1,106 @@
 <!-- app/views/admin/forms/view_response.html.erb -->
 
 <div class="container mt-5">
-  <div class="d-flex justify-content-between align-items-center mb-4">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-start mb-4">
     <div>
-      <h1>Respostas de <%= @form_response.user.name %></h1>
-      <p class="text-muted"><%= @form.title %></p>
+      <h1 class="mb-1">Respostas de <%= @form_response.user.name %></h1>
+
+      <!-- Context / Breadcrumb-style -->
+      <p class="text-muted mb-0">
+        Formulário:
+        <strong><%= @form.title %></strong>
+      </p>
     </div>
-    <%= link_to 'Voltar', admin_form_path(@form), class: 'btn btn-secondary' %>
+
+    <%= link_to 'Voltar ao Formulário',
+          admin_form_path(@form),
+          class: 'btn btn-outline-secondary' %>
   </div>
 
-  <div class="row mb-4">
-    <div class="col-md-6">
-      <div class="card">
+  <!-- Student + Submission Info -->
+  <div class="row g-4 mb-4">
+
+    <!-- Student Info Card -->
+    <div class="col-lg-6">
+      <div class="card shadow-sm border-0 h-100">
         <div class="card-body">
-          <h5 class="card-title">Aluno</h5>
-          <p><strong><%= @form_response.user.name %></strong></p>
-          <p class="text-muted"><%= @form_response.user.email %></p>
+          <h5 class="card-title text-primary mb-3">Aluno</h5>
+
+          <p class="mb-1 fw-semibold">
+            <%= @form_response.user.name %>
+          </p>
+
+          <p class="text-muted mb-0">
+            <%= @form_response.user.email %>
+          </p>
         </div>
       </div>
     </div>
-    <div class="col-md-6">
-      <div class="card">
+
+    <!-- Submission Info Card -->
+    <div class="col-lg-6">
+      <div class="card shadow-sm border-0 h-100">
         <div class="card-body">
-          <h5 class="card-title">Data de Resposta</h5>
-          <p><%= l(@form_response.submitted_at, format: :long) %></p>
+          <h5 class="card-title text-primary mb-3">Data de Resposta</h5>
+
+          <p class="fw-semibold mb-0">
+            <%= l(@form_response.submitted_at, format: :long) %>
+          </p>
         </div>
       </div>
     </div>
+
   </div>
 
-  <h3>Respostas</h3>
+  <!-- Divider -->
+  <hr class="my-4">
+
+  <!-- Answers Table -->
+  <h3 class="mb-3">Respostas</h3>
+
   <div class="table-responsive">
-    <table class="table">
-      <thead class="table-light">
+    <table class="table table-hover align-middle">
+      <thead class="table-dark">
         <tr>
-          <th>Pergunta</th>
+          <th style="width: 35%;">Pergunta</th>
           <th>Resposta</th>
         </tr>
       </thead>
+
       <tbody>
         <% @form_response.form_answers.each do |answer| %>
+          <% field = answer.form_template_field %>
+
           <tr>
-            <td>
-              <strong><%= answer.form_template_field.label %></strong>
-              <% if answer.form_template_field.required %>
+            <!-- Question Label -->
+            <td class="fw-semibold">
+              <%= field.label %>
+              <% if field.required %>
                 <span class="text-danger">*</span>
               <% end %>
             </td>
+
+            <!-- User Response -->
             <td>
               <% if answer.answer.present? %>
-                <%= answer.answer %>
+                <%= simple_format(answer.answer) %>
               <% else %>
-                <span class="text-muted">-</span>
+                <span class="text-muted">Sem resposta</span>
               <% end %>
             </td>
           </tr>
+
         <% end %>
       </tbody>
     </table>
   </div>
 
+  <!-- Back Button -->
   <div class="mt-4">
-    <%= link_to 'Voltar', admin_form_path(@form), class: 'btn btn-secondary' %>
+    <%= link_to 'Voltar ao Formulário',
+          admin_form_path(@form),
+          class: 'btn btn-secondary' %>
   </div>
 </div>

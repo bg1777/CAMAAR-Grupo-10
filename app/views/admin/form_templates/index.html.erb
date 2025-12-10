@@ -1,54 +1,108 @@
 <!-- app/views/admin/form_templates/index.html.erb -->
 
-<div class="container mt-5">
+<div class="container py-5">
+
+  <!-- Header -->
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Templates de Formulários</h1>
+    <div>
+      <h1 class="fw-bold text-primary mb-1">Templates de Formulários</h1>
+      <p class="text-muted">Organize, edite e gerencie seus templates personalizados.</p>
+    </div>
+
     <div class="d-flex gap-2">
-      <%= link_to 'Novo Template', new_admin_form_template_path, class: 'btn btn-primary' %>
-      <%= link_to 'Voltar ao Dashboard', admin_root_path, class: 'btn btn-secondary' %>
+      <%= link_to 'Novo Template', 
+          new_admin_form_template_path, 
+          class: 'btn btn-primary btn-lg rounded-3' %>
+
+      <%= link_to 'Voltar ao Dashboard', 
+          admin_root_path, 
+          class: 'btn btn-outline-secondary btn-lg rounded-3' %>
     </div>
   </div>
 
+
+  <!-- Table -->
   <% if @form_templates.any? %>
-    <div class="table-responsive">
-      <table class="table table-hover">
-        <thead class="table-dark">
-          <tr>
-            <th>Nome</th>
-            <th>Descrição</th>
-            <th>Campos</th>
-            <th>Criado em</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @form_templates.each do |template| %>
-            <tr>
-              <td><strong><%= template.name %></strong></td>
-              <td><%= truncate(template.description, length: 50) %></td>
-              <td><span class="badge bg-info"><%= template.form_template_fields.count %></span></td>
-              <td><%= l(template.created_at, format: :short) %></td>
-              <td>
-                <%= link_to 'Ver', admin_form_template_path(template), class: 'btn btn-sm btn-info' %>
-                <%= link_to 'Editar', edit_admin_form_template_path(template), class: 'btn btn-sm btn-warning' %>
-                <%= button_to 'Deletar', admin_form_template_path(template), method: :delete, 
-                onclick: "return confirm('Tem certeza que deseja apagar este template?');",
-                class: 'btn btn-link text-danger p-0 border-0 text-decoration-none align-baseline',
-                form: { style: 'display:inline-block;' } %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+    <div class="card shadow-sm border-0 rounded-4">
+      <div class="card-body p-0">
+
+        <div class="table-responsive">
+          <table class="table align-middle table-hover mb-0">
+            <thead class="table-dark">
+              <tr>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>Campos</th>
+                <th>Criado em</th>
+                <th class="text-center">Ações</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <% @form_templates.each do |template| %>
+                <tr>
+                  <td class="fw-semibold text-primary"><%= template.name %></td>
+
+                  <td><%= truncate(template.description, length: 60) %></td>
+
+                  <td>
+                    <span class="badge bg-info px-3 py-2">
+                      <%= template.form_template_fields.count %>
+                    </span>
+                  </td>
+
+                  <td><%= l(template.created_at, format: :short) %></td>
+
+                  <td class="text-center">
+
+                    <div class="d-flex justify-content-center gap-2">
+
+                      <%= link_to 'Ver',
+                          admin_form_template_path(template),
+                          class: 'btn btn-sm btn-outline-info rounded-3' %>
+
+                      <%= link_to 'Editar',
+                          edit_admin_form_template_path(template),
+                          class: 'btn btn-sm btn-outline-warning rounded-3' %>
+
+                      <%= button_to 'Deletar',
+                          admin_form_template_path(template),
+                          method: :delete,
+                          onclick: "return confirm('Tem certeza que deseja apagar este template?');",
+                          class: 'btn btn-sm btn-outline-danger rounded-3',
+                          form: { style: 'display:inline-block;' } %>
+
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+
+          </table>
+        </div>
+
+      </div>
     </div>
+
   <% else %>
-    <div class="alert alert-info">
-      <strong>Nenhum template criado ainda.</strong>
-      <%= link_to 'Criar seu primeiro template', new_admin_form_template_path, class: 'alert-link' %>
+
+    <!-- Empty State -->
+    <div class="alert alert-info rounded-3 py-4 px-4 mt-4 text-center">
+      <h5 class="fw-bold mb-2">Nenhum template criado ainda.</h5>
+      <p class="mb-3">Você ainda não adicionou nenhum template de formulário.</p>
+      <%= link_to 'Criar seu primeiro template',
+          new_admin_form_template_path,
+          class: 'btn btn-primary btn-lg rounded-3' %>
     </div>
+
   <% end %>
 
+
+  <!-- Footer Navigation -->
   <div class="mt-4">
-    <%= link_to 'Voltar ao Dashboard', admin_root_path, class: 'btn btn-secondary' %>
+    <%= link_to 'Voltar ao Dashboard',
+        admin_root_path,
+        class: 'btn btn-outline-secondary btn-lg rounded-3' %>
   </div>
+
 </div>

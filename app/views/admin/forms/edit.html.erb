@@ -1,55 +1,116 @@
 <!-- app/views/admin/forms/edit.html.erb -->
 
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-lg-8">
-      <h1 class="mb-4">Editar Formulário</h1>
+<div class="page-wrapper py-5">
+  <div class="container">
 
-      <%= form_with(model: [:admin, @form], local: true) do |form| %>
-        
-        <% if @form.errors.any? %>
-          <div class="alert alert-danger">
-            <h4><%= pluralize(@form.errors.count, "erro") %> encontrado:</h4>
-            <ul>
-              <% @form.errors.full_messages.each do |message| %>
-                <li><%= message %></li>
-              <% end %>
-            </ul>
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="page-title mb-1">Editar Formulário</h1>
+        <p class="page-subtitle">Atualize as informações deste formulário.</p>
+      </div>
+
+      <%= link_to 'Voltar', admin_forms_path, class: 'btn btn-secondary px-4 py-2' %>
+    </div>
+
+    <!-- Form Card -->
+    <div class="card shadow-lg border-0 rounded-4">
+      <div class="card-body p-4">
+
+        <%= form_with(model: [:admin, @form], local: true) do |form| %>
+
+          <% if @form.errors.any? %>
+            <div class="alert alert-danger rounded-3">
+              <h5 class="fw-semibold mb-2"><%= pluralize(@form.errors.count, "erro") %> encontrado:</h5>
+              <ul class="mb-0">
+                <% @form.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <!-- Template Selection -->
+          <div class="mb-3">
+            <%= form.label :form_template_id, "Template", class: "form-label fw-semibold" %>
+            <%= form.collection_select :form_template_id, @form_templates, :id, :name,
+                  {}, class: 'form-select form-control-lg' %>
           </div>
+
+          <!-- Class Selection -->
+          <div class="mb-3">
+            <%= form.label :klass_id, "Turma", class: "form-label fw-semibold" %>
+            <%= form.collection_select :klass_id, @klasses, :id, :name,
+                  {}, class: 'form-select form-control-lg' %>
+          </div>
+
+          <!-- Title -->
+          <div class="mb-3">
+            <%= form.label :title, "Título do Formulário", class: "form-label fw-semibold" %>
+            <%= form.text_field :title, class: 'form-control form-control-lg', placeholder: "Ex: Avaliação Parcial" %>
+          </div>
+
+          <!-- Description -->
+          <div class="mb-3">
+            <%= form.label :description, "Descrição", class: "form-label fw-semibold" %>
+            <%= form.text_area :description, rows: 4, class: 'form-control form-control-lg',
+                  placeholder: "Descreva em detalhes o propósito deste formulário..." %>
+          </div>
+
+          <!-- Due Date -->
+          <div class="mb-3">
+            <%= form.label :due_date, "Prazo (opcional)", class: "form-label fw-semibold" %>
+            <div class="border rounded-3 p-3">
+              <%= form.datetime_select :due_date,
+                    { default: @form.due_date || Time.current },
+                    class: 'form-control' %>
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="d-flex gap-3 mt-4">
+            <%= form.submit "Atualizar Formulário",
+                  class: 'btn btn-success px-4 py-2 fw-semibold' %>
+
+            <%= link_to 'Cancelar', admin_forms_path,
+                  class: 'btn btn-outline-secondary px-4 py-2' %>
+          </div>
+
         <% end %>
 
-        <div class="mb-3">
-          <%= form.label :form_template_id, "Template" %>
-          <%= form.collection_select :form_template_id, @form_templates, :id, :name, 
-              {}, class: 'form-select' %>
-        </div>
-
-        <div class="mb-3">
-          <%= form.label :klass_id, "Turma" %>
-          <%= form.collection_select :klass_id, @klasses, :id, :name, 
-              {}, class: 'form-select' %>
-        </div>
-
-        <div class="mb-3">
-          <%= form.label :title, "Título do Formulário" %>
-          <%= form.text_field :title, class: 'form-control' %>
-        </div>
-
-        <div class="mb-3">
-          <%= form.label :description, "Descrição" %>
-          <%= form.text_area :description, class: 'form-control', rows: 4 %>
-        </div>
-
-        <div class="mb-3">
-          <%= form.label :due_date, "Prazo (opcional)" %>
-          <%= form.datetime_select :due_date, class: 'form-control' %>
-        </div>
-
-        <div class="d-flex gap-2">
-          <%= form.submit "Atualizar Formulário", class: 'btn btn-success' %>
-          <%= link_to 'Cancelar', admin_forms_path, class: 'btn btn-secondary' %>
-        </div>
-      <% end %>
+      </div>
     </div>
+
   </div>
 </div>
+
+<style>
+  .page-wrapper {
+    background: #f5f8fc;
+    min-height: 100vh;
+  }
+
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #22314f;
+  }
+
+  .page-subtitle {
+    color: #5f6b7c;
+    margin-top: -0.3rem;
+  }
+
+  .form-label {
+    color: #2f3b52;
+  }
+
+  .form-control-lg, .form-select {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+  }
+
+  .card {
+    background: white;
+  }
+</style>

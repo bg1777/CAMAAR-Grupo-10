@@ -1,104 +1,174 @@
 <!-- app/views/admin/form_templates/new.html.erb -->
 
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-lg-8">
-      <h1 class="mb-4">Novo Template de Formulário</h1>
+<div class="page-wrapper py-5">
+  <div class="container">
+    
+    <!-- Header Section -->
+    <div class="page-header mb-4">
+      <h1 class="page-title">Novo Template de Formulário</h1>
+      <p class="page-subtitle">Crie e personalize modelos com campos dinâmicos.</p>
+    </div>
+
+    <!-- Main Card -->
+    <div class="card shadow-lg rounded-4 border-0 p-4 mb-5">
 
       <%= form_with(model: [:admin, @form_template], local: true, method: :post) do |form| %>
-        
+
         <% if @form_template.errors.any? %>
-          <div class="alert alert-danger">
-            <h4><%= pluralize(@form_template.errors.count, "erro") %> encontrado:</h4>
-            <ul>
-              <% @form_template.errors.full_messages.each do |message| %>
-                <li><%= message %></li>
+          <div class="alert alert-danger rounded-3 shadow-sm">
+            <h5 class="fw-bold mb-2"><%= pluralize(@form_template.errors.count, "erro") %> encontrado(s):</h5>
+            <ul class="mb-0 ps-3">
+              <% @form_template.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
               <% end %>
             </ul>
           </div>
         <% end %>
 
-        <div class="mb-3">
-          <%= form.label :name, "Nome do Template" %>
-          <%= form.text_field :name, class: 'form-control', placeholder: 'Ex: Avaliação de Desempenho' %>
+        <!-- Name -->
+        <div class="form-section mb-4">
+          <%= form.label :name, "Nome do Template", class: "form-label fw-semibold" %>
+          <%= form.text_field :name, class: "form-control form-control-lg", placeholder: "Ex: Avaliação de Desempenho" %>
         </div>
 
-        <div class="mb-3">
-          <%= form.label :description, "Descrição" %>
-          <%= form.text_area :description, class: 'form-control', rows: 4, placeholder: 'Descreva o propósito deste template...' %>
+        <!-- Description -->
+        <div class="form-section mb-4">
+          <%= form.label :description, "Descrição", class: "form-label fw-semibold" %>
+          <%= form.text_area :description, class: "form-control", rows: 4, placeholder: "Descreva o propósito deste template..." %>
         </div>
 
-        <h4 class="mt-4 mb-3">Campos</h4>
-        <div id="fields-container">
+        <!-- Fields Section -->
+        <h3 class="section-title mt-4 mb-3">Campos do Template</h3>
+
+        <div id="fields-container" class="field-list">
           <%= form.fields_for :form_template_fields do |field_form| %>
             <%= render 'form_template_field_form', f: field_form %>
           <% end %>
         </div>
 
-        <div class="mb-3">
-          <button type="button" class="btn btn-sm btn-info" onclick="addField()">
-            Adicionar Campo
-          </button>
+        <button type="button" class="btn btn-add-field mb-4" onclick="addField()">
+          + Adicionar Campo
+        </button>
+
+        <!-- Buttons -->
+        <div class="d-flex gap-3 mt-4">
+          <%= form.submit "Criar Template", class: "btn btn-primary btn-lg px-4" %>
+          <%= link_to "Cancelar", admin_form_templates_path, class: "btn btn-outline-secondary btn-lg px-4" %>
         </div>
 
-        <div class="d-flex gap-2">
-          <%= form.submit "Criar Template", class: 'btn btn-success' %>
-          <%= link_to 'Cancelar', admin_form_templates_path, class: 'btn btn-secondary' %>
-        </div>
       <% end %>
+
     </div>
   </div>
 </div>
+
+<!-- Custom Styles -->
+<style>
+  .page-wrapper {
+    background: #f5f8fc;
+    min-height: 100vh;
+  }
+
+  .page-header .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #22314f;
+  }
+
+  .page-subtitle {
+    color: #5f6b7c;
+    margin-top: -0.5rem;
+  }
+
+  .card {
+    background: #fff;
+  }
+
+  .section-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #2f4b77;
+  }
+
+  .btn-add-field {
+    background: #0d6efd;
+    color: white;
+    border-radius: 50px;
+    padding: 0.55rem 1.4rem;
+    font-weight: 500;
+    transition: 0.2s;
+  }
+
+  .btn-add-field:hover {
+    background: #0b5cd6;
+  }
+
+  /* Field Item Card */
+  .field-item.card {
+    border-left: 4px solid #0d6efd;
+    border-radius: 12px;
+  }
+</style>
 
 <script>
 function addField() {
   const container = document.getElementById('fields-container');
   const newId = new Date().getTime();
-  
+
   const fieldHtml = `
-    <div class="card mb-3 field-item">
-      <div class="card-body">
-        <div class="row">
-          <div class="col-md-6">
-            <div class="mb-2">
-              <label class="form-label">Posição</label>
-              <input class="form-control" min="1" name="form_template[form_template_fields_attributes][${newId}][position]" type="number">
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="mb-2">
-              <label class="form-label">Tipo de Campo</label>
-              <select class="form-select" name="form_template[form_template_fields_attributes][${newId}][field_type]">
-                <option value="">Selecione um tipo</option>
-                <option value="text">text</option>
-                <option value="textarea">textarea</option>
-                <option value="email">email</option>
-                <option value="number">number</option>
-                <option value="date">date</option>
-                <option value="select">select</option>
-                <option value="radio">radio</option>
-                <option value="checkbox">checkbox</option>
-              </select>
-            </div>
-          </div>
+    <div class="card field-item p-3 mb-3 shadow-sm">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-semibold">Posição</label>
+          <input class="form-control" min="1"
+                 name="form_template[form_template_fields_attributes][${newId}][position]"
+                 type="number">
         </div>
-        <div class="mb-2">
-          <label class="form-label">Rótulo do Campo</label>
-          <input class="form-control" placeholder="Ex: Seu Nome" name="form_template[form_template_fields_attributes][${newId}][label]" type="text">
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-semibold">Tipo de Campo</label>
+          <select class="form-select"
+                  name="form_template[form_template_fields_attributes][${newId}][field_type]">
+            <option value="">Selecione</option>
+            <option>text</option>
+            <option>textarea</option>
+            <option>email</option>
+            <option>number</option>
+            <option>date</option>
+            <option>select</option>
+            <option>radio</option>
+            <option>checkbox</option>
+          </select>
         </div>
-        <div class="mb-2">
-          <label class="form-label">Opções (JSON - apenas para select/radio/checkbox)</label>
-          <small class="text-muted d-block mb-1">Ex: ["Opção 1", "Opção 2"] - deixe em branco para outros tipos</small>
-          <textarea class="form-control" placeholder='["Opção 1", "Opção 2"]' name="form_template[form_template_fields_attributes][${newId}][options]" rows="2"></textarea>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" name="form_template[form_template_fields_attributes][${newId}][required]" type="checkbox" value="1" id="required_${newId}">
-          <label class="form-check-label" for="required_${newId}">Campo obrigatório?</label>
-        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Rótulo do Campo</label>
+        <input class="form-control" placeholder="Ex: Seu Nome"
+               name="form_template[form_template_fields_attributes][${newId}][label]"
+               type="text">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Opções (JSON)</label>
+        <small class="text-muted d-block mb-1">Só para select/radio/checkbox</small>
+        <textarea class="form-control" rows="2"
+                  placeholder='["Opção 1", "Opção 2"]'
+                  name="form_template[form_template_fields_attributes][${newId}][options]">
+        </textarea>
+      </div>
+
+      <div class="form-check">
+        <input class="form-check-input"
+               name="form_template[form_template_fields_attributes][${newId}][required]"
+               type="checkbox" value="1" id="required_${newId}">
+        <label class="form-check-label" for="required_${newId}">
+          Campo obrigatório?
+        </label>
       </div>
     </div>
   `;
-  
+
   container.insertAdjacentHTML('beforeend', fieldHtml);
 }
 </script>
