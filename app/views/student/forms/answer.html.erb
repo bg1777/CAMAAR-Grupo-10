@@ -1,21 +1,15 @@
-<!-- app/views/student/forms/answer.html.erb -->
-
 <div class="container-xl py-5">
-
   <!-- HEADER -->
   <div class="d-flex justify-content-between align-items-center mb-5 pb-3 border-bottom">
     <div>
       <h1 class="fw-bold display-6 text-primary"><%= @form.title %></h1>
       <p class="text-muted fs-5"><%= @form.klass.name %></p>
     </div>
-
-    <%= link_to '← Voltar', root_path,
-        class: 'btn btn-outline-secondary btn-lg rounded-pill px-4' %>
+    <%= link_to '← Voltar', root_path, class: 'btn btn-outline-secondary btn-lg rounded-pill px-4' %>
   </div>
 
   <!-- DESCRIPTION / INFO SECTION -->
   <div class="row g-4 mb-4">
-
     <% if @form.description.present? %>
       <div class="col-12">
         <div class="p-4 rounded-4 shadow-sm bg-info bg-opacity-10 border border-info">
@@ -34,23 +28,16 @@
         </div>
       </div>
     <% end %>
-
   </div>
 
+  <!-- FORM RENDERING -->
   <% if @form_response.form_answers.empty? %>
-
     <div class="alert alert-danger p-4 rounded-4 shadow-sm fs-5">
       <strong>Erro:</strong> Não há campos para preencher neste formulário.
     </div>
-
   <% else %>
-
-    <%= form_with(model: @form_response,
-                  local: true,
-                  url: submit_answer_student_form_path(@form),
-                  method: :post,
-                  class: "mt-4") do |form| %>
-
+    <%= form_with(model: @form_response, local: true, url: submit_answer_student_form_path(@form), method: :post, class: "mt-4") do |form| %>
+      
       <% if @form_response.errors.any? %>
         <div class="alert alert-danger p-4 rounded-4 shadow-sm mb-4">
           <h4 class="fw-bold"><%= pluralize(@form_response.errors.count, "erro") %> encontrado:</h4>
@@ -63,14 +50,12 @@
       <% end %>
 
       <div class="row g-4">
-
         <%= form.fields_for :form_answers do |answer_form| %>
           <% field = answer_form.object.form_template_field %>
-
+          
           <!-- FIELD CARD -->
           <div class="col-12">
             <div class="p-4 bg-white rounded-4 shadow-sm border border-light">
-              
               <label class="form-label fs-5 fw-semibold d-block mb-3">
                 <%= field.label %>
                 <% if field.required %>
@@ -78,87 +63,59 @@
                 <% end %>
               </label>
 
-              <% case field.field_type %>
+              <!-- FIELD TYPE RENDERING -->
+              <% case field.field_type
+                 when 'text' %>
+                <%= answer_form.text_field :answer, class: 'form-control form-control-lg rounded-3', placeholder: field.label %>
 
-                <% when 'text' %>
-                  <%= answer_form.text_field :answer,
-                        class: 'form-control form-control-lg rounded-3',
-                        placeholder: field.label %>
+              <% when 'textarea' %>
+                <%= answer_form.text_area :answer, class: 'form-control form-control-lg rounded-3', rows: 4, placeholder: field.label %>
 
-                <% when 'textarea' %>
-                  <%= answer_form.text_area :answer,
-                        class: 'form-control form-control-lg rounded-3',
-                        rows: 4,
-                        placeholder: field.label %>
+              <% when 'email' %>
+                <%= answer_form.email_field :answer, class: 'form-control form-control-lg rounded-3', placeholder: field.label %>
 
-                <% when 'email' %>
-                  <%= answer_form.email_field :answer,
-                        class: 'form-control form-control-lg rounded-3',
-                        placeholder: field.label %>
+              <% when 'number' %>
+                <%= answer_form.number_field :answer, class: 'form-control form-control-lg rounded-3', placeholder: field.label %>
 
-                <% when 'number' %>
-                  <%= answer_form.number_field :answer,
-                        class: 'form-control form-control-lg rounded-3',
-                        placeholder: field.label %>
+              <% when 'date' %>
+                <%= answer_form.date_field :answer, class: 'form-control form-control-lg rounded-3' %>
 
-                <% when 'date' %>
-                  <%= answer_form.date_field :answer,
-                        class: 'form-control form-control-lg rounded-3' %>
+              <% when 'select' %>
+                <% options = field.options.present? ? JSON.parse(field.options) : [] %>
+                <%= answer_form.select :answer, options, { prompt: 'Selecione uma opção' }, class: 'form-select form-select-lg rounded-3' %>
 
-                <% when 'select' %>
-                  <% options = field.options.present? ? JSON.parse(field.options) : [] %>
-                  <%= answer_form.select :answer, options,
-                        { prompt: 'Selecione uma opção' },
-                        class: 'form-select form-select-lg rounded-3' %>
+              <% when 'radio' %>
+                <% options = field.options.present? ? JSON.parse(field.options) : [] %>
+                <div class="d-flex flex-column gap-2">
+                  <% options.each do |option| %>
+                    <div class="form-check">
+                      <%= answer_form.radio_button :answer, option, class: 'form-check-input' %>
+                      <%= answer_form.label :answer, option, class: 'form-check-label fs-6' %>
+                    </div>
+                  <% end %>
+                </div>
 
-                <% when 'radio' %>
-                  <% options = field.options.present? ? JSON.parse(field.options) : [] %>
-                  <div class="d-flex flex-column gap-2">
-                    <% options.each do |option| %>
-                      <div class="form-check">
-                        <%= answer_form.radio_button :answer, option,
-                              class: 'form-check-input' %>
-                        <%= answer_form.label :answer, option,
-                              class: 'form-check-label fs-6' %>
-                      </div>
-                    <% end %>
-                  </div>
-
-                <% when 'checkbox' %>
-                  <% options = field.options.present? ? JSON.parse(field.options) : [] %>
-                  <div class="d-flex flex-column gap-2">
-                    <% options.each do |option| %>
-                      <div class="form-check">
-                        <%= answer_form.check_box :answer,
-                              { multiple: true },
-                              option,
-                              nil,
-                              class: 'form-check-input' %>
-                        <%= answer_form.label :answer, option,
-                              class: 'form-check-label fs-6' %>
-                      </div>
-                    <% end %>
-                  </div>
-
+              <% when 'checkbox' %>
+                <% options = field.options.present? ? JSON.parse(field.options) : [] %>
+                <div class="d-flex flex-column gap-2">
+                  <% options.each do |option| %>
+                    <div class="form-check">
+                      <%= answer_form.check_box :answer, { multiple: true }, option, nil, class: 'form-check-input' %>
+                      <%= answer_form.label :answer, option, class: 'form-check-label fs-6' %>
+                    </div>
+                  <% end %>
+                </div>
               <% end %>
-
             </div>
           </div>
         <% end %>
-
       </div>
 
       <!-- ACTION BUTTONS -->
       <div class="d-flex gap-3 mt-5">
-        <%= form.submit "Enviar Respostas",
-            class: 'btn btn-success btn-lg px-5 rounded-pill shadow-sm fw-semibold' %>
-
-        <%= link_to 'Cancelar', root_path,
-            class: 'btn btn-outline-secondary btn-lg px-4 rounded-pill' %>
+        <%= form.submit "Enviar Respostas", class: 'btn btn-success btn-lg px-5 rounded-pill shadow-sm fw-semibold' %>
+        <%= link_to 'Cancelar', root_path, class: 'btn btn-outline-secondary btn-lg px-4 rounded-pill' %>
       </div>
-
     <% end %>
-
   <% end %>
-
 </div>
