@@ -1,80 +1,128 @@
 <!-- app/views/admin/dashboard/index.html.erb -->
 
-<div class="container mt-5">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Painel Admin</h1>
-    <%= button_to 'Sair', destroy_user_session_path, method: :delete, class: 'btn btn-danger' %>
+<div class="container py-5">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-5 border-bottom pb-3">
+    <div>
+      <h1 class="fw-bold">Painel Administrativo</h1>
+      <p class="text-muted mt-1">Gerencie usuários, formulários e integrações do sistema</p>
+    </div>
+
+    <%= button_to 'Sair', destroy_user_session_path, 
+        method: :delete, 
+        class: 'btn btn-outline-danger btn-lg rounded-pill px-4' %>
   </div>
-  
-  <div class="row mb-4">
+
+
+  <!-- STAT CARDS -->
+  <div class="row g-4 mb-5">
+
     <div class="col-md-6">
-      <div class="card">
-        <div class="card-body">
-          <h5>Total de Usuários</h5>
-          <h3><%= @total_users %></h3>
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body py-4 px-4">
+          <h6 class="text-uppercase text-muted fw-semibold">Total de Usuários</h6>
+          <h2 class="fw-bold mt-2"><%= @total_users %></h2>
         </div>
       </div>
     </div>
-    
+
     <div class="col-md-6">
-      <div class="card">
-        <div class="card-body">
-          <h5>Total de Admins</h5>
-          <h3><%= @admin_count %></h3>
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body py-4 px-4">
+          <h6 class="text-uppercase text-muted fw-semibold">Total de Admins</h6>
+          <h2 class="fw-bold mt-2"><%= @admin_count %></h2>
         </div>
       </div>
     </div>
+
   </div>
 
-  <!-- Botão de Importação -->
-  <div class="alert alert-info d-flex justify-content-between align-items-center" role="alert">
-    <div>
-      <strong>📤 Importar Dados do SIGAA</strong>
-      <p class="mb-0 mt-2">Importe turmas e alunos a partir de um arquivo JSON</p>
+
+  <!-- ACTION SECTIONS -->
+  <div class="row g-4">
+
+    <!-- Import section -->
+    <div class="col-12">
+      <div class="p-4 rounded-4 shadow-sm bg-light border">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h5 class="fw-bold mb-1">📤 Importar Dados do SIGAA</h5>
+            <p class="mb-0 text-muted">Importe turmas e alunos a partir de um arquivo JSON</p>
+          </div>
+
+          <%= link_to 'Importar', 
+              admin_imports_path, 
+              class: 'btn btn-primary btn-lg rounded-pill px-4' %>
+        </div>
+      </div>
     </div>
-    <%= link_to 'Importar', admin_imports_path, class: 'btn btn-primary' %>
-  </div>
 
-  <div class="alert alert-info d-flex justify-content-between align-items-center mt-4" role="alert">
-    <div>
-      <strong>📋 Gerenciar Templates de Formulários</strong>
-      <p class="mb-0 mt-2">Crie e gerencie templates para seus formulários</p>
+    <!-- Templates -->
+    <div class="col-12">
+      <div class="p-4 rounded-4 shadow-sm bg-light border">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h5 class="fw-bold mb-1">📋 Gerenciar Templates de Formulários</h5>
+            <p class="mb-0 text-muted">Crie e gerencie modelos reutilizáveis</p>
+          </div>
+
+          <%= link_to 'Acessar', 
+              admin_form_templates_path, 
+              class: 'btn btn-primary btn-lg rounded-pill px-4' %>
+        </div>
+      </div>
     </div>
-    <%= link_to 'Acessar', admin_form_templates_path, class: 'btn btn-primary' %>
-  </div>
 
-  <div class="alert alert-info d-flex justify-content-between align-items-center mt-4" role="alert">
-    <div>
-      <strong>📋 Gerenciar Formulários</strong>
-      <p class="mb-0 mt-2">Crie e atribua formulários para suas turmas</p>
+    <!-- Forms -->
+    <div class="col-12">
+      <div class="p-4 rounded-4 shadow-sm bg-light border">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h5 class="fw-bold mb-1">📋 Gerenciar Formulários</h5>
+            <p class="mb-0 text-muted">Crie e atribua formulários às turmas</p>
+          </div>
+
+          <%= link_to 'Acessar', 
+              admin_forms_path, 
+              class: 'btn btn-primary btn-lg rounded-pill px-4' %>
+        </div>
+      </div>
     </div>
-    <%= link_to 'Acessar', admin_forms_path, class: 'btn btn-primary' %>
+
   </div>
 
-  <h2 class="mt-4">Usuários Recentes</h2>
-  <div class="table-responsive">
-    <table class="table table-striped table-hover">
-      <thead class="table-dark">
-        <tr>
-          <th>Nome</th>
-          <th>Email</th>
-          <th>Role</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @users.each do |user| %>
+
+  <!-- RECENT USERS TABLE -->
+  <div class="mt-5 pt-4 border-top">
+    <h2 class="fw-bold mb-3">Usuários Recentes</h2>
+
+    <div class="table-responsive shadow-sm rounded-4 overflow-hidden">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-dark">
           <tr>
-            <td><%= user.name %></td>
-            <td><%= user.email %></td>
-            <td>
-              <span class="badge bg-<%= user.role == 'admin' ? 'danger' : 'primary' %>">
-                <%= user.role %>
-              </span>
-            </td>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Role</th>
           </tr>
-        <% end %>
-      </tbody>
-    </table>
+        </thead>
+
+        <tbody>
+          <% @users.each do |user| %>
+            <tr>
+              <td class="fw-semibold"><%= user.name %></td>
+              <td><%= user.email %></td>
+              <td>
+                <span class="badge bg-<%= user.role == 'admin' ? 'danger' : 'primary' %> px-3 py-2">
+                  <%= user.role.capitalize %>
+                </span>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
   </div>
-  
+
 </div>
