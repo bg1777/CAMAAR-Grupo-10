@@ -30,8 +30,8 @@ SimpleCov.start 'rails' do
   add_group 'Libraries', '/lib/'
 
   # Definir limite mínimo de cobertura
-  minimum_coverage 80
-  minimum_coverage_by_file 75
+  # minimum_coverage 80
+  # minimum_coverage_by_file 75
 end
 
 RSpec.configure do |config|

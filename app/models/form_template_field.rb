@@ -2,9 +2,14 @@
 
 class FormTemplateField < ApplicationRecord
   belongs_to :form_template
+  has_many :form_answers, dependent: :destroy
   
+  # Valores válidos para field_type
+  VALID_FIELD_TYPES = %w(text textarea email number date select radio checkbox).freeze
+  
+  validates :form_template_id, presence: true
   validates :label, presence: true
-  validates :field_type, presence: true
+  validates :field_type, presence: true, inclusion: { in: VALID_FIELD_TYPES }
   validates :position, presence: true, numericality: { only_integer: true }
   
   # Validar options apenas para tipos que precisam
