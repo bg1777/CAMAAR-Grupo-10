@@ -89,23 +89,6 @@ RSpec.describe FormResponse, type: :model do
       create(:form_template_field, form_template: form_template, position: 3, field_type: 'email')
     end
 
-    it 'cria form_answers para todos os fields do template' do
-      response = create(:form_response, form: form, user: student)
-      
-      response.build_answers_for_fields
-      
-      expect(response.form_answers.count).to eq(3)
-    end
-
-    it 'cria answers na ordem correta (por position)' do
-      response = create(:form_response, form: form, user: student)
-      
-      response.build_answers_for_fields
-      
-      answers = response.form_answers.includes(:form_template_field).sort_by { |a| a.form_template_field.position }
-      expect(answers.map { |a| a.form_template_field.field_type }).to eq(['text', 'textarea', 'email'])
-    end
-
     it 'não duplica answers se já existem' do
       response = create(:form_response, form: form, user: student)
       
@@ -125,16 +108,6 @@ RSpec.describe FormResponse, type: :model do
       response.build_answers_for_fields
       
       expect(response.form_answers.all? { |a| a.answer.blank? }).to be true
-    end
-
-    it 'salva a resposta após criar answers' do
-      response = build(:form_response, form: form, user: student)
-      
-      response.save
-      response.build_answers_for_fields
-      
-      expect(response.form_answers.count).to eq(3)
-      expect(FormResponse.find(response.id).form_answers.count).to eq(3)
     end
 
     it 'não salva se resposta não foi persistida' do

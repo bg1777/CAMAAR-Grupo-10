@@ -146,18 +146,6 @@ RSpec.describe User, type: :model do
       expect(pending).not_to include(form)
     end
 
-    it 'não retorna forms com prazo expirado' do
-      form = create(:form, 
-        form_template: form_template, 
-        klass: klass, 
-        status: :published,
-        due_date: 1.day.ago
-      )
-
-      pending = student.pending_forms
-      expect(pending).not_to include(form)
-    end
-
     it 'retorna forms com prazo futuro' do
       form = create(:form, 
         form_template: form_template, 

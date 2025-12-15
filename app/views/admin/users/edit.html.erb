@@ -1,0 +1,47 @@
+<!-- app/views/admin/users/edit.html.erb -->
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-8">
+      <h1>Editar Usuário</h1>
+
+      <% if @user.errors.any? %>
+        <div class="alert alert-danger">
+          <h4><%= pluralize(@user.errors.count, "erro") %> encontrado:</h4>
+          <ul>
+            <% @user.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <form method="post" action="<%= admin_user_path(@user) %>">
+        <input type="hidden" name="_method" value="patch">
+        <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+
+        <div class="mb-3">
+          <label for="user_name" class="form-label">Nome</label>
+          <input type="text" class="form-control" id="user_name" name="user[name]" value="<%= @user.name %>">
+        </div>
+
+        <div class="mb-3">
+          <label for="user_email" class="form-label">Email</label>
+          <input type="email" class="form-control" id="user_email" name="user[email]" value="<%= @user.email %>">
+        </div>
+
+        <div class="mb-3">
+          <label for="user_role" class="form-label">Role</label>
+          <select class="form-control" id="user_role" name="user[role]">
+            <option value="user" <%= 'selected' if @user.role == 'user' %>>User</option>
+            <option value="admin" <%= 'selected' if @user.role == 'admin' %>>Admin</option>
+          </select>
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+          <button type="submit" class="btn btn-primary">Salvar</button>
+          <a href="<%= admin_users_path %>" class="btn btn-secondary">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

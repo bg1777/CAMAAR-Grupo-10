@@ -20,25 +20,25 @@ module Admin
       if @user.update(user_params)
         redirect_to admin_users_path, notice: 'Usuário atualizado com sucesso'
       else
-        render :edit
+        render :edit, status: :unprocessable_entity
       end
     end
-    
+
     def destroy
       @user.destroy
       redirect_to admin_users_path, notice: 'Usuário deletado com sucesso'
     end
-    
+
     private
-    
+
     def set_user
       @user = User.find(params[:id])
     end
-    
+
     def user_params
       params.require(:user).permit(:name, :email, :role)
     end
-    
+
     def check_admin
       redirect_to root_path, alert: 'Acesso negado!' unless current_user.admin?
     end

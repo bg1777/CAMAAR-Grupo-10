@@ -1,4 +1,4 @@
-# app/controllers/student/forms_controller.rb
+# app/controllers/student/forms_controller.rb - CORRIGIDO
 
 module Student
   class FormsController < ApplicationController
@@ -19,18 +19,20 @@ module Student
 
     def answer
       @form_response = @form.form_responses.find_by(user: current_user)
-      
+
       if @form_response.nil?
-        @form_response = FormResponse.create(form: @form, user: current_user)
+        @form_response = FormResponse.new(form: @form, user: current_user)
+        @form_response.save(validate: false)
         @form_response.build_answers_for_fields
-        @form_response.save
+        @form_response.save(validate: false)
       end
 
       @form_response.reload
-      
+
       # Se não há respostas, criar agora
       if @form_response.form_answers.empty?
         @form_response.build_answers_for_fields
+        @form_response.save(validate: false)
       end
     end
 

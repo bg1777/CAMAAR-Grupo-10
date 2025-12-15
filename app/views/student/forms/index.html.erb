@@ -1,0 +1,133 @@
+<!-- FILE: app/views/student/forms/index.html.erb -->
+
+<div class="dashboard-wrapper" style="background: #f4f8fb; min-height: 100vh; padding: 40px 0;">
+
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="card shadow-sm border-0 mb-5" style="background: linear-gradient(135deg, #0A3D91, #0E519F); border-radius: 18px;">
+      <div class="card-body d-flex justify-content-between align-items-center p-4">
+        <div>
+          <h1 class="text-white fw-bold mb-1">Meus Formulários</h1>
+          <p class="text-light mb-0">Responda os formulários da sua turma</p>
+        </div>
+        <%= link_to 'Voltar ao Dashboard', root_path, class: 'btn btn-light px-4 py-2 fw-semibold', style: "border-radius: 12px;" %>
+      </div>
+    </div>
+
+    <!-- PENDING FORMS SECTION -->
+    <section class="mb-5">
+
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h2 class="fw-bold" style="color:#0A3D91;">📋 Formulários Pendentes</h2>
+      </div>
+
+      <% if @pending_forms.any? %>
+
+        <div class="row g-4">
+
+          <% @pending_forms.each do |form| %>
+            <div class="col-md-6 col-lg-4">
+              <div class="card h-100 border-0 shadow-sm" style="border-radius: 16px;">
+
+                <div class="card-body">
+
+                  <!-- Title -->
+                  <h5 class="fw-bold" style="color:#0A3D91;"><%= form.title %></h5>
+
+                  <!-- Class -->
+                  <p class="text-muted mb-2">
+                    <small><strong>Turma:</strong> <%= form.klass.name %></small>
+                  </p>
+
+                  <!-- Description -->
+                  <p class="text-muted" style="font-size: 0.9rem;">
+                    <%= truncate(form.description, length: 100) %>
+                  </p>
+
+                  <!-- Deadline -->
+                  <% if form.due_date.present? %>
+                    <p class="mb-2">
+                      <small>
+                        <strong>Prazo:</strong>
+                        <span class="badge" style="background:#e9b949; color:#000; border-radius:6px;">
+                          <%= l(form.due_date, format: :short) %>
+                        </span>
+                      </small>
+                    </p>
+                  <% end %>
+
+                  <div class="d-grid mt-3">
+                    <%= link_to 'Responder Formulário', answer_student_form_path(form), class: 'btn text-white fw-semibold', style: "background:#0A3D91; border-radius: 10px;" %>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          <% end %>
+
+        </div>
+
+      <% else %>
+
+        <div class="alert d-flex align-items-center" style="background:#e8f6ef; border-left: 5px solid #5fcf7f; color:#0A3D91;">
+          <strong class="me-2">✓ Parabéns!</strong>
+          Você respondeu todos os formulários pendentes.
+        </div>
+
+      <% end %>
+
+    </section>
+
+
+    <!-- COMPLETED FORMS SECTION -->
+    <section class="mb-5">
+
+      <h2 class="fw-bold mb-3" style="color:#0A3D91;">✓ Formulários Respondidos</h2>
+
+      <% if @completed_forms.any? %>
+
+        <div class="table-responsive shadow-sm" style="background:white; border-radius:16px; overflow:hidden;">
+          <table class="table table-hover mb-0">
+
+            <thead style="background:#0A3D91; color:white;">
+              <tr>
+                <th>Título</th>
+                <th>Turma</th>
+                <th>Respondido em</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <% @completed_forms.each do |form| %>
+                <tr>
+                  <td class="fw-semibold"><%= form.title %></td>
+                  <td><%= form.klass.name %></td>
+                  <td>
+                    <% response = form.form_responses.find_by(user: current_user) %>
+                    <%= l(response.submitted_at, format: :short) if response&.submitted_at %>
+                  </td>
+                  <td>
+                    <%= link_to 'Ver', student_form_path(form), class: 'btn btn-sm text-white', style: "background:#5fcf7f; border-radius:8px;" %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+
+          </table>
+        </div>
+
+      <% else %>
+
+        <div class="alert" style="background:#f0f4f9; border-left: 5px solid #0A3D91; color:#0A3D91;">
+          Nenhum formulário respondido ainda.
+        </div>
+
+      <% end %>
+
+    </section>
+
+  </div>
+
+</div>

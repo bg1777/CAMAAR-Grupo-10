@@ -1,4 +1,4 @@
-# app/models/form_response.rb
+# app/models/form_response.rb - CORRIGIDO
 
 class FormResponse < ApplicationRecord
   belongs_to :form
@@ -19,15 +19,13 @@ class FormResponse < ApplicationRecord
     !completed?
   end
 
-  # Inicializar answers para todos os fields (sem validação)
+  # Criar form_answers para todos os campos do template
   def build_answers_for_fields
     form.form_template.form_template_fields.order(:position).each do |field|
-      # Só adicionar se ainda não existe
       unless form_answers.exists?(form_template_field_id: field.id)
         form_answers.build(form_template_field: field, answer: '')
       end
     end
-    save(validate: false) if persisted?
   end
 
   # Marcar como submetido
