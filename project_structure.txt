@@ -26,8 +26,7 @@
 │   │   ├── concerns
 │   │   ├── home_controller.rb
 │   │   └── student
-│   │       ├── forms_controller.rb
-│   │       └── student_controller.rb
+│   │       └── forms_controller.rb
 │   ├── helpers
 │   │   ├── admin
 │   │   │   ├── dashboard_helper.rb
@@ -155,23 +154,36 @@
 ├── features
 │   ├── atualizar_dados_sigaa.feature
 │   ├── cadastrar_usuario_do_sistema.feature
+│   ├── cadastrarusuariodosistema_sad_path.feature
 │   ├── criar_formulario.feature
 │   ├── criar_template_formulario.feature
+│   ├── criarformulario_sad_path.feature
+│   ├── criartemplateformulario_sad_path.feature
 │   ├── definir_senha_cadastro.feature
 │   ├── edicao_e_delecao_templates.feature
+│   ├── edicaoedelecaotemplates_sad_path.feature
 │   ├── exportar_relatorios_csv.feature
 │   ├── formularios_discentes_docentes.feature
+│   ├── formulariosdiscentesdocentes_sad_path.feature
 │   ├── gerenciar_turmas_departamento.feature
+│   ├── gerenciarturmas_sad_path.feature
 │   ├── importar_dados_sigaa.feature
+│   ├── importardadossigaa_sad_path.feature
 │   ├── redefinir_senha.feature
 │   ├── responder_formulario.feature
+│   ├── responderformulario_sad_path.feature
 │   ├── sistema_login.feature
+│   ├── sistemalogin_sad_path.feature
 │   ├── step_definitions
+│   │   └── sad_path_steps.rb
 │   ├── support
-│   │   └── env.rb
+│   │   ├── env.rb
+│   │   └── factory_bot.rb
 │   ├── visualizacao_templates_criados.feature
 │   ├── visualizar_formularios_criados.feature
-│   └── visualizar_formularios_nao_respondidos.feature
+│   ├── visualizar_formularios_nao_respondidos.feature
+│   ├── visualizarformularioscriados_sad_path.feature
+│   └── visualizarformulariosnaorespondidos_sad_path.feature
 ├── lib
 │   └── tasks
 │       ├── abc_analysis.rake
@@ -218,11 +230,14 @@
 │   ├── requests
 │   │   ├── admin
 │   │   │   ├── dashboard_spec.rb
+│   │   │   ├── form_templates_spec.rb
 │   │   │   ├── forms_spec.rb
+│   │   │   ├── imports_spec.rb
 │   │   │   └── users_spec.rb
 │   │   ├── home_spec.rb
 │   │   └── student
-│   │       └── forms_spec.rb
+│   │       ├── forms_spec.rb
+│   │       └── forms_spec_debug.rb
 │   ├── services
 │   │   └── import_service_spec.rb
 │   ├── spec_helper.rb
@@ -251,4 +266,4 @@
 └── vendor
     └── javascript
 
-81 directories, 171 files
+81 directories, 186 files

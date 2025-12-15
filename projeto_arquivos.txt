@@ -223,7 +223,7 @@ class FormAnswer < ApplicationRecord
   validates :answer, presence: true
 end
 --- app/models/form_response.rb ---
-# app/models/form_response.rb
+# app/models/form_response.rb - CORRIGIDO
 
 class FormResponse < ApplicationRecord
   belongs_to :form
@@ -244,15 +244,13 @@ class FormResponse < ApplicationRecord
     !completed?
   end
 
-  # Inicializar answers para todos os fields (sem validação)
+  # Criar form_answers para todos os campos do template
   def build_answers_for_fields
     form.form_template.form_template_fields.order(:position).each do |field|
-      # Só adicionar se ainda não existe
       unless form_answers.exists?(form_template_field_id: field.id)
         form_answers.build(form_template_field: field, answer: '')
       end
     end
-    save(validate: false) if persisted?
   end
 
   # Marcar como submetido
@@ -260,7 +258,6 @@ class FormResponse < ApplicationRecord
     update(submitted_at: Time.current)
   end
 end
-
 --- app/models/form_template.rb ---
 # app/models/form_template.rb
 
@@ -354,17 +351,13 @@ class User < ApplicationRecord
     role == 'user'
   end
 
-  # Formulários pendentes (não respondidos e no prazo)
+  # Formulários pendentes (não respondidos)
   def pending_forms
-    # Pega todos os forms publicados das turmas do usuário
-    all_forms = Form
+    Form
       .where(klass_id: klasses.pluck(:id), status: :published)
-      .where('due_date > ? OR due_date IS NULL', Time.current)
-    
-    # Remove apenas os que foram RESPONDIDOS (submitted_at NOT NULL)
-    all_forms.where.not(
-      id: form_responses.where.not(submitted_at: nil).pluck(:form_id)
-    )
+      .where.not(
+        id: form_responses.where.not(submitted_at: nil).pluck(:form_id)
+      )
   end
 
   # Formulários já respondidos
@@ -373,7 +366,6 @@ class User < ApplicationRecord
       .where(id: form_responses.where.not(submitted_at: nil).pluck(:form_id))
   end
 end
-
 
 === CONTROLLERS - ADMIN ===
 
@@ -679,7 +671,7 @@ end
 === CONTROLLERS - STUDENT ===
 
 --- app/controllers/student/forms_controller.rb ---
-# app/controllers/student/forms_controller.rb
+# app/controllers/student/forms_controller.rb - CORRIGIDO
 
 module Student
   class FormsController < ApplicationController
@@ -700,18 +692,20 @@ module Student
 
     def answer
       @form_response = @form.form_responses.find_by(user: current_user)
-      
+
       if @form_response.nil?
-        @form_response = FormResponse.create(form: @form, user: current_user)
+        @form_response = FormResponse.new(form: @form, user: current_user)
+        @form_response.save(validate: false)
         @form_response.build_answers_for_fields
-        @form_response.save
+        @form_response.save(validate: false)
       end
 
       @form_response.reload
-      
+
       # Se não há respostas, criar agora
       if @form_response.form_answers.empty?
         @form_response.build_answers_for_fields
+        @form_response.save(validate: false)
       end
     end
 
@@ -752,77 +746,6 @@ module Student
     end
   end
 end
-
---- app/controllers/student/student_controller.rb ---
-# app/controllers/student/forms_controller.rb
-
-module Student
-  class FormsController < ApplicationController
-    before_action :authenticate_user!
-    before_action :check_student
-    before_action :set_form, only: [:show, :answer, :submit_answer]
-    before_action :check_form_accessible, only: [:show, :answer, :submit_answer]
-
-    def index
-      @pending_forms = current_user.pending_forms.order(due_date: :asc)
-      @completed_forms = current_user.completed_forms.order(created_at: :desc)
-    end
-
-    def show
-      @form_response = @form.form_responses.find_by(user: current_user)
-      @form_response ||= FormResponse.new(form: @form, user: current_user)
-    end
-
-    def answer
-      @form_response = @form.form_responses.find_by(user: current_user)
-      
-      if @form_response.nil?
-        @form_response = FormResponse.create(form: @form, user: current_user)
-        @form_response.build_answers_for_fields
-        @form_response.save
-      end
-
-      @form_response.reload
-    end
-
-    def submit_answer
-      @form_response = @form.form_responses.find_by(user: current_user)
-
-      if @form_response.nil?
-        redirect_to student_form_path(@form), alert: 'Resposta não encontrada'
-        return
-      end
-
-      if update_answers && @form_response.submit!
-        redirect_to student_forms_path, notice: 'Formulário respondido com sucesso!'
-      else
-        redirect_to answer_student_form_path(@form), alert: 'Erro ao salvar respostas'
-      end
-    end
-
-    private
-
-    def set_form
-      @form = Form.find(params[:id])
-    end
-
-    def check_student
-      redirect_to admin_root_path if current_user.admin?
-    end
-
-    def check_form_accessible
-      unless current_user.klasses.include?(@form.klass) && @form.published?
-        redirect_to student_forms_path, alert: 'Acesso negado a este formulário'
-      end
-    end
-
-    def update_answers
-      form_answers_params = params.require(:form_response).permit(form_answers_attributes: [:id, :answer])
-      @form_response.update(form_answers_params)
-    end
-  end
-end
-
 
 === APPLICATION CONTROLLER ===
 class ApplicationController < ActionController::Base
