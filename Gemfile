@@ -59,3 +59,4 @@ group :test do
   gem "simplecov", "~> 0.22.0"
   gem "simplecov-console"
 end
+gem 'rdoc', require: false

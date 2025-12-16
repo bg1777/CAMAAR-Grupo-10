@@ -1,0 +1,19 @@
+Mon, 15 Dec 2025 23:35:00 -0300
+app/models/application_record.rb	Mon, 15 Dec 2025 11:14:59 -0300
+app/models/class_member.rb	Mon, 15 Dec 2025 23:25:20 -0300
+app/models/form.rb	Mon, 15 Dec 2025 23:26:18 -0300
+app/models/form_answer.rb	Mon, 15 Dec 2025 23:27:24 -0300
+app/models/form_response.rb	Mon, 15 Dec 2025 23:27:18 -0300
+app/models/form_template.rb	Mon, 15 Dec 2025 23:26:01 -0300
+app/models/form_template_field.rb	Mon, 15 Dec 2025 23:26:13 -0300
+app/models/klass.rb	Mon, 15 Dec 2025 23:24:06 -0300
+app/models/user.rb	Mon, 15 Dec 2025 23:23:59 -0300
+app/controllers/admin/dashboard_controller.rb	Mon, 15 Dec 2025 23:29:29 -0300
+app/controllers/admin/form_templates_controller.rb	Mon, 15 Dec 2025 23:31:16 -0300
+app/controllers/admin/forms_controller.rb	Mon, 15 Dec 2025 23:34:03 -0300
+app/controllers/admin/imports_controller.rb	Mon, 15 Dec 2025 23:30:52 -0300
+app/controllers/admin/users_controller.rb	Mon, 15 Dec 2025 23:29:42 -0300
+app/controllers/application_controller.rb	Mon, 15 Dec 2025 23:33:25 -0300
+app/controllers/home_controller.rb	Mon, 15 Dec 2025 23:29:21 -0300
+app/controllers/student/forms_controller.rb	Mon, 15 Dec 2025 23:34:24 -0300
+app/services/import_service.rb	Mon, 15 Dec 2025 23:28:31 -0300
