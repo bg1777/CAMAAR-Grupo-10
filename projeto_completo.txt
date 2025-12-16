@@ -32,6 +32,10 @@ group :development, :test do
   gem "brakeman", require: false
   gem "rubocop-rails-omakase", require: false
 
+  gem 'rubycritic'
+  gem 'flog', '~> 4.8.0'
+  gem 'flay', '~> 2.13.0'
+
   # ============================================
   # RSpec - Test-Driven Development (TDD)
   # ============================================
@@ -504,43 +508,29 @@ module Admin
 
     def new
       @form = Form.new
-      @form_templates = FormTemplate.all
-      @klasses = Klass.all
+      load_form_dependencies
     end
 
     def create
-      template = FormTemplate.find(form_params[:form_template_id])
-      klass = Klass.find(form_params[:klass_id])
-      
-      @form = Form.new(
-        form_template: template,
-        klass: klass,
-        title: form_params[:title],
-        description: form_params[:description],
-        due_date: form_params[:due_date],
-        status: :draft
-      )
+      @form = build_form_from_params
 
       if @form.save
         redirect_to admin_form_path(@form), notice: 'Formulário criado com sucesso!'
       else
-        @form_templates = FormTemplate.all
-        @klasses = Klass.all
+        load_form_dependencies
         render :new, status: :unprocessable_entity
       end
     end
 
     def edit
-      @form_templates = FormTemplate.all
-      @klasses = Klass.all
+      load_form_dependencies
     end
 
     def update
       if @form.update(form_params)
         redirect_to admin_form_path(@form), notice: 'Formulário atualizado com sucesso!'
       else
-        @form_templates = FormTemplate.all
-        @klasses = Klass.all
+        load_form_dependencies
         render :edit, status: :unprocessable_entity
       end
     end
@@ -571,6 +561,22 @@ module Admin
     end
 
     private
+
+    def build_form_from_params
+      Form.new(
+        form_template: FormTemplate.find(form_params[:form_template_id]),
+        klass: Klass.find(form_params[:klass_id]),
+        title: form_params[:title],
+        description: form_params[:description],
+        due_date: form_params[:due_date],
+        status: :draft
+      )
+    end
+
+    def load_form_dependencies
+      @form_templates = FormTemplate.all
+      @klasses = Klass.all
+    end
 
     def set_form
       @form = Form.find(params[:id])
@@ -617,9 +623,6 @@ module Admin
       if @form_template.save
         redirect_to admin_form_template_path(@form_template), notice: 'Template criado com sucesso!'
       else
-        # Debug: mostra os erros
-        puts "❌ Erros ao salvar template:"
-        puts @form_template.errors.full_messages
         render :new, status: :unprocessable_entity
       end
     end
@@ -696,45 +699,54 @@ module Admin
     end
 
     def import_klasses
-      if params[:file].blank?
-        redirect_to admin_imports_path, alert: 'Por favor, selecione um arquivo'
-        return
-      end
+      return redirect_with_error('Por favor, selecione um arquivo') if params[:file].blank?
+      return redirect_with_error('Por favor, envie um arquivo JSON válido') unless valid_json_file?
 
-      file = params[:file]
-      
-      # Validar tipo de arquivo
-      unless file.content_type == 'application/json' || file.original_filename.end_with?('.json')
-        redirect_to admin_imports_path, alert: 'Por favor, envie um arquivo JSON válido'
-        return
-      end
-
-      # Executar importação
-      service = ImportService.new(file.path)
-      result = service.import_klasses
-
-      if result[:success]
-        message = "✅ #{result[:imported]} turma(s) importada(s) com sucesso!"
-        
-        if result[:errors].present?
-          message += "\n\n⚠️ Aviso: #{result[:errors].count} erro(s) durante importação:"
-          result[:errors].each { |error| message += "\n• #{error}" }
-          redirect_to admin_imports_path, alert: message
-        else
-          redirect_to admin_imports_path, notice: message
-        end
-      else
-        redirect_to admin_imports_path, alert: "❌ Erro na importação: #{result[:error]}"
-      end
+      result = ImportService.new(params[:file].path).import_klasses
+      handle_import_result(result)
     end
 
     private
+
+    def valid_json_file?
+      file = params[:file]
+      file.content_type == 'application/json' || file.original_filename.end_with?('.json')
+    end
+
+    def redirect_with_error(message)
+      redirect_to admin_imports_path, alert: message
+    end
+
+    def handle_import_result(result)
+      if result[:success]
+        handle_success(result)
+      else
+        redirect_with_error("❌ Erro na importação: #{result[:error]}")
+      end
+    end
+
+    def handle_success(result)
+      message = "✅ #{result[:imported]} turma(s) importada(s) com sucesso!"
+      
+      if result[:errors].present?
+        redirect_to admin_imports_path, alert: build_error_message(message, result[:errors])
+      else
+        redirect_to admin_imports_path, notice: message
+      end
+    end
+
+    def build_error_message(base_message, errors)
+      message = "#{base_message}\n\n⚠️ Aviso: #{errors.count} erro(s) durante importação:"
+      errors.each { |error| message += "\n• #{error}" }
+      message
+    end
 
     def check_admin
       redirect_to root_path, alert: 'Acesso negado!' unless current_user.admin?
     end
   end
 end
+
 --- app/controllers/home_controller.rb ---
 # app/controllers/home_controller.rb
 
@@ -895,7 +907,6 @@ end
 │   ├── setup
 │   └── thrust
 ├── check_coverage.sh
-├── class_members.json
 ├── class_members2.json
 ├── class_members3.json
 ├── class_members4.json
@@ -959,8 +970,18 @@ end
 │   ├── login_sistema.feature
 │   ├── responder_formularios_aluno.feature
 │   ├── step_definitions
+│   │   ├── admin_response_steps.rb
+│   │   ├── authentication_steps.rb
+│   │   ├── form_field_steps.rb
+│   │   ├── form_steps.rb
+│   │   ├── import_steps.rb
+│   │   ├── navigation_steps.rb
+│   │   ├── student_form_steps.rb
+│   │   ├── template_steps.rb
+│   │   └── user_steps.rb
 │   ├── support
-│   │   └── env.rb
+│   │   ├── env.rb
+│   │   └── factory_bot.rb
 │   └── visualizar_respostas_admin.feature
 ├── lib
 │   └── tasks
@@ -1033,4 +1054,4 @@ end
 └── vendor
     └── javascript
 
-69 directories, 134 files
+69 directories, 143 files

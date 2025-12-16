@@ -98,7 +98,6 @@
 │   ├── setup
 │   └── thrust
 ├── check_coverage.sh
-├── class_members.json
 ├── class_members2.json
 ├── class_members3.json
 ├── class_members4.json
@@ -178,7 +177,6 @@
 │       └── saikuro_analysis.rake
 ├── mise.toml
 ├── project_structure.txt
-├── projeto_completo.txt
 ├── public
 │   ├── 400.html
 │   ├── 404.html
@@ -254,4 +252,4 @@
 └── vendor
     └── javascript
 
-81 directories, 174 files
+81 directories, 172 files
