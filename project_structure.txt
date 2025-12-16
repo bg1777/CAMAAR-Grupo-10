@@ -2,6 +2,7 @@
 ├── Dockerfile
 ├── Gemfile
 ├── Gemfile.lock
+├── Grupo 10 - Sprint 3 ESW.md
 ├── Procfile.dev
 ├── README.md
 ├── Rakefile
@@ -149,6 +150,77 @@
 │   ├── queue_schema.rb
 │   ├── schema.rb
 │   └── seeds.rb
+├── doc
+│   ├── Admin
+│   │   ├── DashboardController.html
+│   │   ├── FormTemplatesController.html
+│   │   ├── FormsController.html
+│   │   ├── ImportsController.html
+│   │   └── UsersController.html
+│   ├── Admin.html
+│   ├── ApplicationController.html
+│   ├── ApplicationRecord.html
+│   ├── ClassMember.html
+│   ├── Form.html
+│   ├── FormAnswer.html
+│   ├── FormResponse.html
+│   ├── FormTemplate.html
+│   ├── FormTemplateField.html
+│   ├── HomeController.html
+│   ├── ImportService.html
+│   ├── Klass.html
+│   ├── Student
+│   │   └── FormsController.html
+│   ├── Student.html
+│   ├── User.html
+│   ├── created.rid
+│   ├── css
+│   │   ├── fonts.css
+│   │   └── rdoc.css
+│   ├── fonts
+│   │   ├── Lato-Light.ttf
+│   │   ├── Lato-LightItalic.ttf
+│   │   ├── Lato-Regular.ttf
+│   │   ├── Lato-RegularItalic.ttf
+│   │   ├── SourceCodePro-Bold.ttf
+│   │   └── SourceCodePro-Regular.ttf
+│   ├── images
+│   │   ├── add.png
+│   │   ├── arrow_up.png
+│   │   ├── brick.png
+│   │   ├── brick_link.png
+│   │   ├── bug.png
+│   │   ├── bullet_black.png
+│   │   ├── bullet_toggle_minus.png
+│   │   ├── bullet_toggle_plus.png
+│   │   ├── date.png
+│   │   ├── delete.png
+│   │   ├── find.png
+│   │   ├── loadingAnimation.gif
+│   │   ├── macFFBgHack.png
+│   │   ├── package.png
+│   │   ├── page_green.png
+│   │   ├── page_white_text.png
+│   │   ├── page_white_width.png
+│   │   ├── plugin.png
+│   │   ├── ruby.png
+│   │   ├── tag_blue.png
+│   │   ├── tag_green.png
+│   │   ├── transparent.png
+│   │   ├── wrench.png
+│   │   ├── wrench_orange.png
+│   │   └── zoom.png
+│   ├── index.html
+│   ├── js
+│   │   ├── darkfish.js
+│   │   ├── navigation.js
+│   │   ├── navigation.js.gz
+│   │   ├── search.js
+│   │   ├── search_index.js
+│   │   ├── search_index.js.gz
+│   │   ├── searcher.js
+│   │   └── searcher.js.gz
+│   └── table_of_contents.html
 ├── er.pending_forms.count
 ├── features
 │   ├── criar_gerenciar_templates.feature
@@ -170,6 +242,23 @@
 │   │   ├── env.rb
 │   │   └── factory_bot.rb
 │   └── visualizar_respostas_admin.feature
+├── features-sprint-1
+│   ├── atualizar_dados_sigaa.feature
+│   ├── cadastrar_usuario_do_sistema.feature
+│   ├── criar_formulario.feature
+│   ├── criar_template_formulario.feature
+│   ├── definir_senha_cadastro.feature
+│   ├── edicao_e_delecao_templates.feature
+│   ├── exportar_relatorios_csv.feature
+│   ├── formularios_discentes_docentes.feature
+│   ├── gerenciar_turmas_departamento.feature
+│   ├── importar_dados_sigaa.feature
+│   ├── redefinir_senha.feature
+│   ├── responder_formulario.feature
+│   ├── sistema_login.feature
+│   ├── visualizacao_templates_criados.feature
+│   ├── visualizar_formularios_criados.feature
+│   └── visualizar_formularios_nao_respondidos.feature
 ├── lib
 │   └── tasks
 │       ├── abc_analysis.rake
@@ -252,4 +341,4 @@
 └── vendor
     └── javascript
 
-81 directories, 172 files
+89 directories, 253 files

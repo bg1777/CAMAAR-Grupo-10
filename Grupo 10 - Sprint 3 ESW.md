@@ -10,6 +10,8 @@ Filipe Abadia Marcelino - 190087161
 
 Maria Carolina Burgum Abreu Jorge - 231013547
 
+Link de Visualização no Notion: https://www.notion.so/Grupo-10-Sprint-3-ESW-2cb7274feb388008842fc0bd122e5fd0?source=copy_link
+
 ---
 
 ## 1. Avaliando o ABC score com o rubycritic
