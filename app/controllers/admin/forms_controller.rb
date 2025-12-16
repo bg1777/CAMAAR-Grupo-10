@@ -18,43 +18,29 @@ module Admin
 
     def new
       @form = Form.new
-      @form_templates = FormTemplate.all
-      @klasses = Klass.all
+      load_form_dependencies
     end
 
     def create
-      template = FormTemplate.find(form_params[:form_template_id])
-      klass = Klass.find(form_params[:klass_id])
-      
-      @form = Form.new(
-        form_template: template,
-        klass: klass,
-        title: form_params[:title],
-        description: form_params[:description],
-        due_date: form_params[:due_date],
-        status: :draft
-      )
+      @form = build_form_from_params
 
       if @form.save
         redirect_to admin_form_path(@form), notice: 'Formulário criado com sucesso!'
       else
-        @form_templates = FormTemplate.all
-        @klasses = Klass.all
+        load_form_dependencies
         render :new, status: :unprocessable_entity
       end
     end
 
     def edit
-      @form_templates = FormTemplate.all
-      @klasses = Klass.all
+      load_form_dependencies
     end
 
     def update
       if @form.update(form_params)
         redirect_to admin_form_path(@form), notice: 'Formulário atualizado com sucesso!'
       else
-        @form_templates = FormTemplate.all
-        @klasses = Klass.all
+        load_form_dependencies
         render :edit, status: :unprocessable_entity
       end
     end
@@ -85,6 +71,22 @@ module Admin
     end
 
     private
+
+    def build_form_from_params
+      Form.new(
+        form_template: FormTemplate.find(form_params[:form_template_id]),
+        klass: Klass.find(form_params[:klass_id]),
+        title: form_params[:title],
+        description: form_params[:description],
+        due_date: form_params[:due_date],
+        status: :draft
+      )
+    end
+
+    def load_form_dependencies
+      @form_templates = FormTemplate.all
+      @klasses = Klass.all
+    end
 
     def set_form
       @form = Form.find(params[:id])

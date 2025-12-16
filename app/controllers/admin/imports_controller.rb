@@ -11,39 +11,47 @@ module Admin
     end
 
     def import_klasses
-      if params[:file].blank?
-        redirect_to admin_imports_path, alert: 'Por favor, selecione um arquivo'
-        return
-      end
+      return redirect_with_error('Por favor, selecione um arquivo') if params[:file].blank?
+      return redirect_with_error('Por favor, envie um arquivo JSON válido') unless valid_json_file?
 
-      file = params[:file]
-      
-      # Validar tipo de arquivo
-      unless file.content_type == 'application/json' || file.original_filename.end_with?('.json')
-        redirect_to admin_imports_path, alert: 'Por favor, envie um arquivo JSON válido'
-        return
-      end
-
-      # Executar importação
-      service = ImportService.new(file.path)
-      result = service.import_klasses
-
-      if result[:success]
-        message = "✅ #{result[:imported]} turma(s) importada(s) com sucesso!"
-        
-        if result[:errors].present?
-          message += "\n\n⚠️ Aviso: #{result[:errors].count} erro(s) durante importação:"
-          result[:errors].each { |error| message += "\n• #{error}" }
-          redirect_to admin_imports_path, alert: message
-        else
-          redirect_to admin_imports_path, notice: message
-        end
-      else
-        redirect_to admin_imports_path, alert: "❌ Erro na importação: #{result[:error]}"
-      end
+      result = ImportService.new(params[:file].path).import_klasses
+      handle_import_result(result)
     end
 
     private
+
+    def valid_json_file?
+      file = params[:file]
+      file.content_type == 'application/json' || file.original_filename.end_with?('.json')
+    end
+
+    def redirect_with_error(message)
+      redirect_to admin_imports_path, alert: message
+    end
+
+    def handle_import_result(result)
+      if result[:success]
+        handle_success(result)
+      else
+        redirect_with_error("❌ Erro na importação: #{result[:error]}")
+      end
+    end
+
+    def handle_success(result)
+      message = "✅ #{result[:imported]} turma(s) importada(s) com sucesso!"
+      
+      if result[:errors].present?
+        redirect_to admin_imports_path, alert: build_error_message(message, result[:errors])
+      else
+        redirect_to admin_imports_path, notice: message
+      end
+    end
+
+    def build_error_message(base_message, errors)
+      message = "#{base_message}\n\n⚠️ Aviso: #{errors.count} erro(s) durante importação:"
+      errors.each { |error| message += "\n• #{error}" }
+      message
+    end
 
     def check_admin
       redirect_to root_path, alert: 'Acesso negado!' unless current_user.admin?

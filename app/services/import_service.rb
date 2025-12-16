@@ -9,7 +9,6 @@ class ImportService
     @errors = []
   end
 
-  # Importa turmas com seus estudantes
   def import_klasses
     data = parse_json_file
 
@@ -34,10 +33,7 @@ class ImportService
 
   def import_single_klass(klass_data)
     klass = find_or_create_klass(klass_data)
-    
-    # Importar estudantes
     import_students(klass, klass_data['dicente'])
-    
     @imported_count += 1
   rescue StandardError => e
     @errors << "Erro ao importar turma #{klass_data['code']}: #{e.message}"
@@ -45,7 +41,7 @@ class ImportService
 
   def find_or_create_klass(klass_data)
     klass_info = klass_data['class']
-    
+
     Klass.find_or_create_by(code: klass_data['code']) do |klass|
       klass.name = klass_data['name']
       klass.semester = klass_info['semester']
@@ -63,7 +59,7 @@ class ImportService
 
   def import_single_student(klass, student_data, role)
     user = find_or_create_user(student_data)
-    
+
     ClassMember.find_or_create_by(user: user, klass: klass) do |cm|
       cm.role = role
     end
@@ -72,16 +68,23 @@ class ImportService
   end
 
   def find_or_create_user(user_data)
-    user = User.find_by(email: user_data['email'])
+    User.find_by(email: user_data['email']) || create_new_user(user_data)
+  end
+
+  def create_new_user(user_data)
+    user = build_user(user_data)
     
-    if user.present?
-      return user
+    if user.save
+      user
+    else
+      raise "Erro ao salvar usuário #{user_data['email']}: #{user.errors.full_messages.join(', ')}"
     end
+  end
 
-    # Usa matrícula como senha (Opção A)
+  def build_user(user_data)
     password = user_data['matricula']
-
-    user = User.new(
+    
+    User.new(
       email: user_data['email'],
       name: user_data['nome'],
       matricula: user_data['matricula'],
@@ -92,11 +95,5 @@ class ImportService
       password_confirmation: password,
       role: :user
     )
-
-    if user.save
-      user
-    else
-      raise "Erro ao salvar usuário #{user_data['email']}: #{user.errors.full_messages.join(', ')}"
-    end
   end
 end

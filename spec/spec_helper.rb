@@ -21,6 +21,9 @@ SimpleCov.start 'rails' do
   add_filter '/app/jobs/'
   add_filter '/app/mailers/'
   add_filter '/config/'
+  
+  # Ignorar helper específico
+  add_filter 'app/helpers/admin/form_templates_helper.rb'
 
   # Grupos de cobertura
   add_group 'Controllers', '/app/controllers/'

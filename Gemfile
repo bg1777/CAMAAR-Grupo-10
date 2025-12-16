@@ -31,6 +31,10 @@ group :development, :test do
   gem "brakeman", require: false
   gem "rubocop-rails-omakase", require: false
 
+  gem 'rubycritic'
+  gem 'flog', '~> 4.8.0'
+  gem 'flay', '~> 2.13.0'
+
   # ============================================
   # RSpec - Test-Driven Development (TDD)
   # ============================================

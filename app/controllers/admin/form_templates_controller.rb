@@ -24,9 +24,6 @@ module Admin
       if @form_template.save
         redirect_to admin_form_template_path(@form_template), notice: 'Template criado com sucesso!'
       else
-        # Debug: mostra os erros
-        puts "❌ Erros ao salvar template:"
-        puts @form_template.errors.full_messages
         render :new, status: :unprocessable_entity
       end
     end
