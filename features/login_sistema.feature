@@ -7,12 +7,13 @@ Funcionalidade: Login no Sistema CAMAAR
   Contexto:
     Dado que o banco de dados está limpo
     E um usuário admin existe com:
-      | email              | senha123 |
-      | nome               | Admin    |
+      | email | admin@example.com |
+      | senha | senha123          |
+      | nome  | Admin             |
     E um usuário dicente existe com:
-      | email              | dicente@example.com |
-      | nome               | João Silva          |
-      | matricula          | 202201234           |
+      | email     | dicente@example.com |
+      | nome      | João Silva          |
+      | matricula | 202201234           |
 
   # HAPPY PATH
   Cenário: Admin faz login com sucesso

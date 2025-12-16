@@ -1,0 +1,1036 @@
+=== GEMFILE ===
+source "https://rubygems.org"
+
+gem "rails", "~> 8.0.4"
+gem "propshaft"
+gem "sqlite3", ">= 2.1"
+gem "puma", ">= 5.0"
+gem "importmap-rails"
+gem "turbo-rails"
+gem "stimulus-rails"
+gem "jbuilder"
+
+# ============================================
+# Authentication
+# ============================================
+gem "devise", "~> 4.9"
+
+gem "bcrypt", "~> 3.1.7"
+
+gem "tzinfo-data", platforms: %i[ windows jruby ]
+
+gem "solid_cache"
+gem "solid_queue"
+gem "solid_cable"
+
+gem "bootsnap", require: false
+gem "kamal", require: false
+gem "thruster", require: false
+
+group :development, :test do
+  gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
+  gem "brakeman", require: false
+  gem "rubocop-rails-omakase", require: false
+
+  # ============================================
+  # RSpec - Test-Driven Development (TDD)
+  # ============================================
+  gem "rspec-rails", "~> 6.0.0"
+  gem "factory_bot_rails", "~> 6.2"
+  gem "faker", "~> 3.2"
+  gem "shoulda-matchers", "~> 5.1"
+  gem "csv"
+end
+
+group :development do
+  gem "web-console"
+end
+
+group :test do
+  gem "capybara"
+  gem "selenium-webdriver"
+  
+  gem 'cucumber-rails', require: false
+  gem 'database_cleaner'
+  
+  gem "simplecov", "~> 0.22.0"
+  gem "simplecov-console"
+end
+
+=== DATABASE SCHEMA ===
+# This file is auto-generated from the current state of the database. Instead
+# of editing this file, please use the migrations feature of Active Record to
+# incrementally modify your database, and then regenerate this schema definition.
+#
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
+#
+# It's strongly recommended that you check this file into your version control system.
+
+ActiveRecord::Schema[8.0].define(version: 2025_12_08_031925) do
+  create_table "class_members", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "klass_id", null: false
+    t.string "role"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["klass_id"], name: "index_class_members_on_klass_id"
+    t.index ["user_id"], name: "index_class_members_on_user_id"
+  end
+
+  create_table "form_answers", force: :cascade do |t|
+    t.integer "form_response_id", null: false
+    t.integer "form_template_field_id", null: false
+    t.text "answer"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["form_response_id"], name: "index_form_answers_on_form_response_id"
+    t.index ["form_template_field_id"], name: "index_form_answers_on_form_template_field_id"
+  end
+
+  create_table "form_responses", force: :cascade do |t|
+    t.integer "form_id", null: false
+    t.integer "user_id", null: false
+    t.datetime "submitted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["form_id"], name: "index_form_responses_on_form_id"
+    t.index ["user_id"], name: "index_form_responses_on_user_id"
+  end
+
+  create_table "form_template_fields", force: :cascade do |t|
+    t.integer "form_template_id", null: false
+    t.string "field_type"
+    t.string "label"
+    t.boolean "required"
+    t.json "options"
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["form_template_id"], name: "index_form_template_fields_on_form_template_id"
+  end
+
+  create_table "form_templates", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_form_templates_on_user_id"
+  end
+
+  create_table "forms", force: :cascade do |t|
+    t.integer "form_template_id", null: false
+    t.integer "klass_id", null: false
+    t.string "title"
+    t.text "description"
+    t.datetime "due_date"
+    t.integer "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["form_template_id"], name: "index_forms_on_form_template_id"
+    t.index ["klass_id"], name: "index_forms_on_klass_id"
+  end
+
+  create_table "klasses", force: :cascade do |t|
+    t.string "code"
+    t.string "name"
+    t.string "semester"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.string "name", null: false
+    t.integer "role", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "matricula"
+    t.string "curso"
+    t.string "formacao"
+    t.string "ocupacao"
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  end
+
+  add_foreign_key "class_members", "klasses"
+  add_foreign_key "class_members", "users"
+  add_foreign_key "form_answers", "form_responses"
+  add_foreign_key "form_answers", "form_template_fields"
+  add_foreign_key "form_responses", "forms"
+  add_foreign_key "form_responses", "users"
+  add_foreign_key "form_template_fields", "form_templates"
+  add_foreign_key "form_templates", "users"
+  add_foreign_key "forms", "form_templates"
+  add_foreign_key "forms", "klasses"
+end
+
+=== ROUTES ===
+# config/routes.rb
+
+Rails.application.routes.draw do
+  devise_for :users, skip: [:registrations]
+  
+  root "home#index"
+  
+  namespace :admin do
+    root "dashboard#index"
+    resources :users
+    resources :imports, only: [:index] do
+      collection do
+        post :import_klasses
+      end
+    end
+    
+    # Form Templates
+    resources :form_templates do
+      resources :form_template_fields, only: [:create, :update, :destroy]
+    end
+    
+    # Forms
+    resources :forms do
+      member do
+        patch :publish
+        patch :close
+        get :view_response
+      end
+    end
+  end
+
+  # Student namespace
+  namespace :student do
+    root "dashboard#index"
+    resources :forms, only: [:index, :show] do
+      member do
+        get :answer
+        post :submit_answer
+      end
+    end
+  end
+  
+  get "home", to: "home#index"
+end
+
+=== MODELS ===
+--- app/models/form.rb ---
+# app/models/form.rb
+
+class Form < ApplicationRecord
+  belongs_to :form_template
+  belongs_to :klass
+  has_many :form_responses, dependent: :destroy
+
+  validates :form_template_id, presence: true
+  validates :klass_id, presence: true
+  validates :title, presence: true
+
+  enum :status, { draft: 0, published: 1, closed: 2 }
+  
+  # Definir status padrão
+  before_create :set_default_status
+
+  # Retorna todos os alunos da turma que ainda não responderam o formulário
+  def pending_responses
+    klass.students - form_responses.map(&:user)
+  end
+
+  # Retorna alunos que já responderam
+  def completed_responses
+    form_responses.map(&:user)
+  end
+
+  private
+
+  def set_default_status
+    self.status ||= :draft
+  end
+end
+
+--- app/models/form_template_field.rb ---
+# app/models/form_template_field.rb
+
+class FormTemplateField < ApplicationRecord
+  belongs_to :form_template
+  has_many :form_answers, dependent: :destroy
+  
+  # Valores válidos para field_type
+  VALID_FIELD_TYPES = %w(text textarea email number date select radio checkbox).freeze
+  
+  validates :label, presence: true
+  validates :field_type, presence: true, inclusion: { in: VALID_FIELD_TYPES }
+  validates :position, presence: true, numericality: { only_integer: true, greater_than: 0 }
+  
+  # Validar options apenas para tipos que precisam
+  validates :options, presence: true, if: :requires_options?
+  
+  # Callback para garantir que position seja integer
+  before_validation :ensure_position_is_integer
+  
+  private
+  
+  def requires_options?
+    ['select', 'radio', 'checkbox'].include?(field_type)
+  end
+  
+  def ensure_position_is_integer
+    self.position = position.to_i if position.present? && position.is_a?(String)
+  end
+end
+
+--- app/models/user.rb ---
+# app/models/user.rb
+
+class User < ApplicationRecord
+  devise :database_authenticatable,
+         :recoverable, :validatable
+
+  enum :role, { user: 0, admin: 1 }
+
+  # Associações
+  has_many :class_members, dependent: :destroy
+  has_many :klasses, through: :class_members
+  has_many :form_templates, dependent: :destroy
+  has_many :form_responses, dependent: :destroy
+
+  # Validações
+  validates :name, presence: true
+  validates :email, presence: true, uniqueness: true
+
+  # Métodos auxiliares
+  def admin?
+    role == 'admin'
+  end
+
+  def user?
+    role == 'user'
+  end
+
+  # Formulários pendentes (não respondidos)
+  def pending_forms
+    Form
+      .where(klass_id: klasses.pluck(:id), status: :published)
+      .where.not(
+        id: form_responses.where.not(submitted_at: nil).pluck(:form_id)
+      )
+  end
+
+  # Formulários já respondidos
+  def completed_forms
+    Form
+      .where(id: form_responses.where.not(submitted_at: nil).pluck(:form_id))
+  end
+end
+--- app/models/klass.rb ---
+# app/models/klass.rb
+
+class Klass < ApplicationRecord
+  # Associações
+  has_many :class_members, dependent: :destroy
+  has_many :users, through: :class_members
+  has_many :forms, dependent: :destroy
+
+  # Validações
+  validates :code, presence: true, uniqueness: true
+  validates :name, presence: true
+  validates :semester, presence: true
+
+  # Scopes
+  scope :active, -> { order(semester: :desc) }
+
+  # Métodos úteis
+  def students
+    class_members.where(role: 'dicente').map(&:user)
+  end
+
+  def teachers
+    class_members.where(role: 'docente').map(&:user)
+  end
+end
+--- app/models/form_template.rb ---
+# app/models/form_template.rb
+
+class FormTemplate < ApplicationRecord
+  belongs_to :user
+  has_many :form_template_fields, dependent: :destroy
+  has_many :forms, dependent: :destroy
+
+  validates :name, presence: true
+  validates :description, presence: true
+  validates :user_id, presence: true
+
+  accepts_nested_attributes_for :form_template_fields, allow_destroy: true
+end
+--- app/models/application_record.rb ---
+class ApplicationRecord < ActiveRecord::Base
+  primary_abstract_class
+end
+
+--- app/models/class_member.rb ---
+# app/models/class_member.rb
+
+class ClassMember < ApplicationRecord
+  # Associações
+  belongs_to :user
+  belongs_to :klass
+
+  # Validações
+  validates :user_id, uniqueness: { scope: :klass_id, message: 'já está inscrito nesta turma' }
+  validates :role, presence: true, inclusion: { in: %w(dicente docente), message: 'deve ser dicente ou docente' }
+end
+--- app/models/form_answer.rb ---
+# app/models/form_answer.rb
+
+class FormAnswer < ApplicationRecord
+  belongs_to :form_response
+  belongs_to :form_template_field
+
+  validates :form_response_id, presence: true
+  validates :form_template_field_id, presence: true
+  validates :answer, presence: true
+end
+--- app/models/form_response.rb ---
+# app/models/form_response.rb - CORRIGIDO
+
+class FormResponse < ApplicationRecord
+  belongs_to :form
+  belongs_to :user
+  has_many :form_answers, dependent: :destroy
+
+  validates :form_id, presence: true
+  validates :user_id, presence: true
+  validates :user_id, uniqueness: { scope: :form_id, message: 'já respondeu este formulário' }
+
+  accepts_nested_attributes_for :form_answers
+
+  def completed?
+    submitted_at.present?
+  end
+
+  def pending?
+    !completed?
+  end
+
+  # Criar form_answers para todos os campos do template
+  def build_answers_for_fields
+    form.form_template.form_template_fields.order(:position).each do |field|
+      unless form_answers.exists?(form_template_field_id: field.id)
+        form_answers.build(form_template_field: field, answer: '')
+      end
+    end
+  end
+
+  # Marcar como submetido
+  def submit!
+    update(submitted_at: Time.current)
+  end
+end
+
+=== CONTROLLERS ===
+--- app/controllers/admin/users_controller.rb ---
+# app/controllers/admin/users_controller.rb
+
+module Admin
+  class UsersController < ApplicationController
+    before_action :authenticate_user!
+    before_action :check_admin
+    before_action :set_user, only: [:show, :edit, :update, :destroy]
+    
+    def index
+      @users = User.all
+    end
+    
+    def show
+    end
+    
+    def edit
+    end
+    
+    def update
+      if @user.update(user_params)
+        redirect_to admin_users_path, notice: 'Usuário atualizado com sucesso'
+      else
+        render :edit, status: :unprocessable_entity
+      end
+    end
+
+    def destroy
+      @user.destroy
+      redirect_to admin_users_path, notice: 'Usuário deletado com sucesso'
+    end
+
+    private
+
+    def set_user
+      @user = User.find(params[:id])
+    end
+
+    def user_params
+      params.require(:user).permit(:name, :email, :role)
+    end
+
+    def check_admin
+      redirect_to root_path, alert: 'Acesso negado!' unless current_user.admin?
+    end
+  end
+end
+
+--- app/controllers/admin/forms_controller.rb ---
+# app/controllers/admin/forms_controller.rb
+
+module Admin
+  class FormsController < ApplicationController
+    before_action :authenticate_user!
+    before_action :check_admin
+    before_action :set_form, only: [:show, :edit, :update, :destroy, :publish, :close, :view_response]
+    before_action :set_form_response, only: [:view_response]
+
+    def index
+      @forms = Form.all.order(created_at: :desc)
+    end
+
+    def show
+      @pending_count = @form.pending_responses.count
+      @completed_count = @form.completed_responses.count
+    end
+
+    def new
+      @form = Form.new
+      @form_templates = FormTemplate.all
+      @klasses = Klass.all
+    end
+
+    def create
+      template = FormTemplate.find(form_params[:form_template_id])
+      klass = Klass.find(form_params[:klass_id])
+      
+      @form = Form.new(
+        form_template: template,
+        klass: klass,
+        title: form_params[:title],
+        description: form_params[:description],
+        due_date: form_params[:due_date],
+        status: :draft
+      )
+
+      if @form.save
+        redirect_to admin_form_path(@form), notice: 'Formulário criado com sucesso!'
+      else
+        @form_templates = FormTemplate.all
+        @klasses = Klass.all
+        render :new, status: :unprocessable_entity
+      end
+    end
+
+    def edit
+      @form_templates = FormTemplate.all
+      @klasses = Klass.all
+    end
+
+    def update
+      if @form.update(form_params)
+        redirect_to admin_form_path(@form), notice: 'Formulário atualizado com sucesso!'
+      else
+        @form_templates = FormTemplate.all
+        @klasses = Klass.all
+        render :edit, status: :unprocessable_entity
+      end
+    end
+
+    def destroy
+      @form.destroy
+      redirect_to admin_forms_url, notice: 'Formulário deletado com sucesso!'
+    end
+
+    def publish
+      if @form.update(status: :published)
+        redirect_to admin_form_path(@form), notice: 'Formulário publicado com sucesso!'
+      else
+        redirect_to admin_form_path(@form), alert: 'Erro ao publicar formulário'
+      end
+    end
+
+    def close
+      if @form.update(status: :closed)
+        redirect_to admin_form_path(@form), notice: 'Formulário fechado com sucesso!'
+      else
+        redirect_to admin_form_path(@form), alert: 'Erro ao fechar formulário'
+      end
+    end
+
+    def view_response
+      # @form_response já é setado pelo before_action
+    end
+
+    private
+
+    def set_form
+      @form = Form.find(params[:id])
+    end
+
+    def set_form_response
+      @form_response = FormResponse.find(params[:response_id])
+    end
+
+    def form_params
+      params.require(:form).permit(:form_template_id, :klass_id, :title, :description, :due_date, :status)
+    end
+
+    def check_admin
+      redirect_to root_path, alert: 'Acesso negado!' unless current_user.admin?
+    end
+  end
+end
+
+--- app/controllers/admin/form_templates_controller.rb ---
+# app/controllers/admin/form_templates_controller.rb
+
+module Admin
+  class FormTemplatesController < ApplicationController
+    before_action :authenticate_user!
+    before_action :check_admin
+    before_action :set_form_template, only: [:show, :edit, :update, :destroy]
+
+    def index
+      @form_templates = current_user.form_templates.order(created_at: :desc)
+    end
+
+    def show
+    end
+
+    def new
+      @form_template = FormTemplate.new
+      @form_template.form_template_fields.build  # Apenas 1 campo vazio
+    end
+
+    def create
+      @form_template = current_user.form_templates.build(form_template_params)
+
+      if @form_template.save
+        redirect_to admin_form_template_path(@form_template), notice: 'Template criado com sucesso!'
+      else
+        # Debug: mostra os erros
+        puts "❌ Erros ao salvar template:"
+        puts @form_template.errors.full_messages
+        render :new, status: :unprocessable_entity
+      end
+    end
+
+    def edit
+      @form_template.form_template_fields.build if @form_template.form_template_fields.empty?
+    end
+
+    def update
+      if @form_template.update(form_template_params)
+        redirect_to admin_form_template_path(@form_template), notice: 'Template atualizado com sucesso!'
+      else
+        render :edit, status: :unprocessable_entity
+      end
+    end
+
+    def destroy
+      @form_template.destroy
+      redirect_to admin_form_templates_url, notice: 'Template deletado com sucesso!'
+    end
+
+    private
+
+    def set_form_template
+      @form_template = FormTemplate.find(params[:id])
+    end
+
+    def form_template_params
+      params.require(:form_template).permit(
+        :name, :description,
+        form_template_fields_attributes: [:id, :field_type, :label, :required, :options, :position, :_destroy]
+      )
+    end
+
+    def check_admin
+      redirect_to root_path, alert: 'Acesso negado!' unless current_user.admin?
+    end
+  end
+end
+
+--- app/controllers/admin/dashboard_controller.rb ---
+# app/controllers/admin/dashboard_controller.rb
+
+module Admin
+  class DashboardController < ApplicationController
+    before_action :authenticate_user!
+    before_action :check_admin
+    
+    def index
+      @users = User.all
+      @total_users = User.count
+      @admin_count = User.where(role: :admin).count
+    end
+    
+    private
+    
+    def check_admin
+      redirect_to root_path, alert: 'Acesso negado!' unless current_user.admin?
+    end
+  end
+end
+
+--- app/controllers/admin/imports_controller.rb ---
+# app/controllers/admin/imports_controller.rb
+
+module Admin
+  class ImportsController < ApplicationController
+    before_action :authenticate_user!
+    before_action :check_admin
+
+    def index
+      @total_klasses = Klass.count
+      @total_users = User.where(role: :user).count
+    end
+
+    def import_klasses
+      if params[:file].blank?
+        redirect_to admin_imports_path, alert: 'Por favor, selecione um arquivo'
+        return
+      end
+
+      file = params[:file]
+      
+      # Validar tipo de arquivo
+      unless file.content_type == 'application/json' || file.original_filename.end_with?('.json')
+        redirect_to admin_imports_path, alert: 'Por favor, envie um arquivo JSON válido'
+        return
+      end
+
+      # Executar importação
+      service = ImportService.new(file.path)
+      result = service.import_klasses
+
+      if result[:success]
+        message = "✅ #{result[:imported]} turma(s) importada(s) com sucesso!"
+        
+        if result[:errors].present?
+          message += "\n\n⚠️ Aviso: #{result[:errors].count} erro(s) durante importação:"
+          result[:errors].each { |error| message += "\n• #{error}" }
+          redirect_to admin_imports_path, alert: message
+        else
+          redirect_to admin_imports_path, notice: message
+        end
+      else
+        redirect_to admin_imports_path, alert: "❌ Erro na importação: #{result[:error]}"
+      end
+    end
+
+    private
+
+    def check_admin
+      redirect_to root_path, alert: 'Acesso negado!' unless current_user.admin?
+    end
+  end
+end
+--- app/controllers/home_controller.rb ---
+# app/controllers/home_controller.rb
+
+class HomeController < ApplicationController
+  before_action :authenticate_user!
+
+  def index
+    if current_user.admin?
+      redirect_to admin_root_path
+    else
+      @pending_forms = current_user.pending_forms.order(due_date: :asc)
+      @completed_forms = current_user.completed_forms.order(created_at: :desc)
+    end
+  end
+end
+
+--- app/controllers/student/forms_controller.rb ---
+# app/controllers/student/forms_controller.rb - CORRIGIDO
+
+module Student
+  class FormsController < ApplicationController
+    before_action :authenticate_user!
+    before_action :check_student
+    before_action :set_form, only: [:show, :answer, :submit_answer]
+    before_action :check_form_accessible, only: [:show, :answer, :submit_answer]
+
+    def index
+      @pending_forms = current_user.pending_forms.order(due_date: :asc)
+      @completed_forms = current_user.completed_forms.order(created_at: :desc)
+    end
+
+    def show
+      @form_response = @form.form_responses.find_by(user: current_user)
+      @form_response ||= FormResponse.new(form: @form, user: current_user)
+    end
+
+    def answer
+      @form_response = @form.form_responses.find_by(user: current_user)
+
+      if @form_response.nil?
+        @form_response = FormResponse.new(form: @form, user: current_user)
+        @form_response.save(validate: false)
+        @form_response.build_answers_for_fields
+        @form_response.save(validate: false)
+      end
+
+      @form_response.reload
+
+      # Se não há respostas, criar agora
+      if @form_response.form_answers.empty?
+        @form_response.build_answers_for_fields
+        @form_response.save(validate: false)
+      end
+    end
+
+    def submit_answer
+      @form_response = @form.form_responses.find_by(user: current_user)
+
+      if @form_response.nil?
+        redirect_to student_form_path(@form), alert: 'Resposta não encontrada'
+        return
+      end
+
+      if update_answers && @form_response.submit!
+        redirect_to root_path, notice: 'Formulário respondido com sucesso!'
+      else
+        redirect_to answer_student_form_path(@form), alert: 'Erro ao salvar respostas'
+      end
+    end
+
+    private
+
+    def set_form
+      @form = Form.find(params[:id])
+    end
+
+    def check_student
+      redirect_to admin_root_path if current_user.admin?
+    end
+
+    def check_form_accessible
+      unless current_user.klasses.include?(@form.klass) && @form.published?
+        redirect_to root_path, alert: 'Acesso negado a este formulário'
+      end
+    end
+
+    def update_answers
+      form_answers_params = params.require(:form_response).permit(form_answers_attributes: [:id, :answer])
+      @form_response.update(form_answers_params)
+    end
+  end
+end
+
+=== PROJECT STRUCTURE ===
+.
+├── Dockerfile
+├── Gemfile
+├── Gemfile.lock
+├── Procfile.dev
+├── README.md
+├── Rakefile
+├── app
+│   ├── assets
+│   │   ├── application.js
+│   │   ├── controllers
+│   │   ├── images
+│   │   ├── javascripts
+│   │   └── stylesheets
+│   ├── controllers
+│   │   ├── admin
+│   │   ├── application_controller.rb
+│   │   ├── concerns
+│   │   ├── home_controller.rb
+│   │   └── student
+│   ├── helpers
+│   │   ├── admin
+│   │   ├── application_helper.rb
+│   │   └── home_helper.rb
+│   ├── javascript
+│   │   ├── application.js
+│   │   └── controllers
+│   ├── jobs
+│   │   └── application_job.rb
+│   ├── mailers
+│   │   └── application_mailer.rb
+│   ├── models
+│   │   ├── application_record.rb
+│   │   ├── class_member.rb
+│   │   ├── concerns
+│   │   ├── form.rb
+│   │   ├── form_answer.rb
+│   │   ├── form_response.rb
+│   │   ├── form_template.rb
+│   │   ├── form_template_field.rb
+│   │   ├── klass.rb
+│   │   └── user.rb
+│   ├── services
+│   │   └── import_service.rb
+│   └── views
+│       ├── admin
+│       ├── devise
+│       ├── home
+│       ├── layouts
+│       ├── pwa
+│       └── student
+├── bin
+│   ├── brakeman
+│   ├── bundle
+│   ├── cucumber
+│   ├── dev
+│   ├── docker-entrypoint
+│   ├── importmap
+│   ├── jobs
+│   ├── kamal
+│   ├── rails
+│   ├── rake
+│   ├── rubocop
+│   ├── setup
+│   └── thrust
+├── check_coverage.sh
+├── class_members.json
+├── class_members2.json
+├── class_members3.json
+├── class_members4.json
+├── classes.json
+├── config
+│   ├── application.rb
+│   ├── boot.rb
+│   ├── cable.yml
+│   ├── cache.yml
+│   ├── credentials.yml.enc
+│   ├── cucumber.yml
+│   ├── database.yml
+│   ├── deploy.yml
+│   ├── environment.rb
+│   ├── environments
+│   │   ├── development.rb
+│   │   ├── production.rb
+│   │   └── test.rb
+│   ├── importmap.rb
+│   ├── initializers
+│   │   ├── assets.rb
+│   │   ├── content_security_policy.rb
+│   │   ├── devise.rb
+│   │   ├── filter_parameter_logging.rb
+│   │   └── inflections.rb
+│   ├── locales
+│   │   ├── devise.en.yml
+│   │   └── en.yml
+│   ├── puma.rb
+│   ├── queue.yml
+│   ├── recurring.yml
+│   ├── routes.rb
+│   ├── storage.yml
+│   └── tailwind.config.js
+├── config.ru
+├── coverage
+│   ├── assets
+│   │   └── 0.13.2
+│   └── index.html
+├── db
+│   ├── cable_schema.rb
+│   ├── cache_schema.rb
+│   ├── migrate
+│   │   ├── 20251207235542_devise_create_users.rb
+│   │   ├── 20251208005928_create_klasses.rb
+│   │   ├── 20251208005929_create_class_members.rb
+│   │   ├── 20251208005930_add_fields_to_users.rb
+│   │   ├── 20251208031921_create_form_templates.rb
+│   │   ├── 20251208031922_create_form_template_fields.rb
+│   │   ├── 20251208031923_create_forms.rb
+│   │   ├── 20251208031924_create_form_responses.rb
+│   │   └── 20251208031925_create_form_answers.rb
+│   ├── queue_schema.rb
+│   ├── schema.rb
+│   └── seeds.rb
+├── er.pending_forms.count
+├── features
+│   ├── criar_gerenciar_templates.feature
+│   ├── criar_publicar_formularios.feature
+│   ├── importar_turmas_alunos.feature
+│   ├── login_sistema.feature
+│   ├── responder_formularios_aluno.feature
+│   ├── step_definitions
+│   ├── support
+│   │   └── env.rb
+│   └── visualizar_respostas_admin.feature
+├── lib
+│   └── tasks
+│       ├── abc_analysis.rake
+│       ├── cucumber.rake
+│       └── saikuro_analysis.rake
+├── mise.toml
+├── project_structure.txt
+├── projeto_completo.txt
+├── public
+│   ├── 400.html
+│   ├── 404.html
+│   ├── 406-unsupported-browser.html
+│   ├── 422.html
+│   ├── 500.html
+│   ├── icon.png
+│   ├── icon.svg
+│   └── robots.txt
+├── script
+├── spec
+│   ├── examples.txt
+│   ├── factories
+│   │   ├── class_members.rb
+│   │   ├── form_answers.rb
+│   │   ├── form_responses.rb
+│   │   ├── form_template_fields.rb
+│   │   ├── form_templates.rb
+│   │   ├── forms.rb
+│   │   ├── klasses.rb
+│   │   └── users.rb
+│   ├── helpers
+│   │   ├── admin
+│   │   └── home_helper_spec.rb
+│   ├── models
+│   │   ├── class_member_spec.rb
+│   │   ├── form_answer_spec.rb
+│   │   ├── form_response_spec.rb
+│   │   ├── form_spec.rb
+│   │   ├── form_template_field_spec.rb
+│   │   ├── form_template_spec.rb
+│   │   ├── klass_spec.rb
+│   │   └── user_spec.rb
+│   ├── rails_helper.rb
+│   ├── requests
+│   │   ├── admin
+│   │   ├── home_spec.rb
+│   │   └── student
+│   ├── services
+│   │   └── import_service_spec.rb
+│   ├── spec_helper.rb
+│   ├── support
+│   │   └── devise.rb
+│   └── views
+│       ├── admin
+│       └── home
+├── storage
+│   ├── development.sqlite3
+│   └── test.sqlite3
+├── test
+│   ├── application_system_test_case.rb
+│   ├── controllers
+│   ├── fixtures
+│   │   └── files
+│   ├── helpers
+│   ├── integration
+│   ├── mailers
+│   ├── models
+│   ├── system
+│   └── test_helper.rb
+└── vendor
+    └── javascript
+
+69 directories, 134 files

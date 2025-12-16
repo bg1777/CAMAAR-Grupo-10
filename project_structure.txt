@@ -1,0 +1,257 @@
+.
+├── Dockerfile
+├── Gemfile
+├── Gemfile.lock
+├── Procfile.dev
+├── README.md
+├── Rakefile
+├── app
+│   ├── assets
+│   │   ├── application.js
+│   │   ├── controllers
+│   │   │   └── form_fields_controller.js
+│   │   ├── images
+│   │   ├── javascripts
+│   │   │   └── form_fields.js
+│   │   └── stylesheets
+│   │       └── application.css
+│   ├── controllers
+│   │   ├── admin
+│   │   │   ├── dashboard_controller.rb
+│   │   │   ├── form_templates_controller.rb
+│   │   │   ├── forms_controller.rb
+│   │   │   ├── imports_controller.rb
+│   │   │   └── users_controller.rb
+│   │   ├── application_controller.rb
+│   │   ├── concerns
+│   │   ├── home_controller.rb
+│   │   └── student
+│   │       └── forms_controller.rb
+│   ├── helpers
+│   │   ├── admin
+│   │   │   ├── dashboard_helper.rb
+│   │   │   ├── form_templates_helper.rb
+│   │   │   └── users_helper.rb
+│   │   ├── application_helper.rb
+│   │   └── home_helper.rb
+│   ├── javascript
+│   │   ├── application.js
+│   │   └── controllers
+│   │       ├── application.js
+│   │       ├── hello_controller.js
+│   │       └── index.js
+│   ├── jobs
+│   │   └── application_job.rb
+│   ├── mailers
+│   │   └── application_mailer.rb
+│   ├── models
+│   │   ├── application_record.rb
+│   │   ├── class_member.rb
+│   │   ├── concerns
+│   │   ├── form.rb
+│   │   ├── form_answer.rb
+│   │   ├── form_response.rb
+│   │   ├── form_template.rb
+│   │   ├── form_template_field.rb
+│   │   ├── klass.rb
+│   │   └── user.rb
+│   ├── services
+│   │   └── import_service.rb
+│   └── views
+│       ├── admin
+│       │   ├── dashboard
+│       │   ├── form_templates
+│       │   ├── forms
+│       │   ├── imports
+│       │   └── users
+│       ├── devise
+│       │   ├── confirmations
+│       │   ├── mailer
+│       │   ├── passwords
+│       │   ├── registrations
+│       │   ├── sessions
+│       │   ├── shared
+│       │   └── unlocks
+│       ├── home
+│       │   └── index.html.erb
+│       ├── layouts
+│       │   ├── application.html.erb
+│       │   ├── mailer.html.erb
+│       │   └── mailer.text.erb
+│       ├── pwa
+│       │   ├── manifest.json.erb
+│       │   └── service-worker.js
+│       └── student
+│           └── forms
+├── bin
+│   ├── brakeman
+│   ├── bundle
+│   ├── cucumber
+│   ├── dev
+│   ├── docker-entrypoint
+│   ├── importmap
+│   ├── jobs
+│   ├── kamal
+│   ├── rails
+│   ├── rake
+│   ├── rubocop
+│   ├── setup
+│   └── thrust
+├── check_coverage.sh
+├── class_members.json
+├── class_members2.json
+├── class_members3.json
+├── class_members4.json
+├── classes.json
+├── config
+│   ├── application.rb
+│   ├── boot.rb
+│   ├── cable.yml
+│   ├── cache.yml
+│   ├── credentials.yml.enc
+│   ├── cucumber.yml
+│   ├── database.yml
+│   ├── deploy.yml
+│   ├── environment.rb
+│   ├── environments
+│   │   ├── development.rb
+│   │   ├── production.rb
+│   │   └── test.rb
+│   ├── importmap.rb
+│   ├── initializers
+│   │   ├── assets.rb
+│   │   ├── content_security_policy.rb
+│   │   ├── devise.rb
+│   │   ├── filter_parameter_logging.rb
+│   │   └── inflections.rb
+│   ├── locales
+│   │   ├── devise.en.yml
+│   │   └── en.yml
+│   ├── puma.rb
+│   ├── queue.yml
+│   ├── recurring.yml
+│   ├── routes.rb
+│   ├── storage.yml
+│   └── tailwind.config.js
+├── config.ru
+├── db
+│   ├── cable_schema.rb
+│   ├── cache_schema.rb
+│   ├── migrate
+│   │   ├── 20251207235542_devise_create_users.rb
+│   │   ├── 20251208005928_create_klasses.rb
+│   │   ├── 20251208005929_create_class_members.rb
+│   │   ├── 20251208005930_add_fields_to_users.rb
+│   │   ├── 20251208031921_create_form_templates.rb
+│   │   ├── 20251208031922_create_form_template_fields.rb
+│   │   ├── 20251208031923_create_forms.rb
+│   │   ├── 20251208031924_create_form_responses.rb
+│   │   └── 20251208031925_create_form_answers.rb
+│   ├── queue_schema.rb
+│   ├── schema.rb
+│   └── seeds.rb
+├── er.pending_forms.count
+├── features
+│   ├── criar_gerenciar_templates.feature
+│   ├── criar_publicar_formularios.feature
+│   ├── importar_turmas_alunos.feature
+│   ├── login_sistema.feature
+│   ├── responder_formularios_aluno.feature
+│   ├── step_definitions
+│   │   ├── admin_response_steps.rb
+│   │   ├── authentication_steps.rb
+│   │   ├── form_field_steps.rb
+│   │   ├── form_steps.rb
+│   │   ├── import_steps.rb
+│   │   ├── navigation_steps.rb
+│   │   ├── student_form_steps.rb
+│   │   ├── template_steps.rb
+│   │   └── user_steps.rb
+│   ├── support
+│   │   ├── env.rb
+│   │   └── factory_bot.rb
+│   └── visualizar_respostas_admin.feature
+├── lib
+│   └── tasks
+│       ├── abc_analysis.rake
+│       ├── cucumber.rake
+│       └── saikuro_analysis.rake
+├── mise.toml
+├── project_structure.txt
+├── projeto_completo.txt
+├── public
+│   ├── 400.html
+│   ├── 404.html
+│   ├── 406-unsupported-browser.html
+│   ├── 422.html
+│   ├── 500.html
+│   ├── icon.png
+│   ├── icon.svg
+│   └── robots.txt
+├── script
+├── spec
+│   ├── examples.txt
+│   ├── factories
+│   │   ├── class_members.rb
+│   │   ├── form_answers.rb
+│   │   ├── form_responses.rb
+│   │   ├── form_template_fields.rb
+│   │   ├── form_templates.rb
+│   │   ├── forms.rb
+│   │   ├── klasses.rb
+│   │   └── users.rb
+│   ├── helpers
+│   │   ├── admin
+│   │   │   ├── dashboard_helper_spec.rb
+│   │   │   └── users_helper_spec.rb
+│   │   └── home_helper_spec.rb
+│   ├── models
+│   │   ├── class_member_spec.rb
+│   │   ├── form_answer_spec.rb
+│   │   ├── form_response_spec.rb
+│   │   ├── form_spec.rb
+│   │   ├── form_template_field_spec.rb
+│   │   ├── form_template_spec.rb
+│   │   ├── klass_spec.rb
+│   │   └── user_spec.rb
+│   ├── rails_helper.rb
+│   ├── requests
+│   │   ├── admin
+│   │   │   ├── dashboard_spec.rb
+│   │   │   ├── form_templates_spec.rb
+│   │   │   ├── forms_spec.rb
+│   │   │   ├── imports_spec.rb
+│   │   │   └── users_spec.rb
+│   │   ├── home_spec.rb
+│   │   └── student
+│   │       ├── forms_spec.rb
+│   │       └── forms_spec_debug.rb
+│   ├── services
+│   │   └── import_service_spec.rb
+│   ├── spec_helper.rb
+│   ├── support
+│   │   └── devise.rb
+│   └── views
+│       ├── admin
+│       │   ├── dashboard
+│       │   └── users
+│       └── home
+│           └── index.html.erb_spec.rb
+├── storage
+│   ├── development.sqlite3
+│   └── test.sqlite3
+├── test
+│   ├── application_system_test_case.rb
+│   ├── controllers
+│   ├── fixtures
+│   │   └── files
+│   ├── helpers
+│   ├── integration
+│   ├── mailers
+│   ├── models
+│   ├── system
+│   └── test_helper.rb
+└── vendor
+    └── javascript
+
+81 directories, 174 files
