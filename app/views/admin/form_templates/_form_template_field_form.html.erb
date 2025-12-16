@@ -1,71 +1,57 @@
-<!-- app/views/admin/form_templates/_form_template_field_form.html.erb -->
-
-<div class="card shadow-sm border-0 rounded-4 mb-4 field-item">
-  <div class="card-body p-4">
-
-    <h5 class="fw-bold mb-4 text-primary">Configuração do Campo</h5>
-
-    <!-- Row: Position + Type -->
-    <div class="row g-3 mb-3">
-
-      <div class="col-md-6">
-        <%= f.label :position, "Posição", class: "form-label fw-semibold" %>
-        <%= f.number_field :position, class: "form-control form-control-lg", min: 1 %>
-      </div>
-
-      <div class="col-md-6">
-        <%= f.label :field_type, "Tipo de Campo", class: "form-label fw-semibold" %>
-        <%= f.select :field_type,
-            ['text', 'textarea', 'email', 'number', 'date', 'select', 'radio', 'checkbox'],
-            { prompt: "Selecione um tipo" },
-            class: "form-select form-select-lg" %>
-      </div>
-
+<div class="card field-item p-3 mb-3 shadow-sm">
+  <div class="row">
+    <!-- Position -->
+    <div class="col-md-3 mb-3">
+      <label class="form-label fw-semibold">Posição</label>
+      <%= f.number_field :position, class: "form-control", min: "1", placeholder: "1" %>
     </div>
 
-
-    <!-- Label -->
-    <div class="mb-4">
-      <%= f.label :label, "Rótulo do Campo", class: "form-label fw-semibold" %>
-      <%= f.text_field :label,
-          class: "form-control form-control-lg",
-          placeholder: "Ex: Seu Nome" %>
+    <!-- Field Type -->
+    <div class="col-md-4 mb-3">
+      <label class="form-label fw-semibold">Tipo de Campo</label>
+      <%= f.select :field_type, 
+          ['text', 'textarea', 'email', 'number', 'date', 'select', 'radio', 'checkbox'], 
+          { prompt: 'Selecione' }, 
+          class: "form-select" %>
     </div>
-
-
-    <!-- Options -->
-    <div class="mb-4">
-      <%= f.label :options, "Opções (JSON)", class: "form-label fw-semibold" %>
-      <small class="text-muted d-block mb-2">
-        Necessário apenas para <strong>select</strong>, <strong>radio</strong> e <strong>checkbox</strong>.  
-        Exemplo: <code>["Opção 1", "Opção 2"]</code>.
-      </small>
-
-      <%= f.text_area :options,
-          class: "form-control",
-          rows: 3,
-          placeholder: '["Opção 1", "Opção 2"]' %>
-    </div>
-
 
     <!-- Required -->
-    <div class="mb-3 form-check ps-0">
-      <label class="fw-semibold d-flex align-items-center gap-2">
-        <%= f.check_box :required, class: "form-check-input me-2" %>
-        Campo obrigatório?
-      </label>
-    </div>
-
-
-    <!-- Destroy -->
-    <% if f.object.persisted? %>
-      <div class="pt-3 border-top mt-4">
-        <label class="text-danger fw-semibold d-flex align-items-center gap-2">
-          <%= f.check_box :_destroy, class: "form-check-input me-2" %>
-          Remover este campo
+    <div class="col-md-2 mb-3 d-flex align-items-end">
+      <div class="form-check">
+        <%= f.check_box :required, { class: "form-check-input" } %>
+        <label class="form-check-label">
+          Obrigatório?
         </label>
       </div>
-    <% end %>
+    </div>
 
+    <!-- Delete Button -->
+    <div class="col-md-3 mb-3 d-flex align-items-end">
+      <% if f.object.persisted? %>
+        <%= f.hidden_field :_destroy %>
+        <button type="button" class="btn btn-sm btn-danger w-100" 
+                onclick="this.closest('.field-item').style.opacity='0.5'; this.closest('.field-item').querySelector('[name*=_destroy]').value='1';">
+          🗑️ Deletar
+        </button>
+      <% else %>
+        <button type="button" class="btn btn-sm btn-danger w-100" 
+                onclick="this.closest('.field-item').remove()">
+          🗑️ Deletar
+        </button>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Label -->
+  <div class="mb-3">
+    <label class="form-label fw-semibold">Rótulo do Campo</label>
+    <%= f.text_field :label, class: "form-control", placeholder: "Ex: Seu Nome" %>
+  </div>
+
+  <!-- Options (for select, radio, checkbox) -->
+  <div class="mb-3">
+    <label class="form-label fw-semibold">Opções (JSON)</label>
+    <small class="text-muted d-block mb-1">Só para select/radio/checkbox. Exemplo: ["Opção 1", "Opção 2"]</small>
+    <%= f.text_area :options, class: "form-control", rows: 2, placeholder: '["Opção 1", "Opção 2"]' %>
   </div>
 </div>

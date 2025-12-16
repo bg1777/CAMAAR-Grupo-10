@@ -15,7 +15,7 @@ module Admin
 
     def new
       @form_template = FormTemplate.new
-      @form_template.form_template_fields.build  # ← Apenas 1 campo
+      @form_template.form_template_fields.build  # Apenas 1 campo vazio
     end
 
     def create
@@ -24,12 +24,14 @@ module Admin
       if @form_template.save
         redirect_to admin_form_template_path(@form_template), notice: 'Template criado com sucesso!'
       else
+        # Debug: mostra os erros
+        puts "❌ Erros ao salvar template:"
+        puts @form_template.errors.full_messages
         render :new, status: :unprocessable_entity
       end
     end
 
     def edit
-      # Se não tiver campos, adiciona 1
       @form_template.form_template_fields.build if @form_template.form_template_fields.empty?
     end
 
