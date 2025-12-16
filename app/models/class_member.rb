@@ -1,5 +1,9 @@
 # app/models/class_member.rb
 
+##
+# Representa a matrícula de um usuário em uma turma.
+# Estabelece o relacionamento entre User e Klass, definindo o papel (dicente ou docente).
+#
 class ClassMember < ApplicationRecord
   # Associações
   belongs_to :user

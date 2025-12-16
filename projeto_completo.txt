@@ -1,0 +1,2278 @@
+=== GEMFILE ===
+source "https://rubygems.org"
+
+gem "rails", "~> 8.0.4"
+gem "propshaft"
+gem "sqlite3", ">= 2.1"
+gem "puma", ">= 5.0"
+gem "importmap-rails"
+gem "turbo-rails"
+gem "stimulus-rails"
+gem "jbuilder"
+
+# ============================================
+# Authentication
+# ============================================
+gem "devise", "~> 4.9"
+
+gem "bcrypt", "~> 3.1.7"
+
+gem "tzinfo-data", platforms: %i[ windows jruby ]
+
+gem "solid_cache"
+gem "solid_queue"
+gem "solid_cable"
+
+gem "bootsnap", require: false
+gem "kamal", require: false
+gem "thruster", require: false
+
+group :development, :test do
+  gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
+  gem "brakeman", require: false
+  gem "rubocop-rails-omakase", require: false
+
+  gem 'rubycritic'
+  gem 'flog', '~> 4.8.0'
+  gem 'flay', '~> 2.13.0'
+
+  # ============================================
+  # RSpec - Test-Driven Development (TDD)
+  # ============================================
+  gem "rspec-rails", "~> 6.0.0"
+  gem "factory_bot_rails", "~> 6.2"
+  gem "faker", "~> 3.2"
+  gem "shoulda-matchers", "~> 5.1"
+  gem "csv"
+end
+
+group :development do
+  gem "web-console"
+end
+
+group :test do
+  gem "capybara"
+  gem "selenium-webdriver"
+  
+  gem 'cucumber-rails', require: false
+  gem 'database_cleaner'
+  
+  gem "simplecov", "~> 0.22.0"
+  gem "simplecov-console"
+end
+gem 'rdoc', require: false
+
+=== DATABASE SCHEMA ===
+# This file is auto-generated from the current state of the database. Instead
+# of editing this file, please use the migrations feature of Active Record to
+# incrementally modify your database, and then regenerate this schema definition.
+#
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
+#
+# It's strongly recommended that you check this file into your version control system.
+
+ActiveRecord::Schema[8.0].define(version: 2025_12_08_031925) do
+  create_table "class_members", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "klass_id", null: false
+    t.string "role"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["klass_id"], name: "index_class_members_on_klass_id"
+    t.index ["user_id"], name: "index_class_members_on_user_id"
+  end
+
+  create_table "form_answers", force: :cascade do |t|
+    t.integer "form_response_id", null: false
+    t.integer "form_template_field_id", null: false
+    t.text "answer"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["form_response_id"], name: "index_form_answers_on_form_response_id"
+    t.index ["form_template_field_id"], name: "index_form_answers_on_form_template_field_id"
+  end
+
+  create_table "form_responses", force: :cascade do |t|
+    t.integer "form_id", null: false
+    t.integer "user_id", null: false
+    t.datetime "submitted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["form_id"], name: "index_form_responses_on_form_id"
+    t.index ["user_id"], name: "index_form_responses_on_user_id"
+  end
+
+  create_table "form_template_fields", force: :cascade do |t|
+    t.integer "form_template_id", null: false
+    t.string "field_type"
+    t.string "label"
+    t.boolean "required"
+    t.json "options"
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["form_template_id"], name: "index_form_template_fields_on_form_template_id"
+  end
+
+  create_table "form_templates", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_form_templates_on_user_id"
+  end
+
+  create_table "forms", force: :cascade do |t|
+    t.integer "form_template_id", null: false
+    t.integer "klass_id", null: false
+    t.string "title"
+    t.text "description"
+    t.datetime "due_date"
+    t.integer "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["form_template_id"], name: "index_forms_on_form_template_id"
+    t.index ["klass_id"], name: "index_forms_on_klass_id"
+  end
+
+  create_table "klasses", force: :cascade do |t|
+    t.string "code"
+    t.string "name"
+    t.string "semester"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.string "name", null: false
+    t.integer "role", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "matricula"
+    t.string "curso"
+    t.string "formacao"
+    t.string "ocupacao"
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  end
+
+  add_foreign_key "class_members", "klasses"
+  add_foreign_key "class_members", "users"
+  add_foreign_key "form_answers", "form_responses"
+  add_foreign_key "form_answers", "form_template_fields"
+  add_foreign_key "form_responses", "forms"
+  add_foreign_key "form_responses", "users"
+  add_foreign_key "form_template_fields", "form_templates"
+  add_foreign_key "form_templates", "users"
+  add_foreign_key "forms", "form_templates"
+  add_foreign_key "forms", "klasses"
+end
+
+=== ROUTES ===
+# config/routes.rb
+
+Rails.application.routes.draw do
+  devise_for :users, skip: [:registrations]
+  
+  root "home#index"
+  
+  namespace :admin do
+    root "dashboard#index"
+    resources :users
+    resources :imports, only: [:index] do
+      collection do
+        post :import_klasses
+      end
+    end
+    
+    # Form Templates
+    resources :form_templates do
+      resources :form_template_fields, only: [:create, :update, :destroy]
+    end
+    
+    # Forms
+    resources :forms do
+      member do
+        patch :publish
+        patch :close
+        get :view_response
+      end
+    end
+  end
+
+  # Student namespace
+  namespace :student do
+    root "dashboard#index"
+    resources :forms, only: [:index, :show] do
+      member do
+        get :answer
+        post :submit_answer
+      end
+    end
+  end
+  
+  get "home", to: "home#index"
+end
+
+=== MODELS ===
+--- app/models/form.rb ---
+# app/models/form.rb
+
+##
+# Representa um formulário publicado para uma turma específica.
+# Baseado em um FormTemplate, possui status (rascunho, publicado, fechado)
+# e armazena as respostas dos alunos através de FormResponse.
+#
+class Form < ApplicationRecord
+  belongs_to :form_template
+  belongs_to :klass
+  has_many :form_responses, dependent: :destroy
+
+  validates :form_template_id, presence: true
+  validates :klass_id, presence: true
+  validates :title, presence: true
+
+  enum :status, { draft: 0, published: 1, closed: 2 }
+
+  # Definir status padrão
+  before_create :set_default_status
+
+  ##
+  # Retorna todos os alunos da turma que ainda não responderam o formulário.
+  #
+  # ==== Argumentos
+  # * Nenhum
+  #
+  # ==== Retorno
+  # * +Array<User>+ - lista de alunos que ainda não submeteram respostas
+  #
+  # ==== Efeitos Colaterais
+  # * Executa queries no banco de dados (klass.students e form_responses)
+  # * Nenhuma alteração de dados
+  #
+  # ==== Exemplo
+  #   form = Form.find(1)
+  #   form.pending_responses # => [#<User id: 2, name: "João">]
+  #
+  def pending_responses
+    klass.students - form_responses.map(&:user)
+  end
+
+  ##
+  # Retorna todos os alunos que já responderam o formulário.
+  #
+  # ==== Argumentos
+  # * Nenhum
+  #
+  # ==== Retorno
+  # * +Array<User>+ - lista de alunos que já submeteram respostas
+  #
+  # ==== Efeitos Colaterais
+  # * Executa query no banco de dados através de form_responses
+  # * Nenhuma alteração de dados
+  #
+  # ==== Exemplo
+  #   form = Form.find(1)
+  #   form.completed_responses # => [#<User id: 3, name: "Maria">]
+  #
+  def completed_responses
+    form_responses.map(&:user)
+  end
+
+  private
+
+  ##
+  # Define o status padrão do formulário como 'draft' (rascunho)
+  # quando o formulário é criado pela primeira vez.
+  # Executado automaticamente pelo callback before_create.
+  #
+  # ==== Argumentos
+  # * Nenhum
+  #
+  # ==== Retorno
+  # * +Symbol+ - :draft (status padrão)
+  #
+  # ==== Efeitos Colaterais
+  # * Modifica o atributo status do objeto para :draft se ainda não estiver definido
+  # * Executado automaticamente antes de criar o registro no banco
+  #
+  def set_default_status
+    self.status ||= :draft
+  end
+end
+
+--- app/models/form_template_field.rb ---
+# app/models/form_template_field.rb
+
+##
+# Representa um campo individual dentro de um template de formulário.
+# Define o tipo, rótulo, posição e opções do campo (ex: text, select, checkbox).
+#
+class FormTemplateField < ApplicationRecord
+  belongs_to :form_template
+  has_many :form_answers, dependent: :destroy
+  
+  # Valores válidos para field_type
+  VALID_FIELD_TYPES = %w(text textarea email number date select radio checkbox).freeze
+
+  validates :label, presence: true
+  validates :field_type, presence: true, inclusion: { in: VALID_FIELD_TYPES }
+  validates :position, presence: true, numericality: { only_integer: true, greater_than: 0 }
+
+  # Validar options apenas para tipos que precisam
+  validates :options, presence: true, if: :requires_options?
+
+  # Callback para garantir que position seja integer
+  before_validation :ensure_position_is_integer
+
+  private
+
+  ##
+  # Verifica se o tipo de campo requer opções (select, radio, checkbox).
+  #
+  # ==== Argumentos
+  # * Nenhum
+  #
+  # ==== Retorno
+  # * +Boolean+ - true se o campo requer opções, false caso contrário
+  #
+  # ==== Efeitos Colaterais
+  # * Nenhum (método auxiliar de validação)
+  #
+  def requires_options?
+    ['select', 'radio', 'checkbox'].include?(field_type)
+  end
+
+  ##
+  # Garante que o atributo position seja convertido para inteiro.
+  # Executado automaticamente antes da validação (callback).
+  #
+  # ==== Argumentos
+  # * Nenhum
+  #
+  # ==== Retorno
+  # * +Integer+ - valor da posição convertido para inteiro
+  #
+  # ==== Efeitos Colaterais
+  # * Modifica o atributo position do objeto, convertendo-o para Integer
+  # * Executado automaticamente pelo callback before_validation
+  #
+  def ensure_position_is_integer
+    self.position = position.to_i if position.present? && position.is_a?(String)
+  end
+end
+
+--- app/models/user.rb ---
+# app/models/user.rb
+
+##
+# Representa um usuário do sistema, podendo ser administrador ou aluno (dicente).
+# Gerencia autenticação, permissões e relacionamentos com turmas e formulários.
+#
+class User < ApplicationRecord
+  devise :database_authenticatable,
+         :recoverable, :validatable
+
+  enum :role, { user: 0, admin: 1 }
+
+  # Associações
+  has_many :class_members, dependent: :destroy
+  has_many :klasses, through: :class_members
+  has_many :form_templates, dependent: :destroy
+  has_many :form_responses, dependent: :destroy
+
+  # Validações
+  validates :name, presence: true
+  validates :email, presence: true, uniqueness: true
+
+  ##
+  # Verifica se o usuário possui perfil de administrador.
+  #
+  # ==== Argumentos
+  # * Nenhum
+  #
+  # ==== Retorno
+  # * +Boolean+ - true se o usuário é admin, false caso contrário
+  #
+  # ==== Efeitos Colaterais
+  # * Nenhum (método de leitura)
+  #
+  # ==== Exemplo
+  #   user = User.find(1)
+  #   user.admin? # => true
+  #
+  def admin?
+    role == 'admin'
+  end
+
+  ##
+  # Verifica se o usuário possui perfil de aluno/dicente.
+  #
+  # ==== Argumentos
+  # * Nenhum
+  #
+  # ==== Retorno
+  # * +Boolean+ - true se o usuário é dicente, false caso contrário
+  #
+  # ==== Efeitos Colaterais
+  # * Nenhum (método de leitura)
+  #
+  # ==== Exemplo
+  #   user = User.find(2)
+  #   user.user? # => true
+  #
+  def user?
+    role == 'user'
+  end
+
+  ##
+  # Retorna todos os formulários publicados que o usuário ainda não respondeu.
+  # Considera apenas formulários das turmas em que o usuário está inscrito.
+  #
+  # ==== Argumentos
+  # * Nenhum
+  #
+  # ==== Retorno
+  # * +ActiveRecord::Relation+ - coleção de objetos Form pendentes de resposta
+  #
+  # ==== Efeitos Colaterais
+  # * Executa queries no banco de dados para buscar formulários
+  # * Nenhuma alteração de dados
+  #
+  # ==== Exemplo
+  #   user = User.find(2)
+  #   user.pending_forms # => [#<Form id: 1, ...>, #<Form id: 3, ...>]
+  #
+  def pending_forms
+    Form
+      .where(klass_id: klasses.pluck(:id), status: :published)
+      .where.not(
+        id: form_responses.where.not(submitted_at: nil).pluck(:form_id)
+      )
+  end
+
+  ##
+  # Retorna todos os formulários que o usuário já respondeu (submetidos).
+  #
+  # ==== Argumentos
+  # * Nenhum
+  #
+  # ==== Retorno
+  # * +ActiveRecord::Relation+ - coleção de objetos Form já respondidos
+  #
+  # ==== Efeitos Colaterais
+  # * Executa queries no banco de dados para buscar formulários
+  # * Nenhuma alteração de dados
+  #
+  # ==== Exemplo
+  #   user = User.find(2)
+  #   user.completed_forms # => [#<Form id: 2, ...>, #<Form id: 4, ...>]
+  #
+  def completed_forms
+    Form
+      .where(id: form_responses.where.not(submitted_at: nil).pluck(:form_id))
+  end
+end
+
+--- app/models/klass.rb ---
+# app/models/klass.rb
+
+##
+# Representa uma turma/disciplina do sistema (ex: "Banco de Dados").
+# Gerencia alunos, professores e formulários associados à turma.
+#
+class Klass < ApplicationRecord
+  # Associações
+  has_many :class_members, dependent: :destroy
+  has_many :users, through: :class_members
+  has_many :forms, dependent: :destroy
+
+  # Validações
+  validates :code, presence: true, uniqueness: true
+  validates :name, presence: true
+  validates :semester, presence: true
+
+  # Scopes
+  scope :active, -> { order(semester: :desc) }
+
+  ##
+  # Retorna todos os alunos (dicentes) matriculados na turma.
+  #
+  # ==== Argumentos
+  # * Nenhum
+  #
+  # ==== Retorno
+  # * +Array<User>+ - lista de usuários com perfil de aluno (role: 'dicente')
+  #
+  # ==== Efeitos Colaterais
+  # * Executa queries no banco de dados através da associação class_members
+  # * Nenhuma alteração de dados
+  #
+  # ==== Exemplo
+  #   klass = Klass.find_by(code: 'CC001')
+  #   klass.students # => [#<User id: 2, name: "João">, #<User id: 3, name: "Maria">]
+  #
+  def students
+    class_members.where(role: 'dicente').map(&:user)
+  end
+
+  ##
+  # Retorna todos os professores (docentes) associados à turma.
+  #
+  # ==== Argumentos
+  # * Nenhum
+  #
+  # ==== Retorno
+  # * +Array<User>+ - lista de usuários com perfil de professor (role: 'docente')
+  #
+  # ==== Efeitos Colaterais
+  # * Executa queries no banco de dados através da associação class_members
+  # * Nenhuma alteração de dados
+  #
+  # ==== Exemplo
+  #   klass = Klass.find_by(code: 'CC001')
+  #   klass.teachers # => [#<User id: 1, name: "Prof. Silva">]
+  #
+  def teachers
+    class_members.where(role: 'docente').map(&:user)
+  end
+end
+
+--- app/models/form_template.rb ---
+# app/models/form_template.rb
+
+##
+# Representa um modelo/template reutilizável de formulário.
+# Criado por administradores para servir de base na criação de múltiplos formulários.
+# Contém campos personalizáveis que definem a estrutura do formulário.
+#
+class FormTemplate < ApplicationRecord
+  belongs_to :user
+  has_many :form_template_fields, dependent: :destroy
+  has_many :forms, dependent: :destroy
+
+  validates :name, presence: true
+  validates :description, presence: true
+  validates :user_id, presence: true
+
+  accepts_nested_attributes_for :form_template_fields, allow_destroy: true
+end
+
+--- app/models/application_record.rb ---
+class ApplicationRecord < ActiveRecord::Base
+  primary_abstract_class
+end
+
+--- app/models/class_member.rb ---
+# app/models/class_member.rb
+
+##
+# Representa a matrícula de um usuário em uma turma.
+# Estabelece o relacionamento entre User e Klass, definindo o papel (dicente ou docente).
+#
+class ClassMember < ApplicationRecord
+  # Associações
+  belongs_to :user
+  belongs_to :klass
+
+  # Validações
+  validates :user_id, uniqueness: { scope: :klass_id, message: 'já está inscrito nesta turma' }
+  validates :role, presence: true, inclusion: { in: %w(dicente docente), message: 'deve ser dicente ou docente' }
+end
+
+--- app/models/form_answer.rb ---
+# app/models/form_answer.rb
+
+##
+# Representa a resposta individual de um campo específico dentro de um formulário.
+# Armazena o valor preenchido pelo usuário para cada FormTemplateField.
+#
+class FormAnswer < ApplicationRecord
+  belongs_to :form_response
+  belongs_to :form_template_field
+
+  validates :form_response_id, presence: true
+  validates :form_template_field_id, presence: true
+  validates :answer, presence: true
+end
+
+--- app/models/form_response.rb ---
+# app/models/form_response.rb
+
+##
+# Representa a resposta de um usuário a um formulário específico.
+# Armazena o estado de submissão e gerencia as respostas individuais de cada campo (form_answers).
+#
+class FormResponse < ApplicationRecord
+  belongs_to :form
+  belongs_to :user
+  has_many :form_answers, dependent: :destroy
+
+  validates :form_id, presence: true
+  validates :user_id, presence: true
+  validates :user_id, uniqueness: { scope: :form_id, message: 'já respondeu este formulário' }
+
+  accepts_nested_attributes_for :form_answers
+
+  ##
+  # Verifica se a resposta foi submetida (finalizada).
+  #
+  # ==== Argumentos
+  # * Nenhum
+  #
+  # ==== Retorno
+  # * +Boolean+ - true se submitted_at está preenchido, false caso contrário
+  #
+  # ==== Efeitos Colaterais
+  # * Nenhum (método de leitura)
+  #
+  # ==== Exemplo
+  #   response = FormResponse.find(1)
+  #   response.completed? # => true
+  #
+  def completed?
+    submitted_at.present?
+  end
+
+  ##
+  # Verifica se a resposta ainda está pendente (não submetida).
+  #
+  # ==== Argumentos
+  # * Nenhum
+  #
+  # ==== Retorno
+  # * +Boolean+ - true se ainda não foi submetida, false caso contrário
+  #
+  # ==== Efeitos Colaterais
+  # * Nenhum (método de leitura)
+  #
+  # ==== Exemplo
+  #   response = FormResponse.find(1)
+  #   response.pending? # => false
+  #
+  def pending?
+    !completed?
+  end
+
+  ##
+  # Cria objetos FormAnswer vazios para todos os campos do template associado.
+  # Utilizado para preparar o formulário antes do usuário preencher.
+  #
+  # ==== Argumentos
+  # * Nenhum
+  #
+  # ==== Retorno
+  # * +Array<FormAnswer>+ - lista de form_answers criados (ainda não salvos no banco)
+  #
+  # ==== Efeitos Colaterais
+  # * Cria objetos FormAnswer em memória (não persiste no banco até save)
+  # * Executa query para buscar form_template_fields ordenados por position
+  # * Não cria duplicatas (verifica se já existe form_answer para o campo)
+  #
+  # ==== Exemplo
+  #   response = FormResponse.new(form: form, user: user)
+  #   response.build_answers_for_fields
+  #   response.form_answers.count # => 5 (número de campos do template)
+  #
+  def build_answers_for_fields
+    form.form_template.form_template_fields.order(:position).each do |field|
+      unless form_answers.exists?(form_template_field_id: field.id)
+        form_answers.build(form_template_field: field, answer: '')
+      end
+    end
+  end
+
+  ##
+  # Marca a resposta como submetida, registrando o timestamp atual.
+  #
+  # ==== Argumentos
+  # * Nenhum
+  #
+  # ==== Retorno
+  # * +Boolean+ - true se salvou com sucesso, false caso contrário
+  #
+  # ==== Efeitos Colaterais
+  # * Atualiza o campo submitted_at no banco de dados com Time.current
+  # * Persiste a mudança imediatamente (executa UPDATE)
+  #
+  # ==== Exemplo
+  #   response = FormResponse.find(1)
+  #   response.submit! # => true
+  #   response.completed? # => true
+  #
+  def submit!
+    update(submitted_at: Time.current)
+  end
+end
+
+
+=== CONTROLLERS ===
+--- app/controllers/admin/users_controller.rb ---
+# app/controllers/admin/users_controller.rb
+
+module Admin
+  ##
+  # Controller para gerenciamento de usuários pelos administradores.
+  # Permite listar, visualizar, editar e deletar usuários do sistema.
+  #
+  class UsersController < ApplicationController
+    before_action :authenticate_user!
+    before_action :check_admin
+    before_action :set_user, only: [:show, :edit, :update, :destroy]
+
+    ##
+    # Lista todos os usuários cadastrados no sistema.
+    #
+    # ==== Argumentos
+    # * Nenhum
+    #
+    # ==== Retorno
+    # * Nenhum (renderiza view)
+    #
+    # ==== Efeitos Colaterais
+    # * Carrega @users com todos os registros de User via query no banco
+    # * Renderiza view admin/users/index.html.erb
+    #
+    # ==== Exemplo
+    #   GET /admin/users # => renderiza lista de usuários
+    #
+    def index
+      @users = User.all
+    end
+
+    ##
+    # Exibe detalhes de um usuário específico.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa @user definido pelo before_action)
+    #
+    # ==== Retorno
+    # * Nenhum (renderiza view)
+    #
+    # ==== Efeitos Colaterais
+    # * Renderiza view admin/users/show.html.erb com dados de @user
+    #
+    # ==== Exemplo
+    #   GET /admin/users/1 # => renderiza detalhes do usuário ID 1
+    #
+    def show
+    end
+
+    ##
+    # Exibe formulário de edição de usuário.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa @user definido pelo before_action)
+    #
+    # ==== Retorno
+    # * Nenhum (renderiza view)
+    #
+    # ==== Efeitos Colaterais
+    # * Renderiza view admin/users/edit.html.erb com formulário
+    #
+    # ==== Exemplo
+    #   GET /admin/users/1/edit # => renderiza formulário de edição
+    #
+    def edit
+    end
+
+    ##
+    # Atualiza os dados de um usuário.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa @user e params do formulário)
+    #
+    # ==== Retorno
+    # * Nenhum (redireciona ou renderiza view)
+    #
+    # ==== Efeitos Colaterais
+    # * Atualiza registro de User no banco de dados se validações passarem
+    # * Redireciona para admin_users_path com mensagem de sucesso se atualizar
+    # * Renderiza view edit com status 422 se validações falharem
+    #
+    # ==== Exemplo
+    #   PATCH /admin/users/1 # => atualiza e redireciona ou mostra erros
+    #
+    def update
+      if @user.update(user_params)
+        redirect_to admin_users_path, notice: 'Usuário atualizado com sucesso'
+      else
+        render :edit, status: :unprocessable_entity
+      end
+    end
+
+    ##
+    # Remove um usuário do sistema.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa @user definido pelo before_action)
+    #
+    # ==== Retorno
+    # * Nenhum (redireciona)
+    #
+    # ==== Efeitos Colaterais
+    # * Deleta registro de User do banco de dados (DELETE)
+    # * Remove registros relacionados devido a dependent: :destroy nas associações
+    # * Redireciona para admin_users_path com mensagem de sucesso
+    #
+    # ==== Exemplo
+    #   DELETE /admin/users/1 # => deleta usuário e redireciona
+    #
+    def destroy
+      @user.destroy
+      redirect_to admin_users_path, notice: 'Usuário deletado com sucesso'
+    end
+
+    private
+
+    ##
+    # Busca e define o usuário a partir do ID nos parâmetros da URL.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa params[:id])
+    #
+    # ==== Retorno
+    # * Nenhum (define @user)
+    #
+    # ==== Efeitos Colaterais
+    # * Executa query no banco (User.find)
+    # * Define variável de instância @user
+    # * Levanta ActiveRecord::RecordNotFound se ID não existir
+    #
+    def set_user
+      @user = User.find(params[:id])
+    end
+
+    ##
+    # Define os parâmetros permitidos para atualização de usuário.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa params do request)
+    #
+    # ==== Retorno
+    # * +ActionController::Parameters+ - parâmetros filtrados e permitidos
+    #
+    # ==== Efeitos Colaterais
+    # * Nenhum (apenas filtragem de parâmetros)
+    #
+    def user_params
+      params.require(:user).permit(:name, :email, :role)
+    end
+
+    ##
+    # Verifica se o usuário atual possui perfil de administrador.
+    # Redireciona para página inicial se não for admin.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa current_user do Devise)
+    #
+    # ==== Retorno
+    # * Nenhum (void ou redireciona)
+    #
+    # ==== Efeitos Colaterais
+    # * Redireciona para root_path com mensagem de alerta se não for admin
+    # * Interrompe a execução da action se redirecionar
+    #
+    def check_admin
+      redirect_to root_path, alert: 'Acesso negado!' unless current_user.admin?
+    end
+  end
+end
+
+--- app/controllers/admin/forms_controller.rb ---
+# app/controllers/admin/forms_controller.rb
+
+module Admin
+  ##
+  # Controller para gerenciamento de formulários pelos administradores.
+  # Permite criar, editar, publicar, fechar e visualizar respostas de formulários.
+  #
+  class FormsController < ApplicationController
+    before_action :authenticate_user!
+    before_action :check_admin
+    before_action :set_form, only: [:show, :edit, :update, :destroy, :publish, :close, :view_response]
+    before_action :set_form_response, only: [:view_response]
+
+    ##
+    # Lista todos os formulários do sistema.
+    #
+    # ==== Argumentos
+    # * Nenhum
+    #
+    # ==== Retorno
+    # * Nenhum (renderiza view)
+    #
+    # ==== Efeitos Colaterais
+    # * Carrega @forms com todos os formulários ordenados por data de criação (DESC)
+    # * Renderiza view admin/forms/index.html.erb
+    #
+    # ==== Exemplo
+    #   GET /admin/forms # => lista formulários mais recentes primeiro
+    #
+    def index
+      @forms = Form.all.order(created_at: :desc)
+    end
+
+    ##
+    # Exibe detalhes de um formulário com estatísticas de respostas.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa @form definido pelo before_action)
+    #
+    # ==== Retorno
+    # * Nenhum (renderiza view)
+    #
+    # ==== Efeitos Colaterais
+    # * Calcula @pending_count (respostas pendentes) via query COUNT
+    # * Calcula @completed_count (respostas completadas) via query COUNT
+    # * Renderiza view admin/forms/show.html.erb
+    #
+    # ==== Exemplo
+    #   GET /admin/forms/1 # => exibe formulário com estatísticas
+    #
+    def show
+      @pending_count = @form.pending_responses.count
+      @completed_count = @form.completed_responses.count
+    end
+
+    ##
+    # Exibe formulário para criação de novo formulário.
+    #
+    # ==== Argumentos
+    # * Nenhum
+    #
+    # ==== Retorno
+    # * Nenhum (renderiza view)
+    #
+    # ==== Efeitos Colaterais
+    # * Cria objeto Form em memória (@form)
+    # * Carrega @form_templates e @klasses para os selects do formulário
+    # * Renderiza view admin/forms/new.html.erb
+    #
+    # ==== Exemplo
+    #   GET /admin/forms/new # => formulário de criação
+    #
+    def new
+      @form = Form.new
+      load_form_dependencies
+    end
+
+    ##
+    # Cria um novo formulário associado a template e turma.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa form_params dos parâmetros do request)
+    #
+    # ==== Retorno
+    # * Nenhum (redireciona ou renderiza view)
+    #
+    # ==== Efeitos Colaterais
+    # * Cria registro de Form no banco com status :draft
+    # * Associa FormTemplate e Klass ao formulário
+    # * Redireciona para show do formulário criado se salvou com sucesso
+    # * Renderiza view new com status 422 se validações falharem
+    #
+    # ==== Exemplo
+    #   POST /admin/forms
+    #   # com dados válidos => redirect e "Formulário criado com sucesso!"
+    #
+    def create
+      @form = build_form_from_params
+
+      if @form.save
+        redirect_to admin_form_path(@form), notice: 'Formulário criado com sucesso!'
+      else
+        load_form_dependencies
+        render :new, status: :unprocessable_entity
+      end
+    end
+
+    ##
+    # Exibe formulário de edição de formulário existente.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa @form definido pelo before_action)
+    #
+    # ==== Retorno
+    # * Nenhum (renderiza view)
+    #
+    # ==== Efeitos Colaterais
+    # * Carrega @form_templates e @klasses para os selects
+    # * Renderiza view admin/forms/edit.html.erb
+    #
+    # ==== Exemplo
+    #   GET /admin/forms/1/edit # => formulário de edição
+    #
+    def edit
+      load_form_dependencies
+    end
+
+    ##
+    # Atualiza um formulário existente.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa @form e form_params)
+    #
+    # ==== Retorno
+    # * Nenhum (redireciona ou renderiza view)
+    #
+    # ==== Efeitos Colaterais
+    # * Atualiza registro de Form no banco
+    # * Redireciona para show do formulário se atualizar com sucesso
+    # * Renderiza view edit com status 422 se validações falharem
+    #
+    # ==== Exemplo
+    #   PATCH /admin/forms/1
+    #   # com dados válidos => redirect e "Formulário atualizado com sucesso!"
+    #
+    def update
+      if @form.update(form_params)
+        redirect_to admin_form_path(@form), notice: 'Formulário atualizado com sucesso!'
+      else
+        load_form_dependencies
+        render :edit, status: :unprocessable_entity
+      end
+    end
+
+    ##
+    # Remove um formulário do sistema.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa @form definido pelo before_action)
+    #
+    # ==== Retorno
+    # * Nenhum (redireciona)
+    #
+    # ==== Efeitos Colaterais
+    # * Deleta registro de Form do banco
+    # * Remove FormResponses e FormAnswers associados devido a dependent: :destroy
+    # * Redireciona para lista de formulários com mensagem de sucesso
+    #
+    # ==== Exemplo
+    #   DELETE /admin/forms/1 # => deleta e redireciona
+    #
+    def destroy
+      @form.destroy
+      redirect_to admin_forms_url, notice: 'Formulário deletado com sucesso!'
+    end
+
+    ##
+    # Publica um formulário, tornando-o disponível para os alunos.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa @form definido pelo before_action)
+    #
+    # ==== Retorno
+    # * Nenhum (redireciona)
+    #
+    # ==== Efeitos Colaterais
+    # * Atualiza status do formulário para :published no banco
+    # * Torna o formulário visível e respondível pelos alunos da turma
+    # * Redireciona para show do formulário com mensagem de sucesso ou erro
+    #
+    # ==== Exemplo
+    #   PATCH /admin/forms/1/publish # => muda status para published
+    #
+    def publish
+      if @form.update(status: :published)
+        redirect_to admin_form_path(@form), notice: 'Formulário publicado com sucesso!'
+      else
+        redirect_to admin_form_path(@form), alert: 'Erro ao publicar formulário'
+      end
+    end
+
+    ##
+    # Fecha um formulário, impedindo novas respostas.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa @form definido pelo before_action)
+    #
+    # ==== Retorno
+    # * Nenhum (redireciona)
+    #
+    # ==== Efeitos Colaterais
+    # * Atualiza status do formulário para :closed no banco
+    # * Impede que alunos enviem novas respostas
+    # * Redireciona para show do formulário com mensagem de sucesso ou erro
+    #
+    # ==== Exemplo
+    #   PATCH /admin/forms/1/close # => muda status para closed
+    #
+    def close
+      if @form.update(status: :closed)
+        redirect_to admin_form_path(@form), notice: 'Formulário fechado com sucesso!'
+      else
+        redirect_to admin_form_path(@form), alert: 'Erro ao fechar formulário'
+      end
+    end
+
+    ##
+    # Visualiza a resposta de um aluno específico ao formulário.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa @form e @form_response definidos pelos before_actions)
+    #
+    # ==== Retorno
+    # * Nenhum (renderiza view)
+    #
+    # ==== Efeitos Colaterais
+    # * Renderiza view admin/forms/view_response.html.erb
+    # * Exibe todas as respostas do aluno ao formulário
+    #
+    # ==== Exemplo
+    #   GET /admin/forms/1/responses/5 # => exibe respostas do aluno
+    #
+    def view_response
+      # @form_response já é setado pelo before_action
+    end
+
+    private
+
+    ##
+    # Constrói objeto Form a partir dos parâmetros do request.
+    # Define status inicial como :draft.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa form_params)
+    #
+    # ==== Retorno
+    # * +Form+ - objeto Form não persistido (apenas em memória)
+    #
+    # ==== Efeitos Colaterais
+    # * Executa queries para buscar FormTemplate e Klass
+    # * Cria objeto Form em memória
+    #
+    def build_form_from_params
+      Form.new(
+        form_template: FormTemplate.find(form_params[:form_template_id]),
+        klass: Klass.find(form_params[:klass_id]),
+        title: form_params[:title],
+        description: form_params[:description],
+        due_date: form_params[:due_date],
+        status: :draft
+      )
+    end
+
+    ##
+    # Carrega dados necessários para os selects do formulário.
+    #
+    # ==== Argumentos
+    # * Nenhum
+    #
+    # ==== Retorno
+    # * Nenhum (define variáveis de instância)
+    #
+    # ==== Efeitos Colaterais
+    # * Executa queries no banco para carregar @form_templates e @klasses
+    #
+    def load_form_dependencies
+      @form_templates = FormTemplate.all
+      @klasses = Klass.all
+    end
+
+    ##
+    # Busca e define o formulário a partir do ID nos parâmetros da URL.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa params[:id])
+    #
+    # ==== Retorno
+    # * Nenhum (define @form)
+    #
+    # ==== Efeitos Colaterais
+    # * Executa query no banco (Form.find)
+    # * Levanta ActiveRecord::RecordNotFound se ID não existir
+    #
+    def set_form
+      @form = Form.find(params[:id])
+    end
+
+    ##
+    # Busca e define a resposta a partir do ID nos parâmetros da URL.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa params[:response_id])
+    #
+    # ==== Retorno
+    # * Nenhum (define @form_response)
+    #
+    # ==== Efeitos Colaterais
+    # * Executa query no banco (FormResponse.find)
+    # * Levanta ActiveRecord::RecordNotFound se ID não existir
+    #
+    def set_form_response
+      @form_response = FormResponse.find(params[:response_id])
+    end
+
+    ##
+    # Define os parâmetros permitidos para criação/atualização de formulário.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa params do request)
+    #
+    # ==== Retorno
+    # * +ActionController::Parameters+ - parâmetros filtrados e permitidos
+    #
+    # ==== Efeitos Colaterais
+    # * Nenhum (apenas filtragem de parâmetros)
+    #
+    def form_params
+      params.require(:form).permit(:form_template_id, :klass_id, :title, :description, :due_date, :status)
+    end
+
+    ##
+    # Verifica se o usuário atual possui perfil de administrador.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa current_user do Devise)
+    #
+    # ==== Retorno
+    # * Nenhum (void ou redireciona)
+    #
+    # ==== Efeitos Colaterais
+    # * Redireciona para root_path com alerta se não for admin
+    #
+    def check_admin
+      redirect_to root_path, alert: 'Acesso negado!' unless current_user.admin?
+    end
+  end
+end
+
+--- app/controllers/admin/form_templates_controller.rb ---
+# app/controllers/admin/form_templates_controller.rb
+
+module Admin
+  ##
+  # Controller para gerenciamento de templates de formulários.
+  # Permite criar, editar, visualizar e deletar templates reutilizáveis.
+  #
+  class FormTemplatesController < ApplicationController
+    before_action :authenticate_user!
+    before_action :check_admin
+    before_action :set_form_template, only: [:show, :edit, :update, :destroy]
+
+    ##
+    # Lista todos os templates de formulário do usuário atual.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa current_user)
+    #
+    # ==== Retorno
+    # * Nenhum (renderiza view)
+    #
+    # ==== Efeitos Colaterais
+    # * Carrega @form_templates via query no banco (ordered by created_at DESC)
+    # * Renderiza view admin/form_templates/index.html.erb
+    #
+    # ==== Exemplo
+    #   GET /admin/form_templates # => lista templates mais recentes primeiro
+    #
+    def index
+      @form_templates = current_user.form_templates.order(created_at: :desc)
+    end
+
+    ##
+    # Exibe detalhes de um template específico.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa @form_template definido pelo before_action)
+    #
+    # ==== Retorno
+    # * Nenhum (renderiza view)
+    #
+    # ==== Efeitos Colaterais
+    # * Renderiza view admin/form_templates/show.html.erb
+    #
+    # ==== Exemplo
+    #   GET /admin/form_templates/1 # => exibe template e seus campos
+    #
+    def show
+    end
+
+    ##
+    # Exibe formulário para criação de novo template.
+    #
+    # ==== Argumentos
+    # * Nenhum
+    #
+    # ==== Retorno
+    # * Nenhum (renderiza view)
+    #
+    # ==== Efeitos Colaterais
+    # * Cria objeto FormTemplate em memória (@form_template)
+    # * Adiciona 1 campo vazio via build para exibir no formulário
+    # * Renderiza view admin/form_templates/new.html.erb
+    #
+    # ==== Exemplo
+    #   GET /admin/form_templates/new # => formulário com 1 campo vazio
+    #
+    def new
+      @form_template = FormTemplate.new
+      @form_template.form_template_fields.build  # Apenas 1 campo vazio
+    end
+
+    ##
+    # Cria um novo template de formulário com seus campos.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa form_template_params dos parâmetros do request)
+    #
+    # ==== Retorno
+    # * Nenhum (redireciona ou renderiza view)
+    #
+    # ==== Efeitos Colaterais
+    # * Cria registro de FormTemplate no banco associado ao current_user
+    # * Cria registros de FormTemplateField via accepts_nested_attributes
+    # * Redireciona para show do template criado se salvou com sucesso
+    # * Renderiza view new com status 422 se validações falharem
+    #
+    # ==== Exemplo
+    #   POST /admin/form_templates
+    #   # com dados válidos => redirect e "Template criado com sucesso!"
+    #   # com erros => renderiza :new com mensagens de erro
+    #
+    def create
+      @form_template = current_user.form_templates.build(form_template_params)
+
+      if @form_template.save
+        redirect_to admin_form_template_path(@form_template), notice: 'Template criado com sucesso!'
+      else
+        render :new, status: :unprocessable_entity
+      end
+    end
+
+    ##
+    # Exibe formulário de edição de template existente.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa @form_template definido pelo before_action)
+    #
+    # ==== Retorno
+    # * Nenhum (renderiza view)
+    #
+    # ==== Efeitos Colaterais
+    # * Adiciona 1 campo vazio se o template não tiver nenhum campo
+    # * Renderiza view admin/form_templates/edit.html.erb
+    #
+    # ==== Exemplo
+    #   GET /admin/form_templates/1/edit # => formulário de edição
+    #
+    def edit
+      @form_template.form_template_fields.build if @form_template.form_template_fields.empty?
+    end
+
+    ##
+    # Atualiza um template de formulário existente.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa @form_template e form_template_params)
+    #
+    # ==== Retorno
+    # * Nenhum (redireciona ou renderiza view)
+    #
+    # ==== Efeitos Colaterais
+    # * Atualiza registro de FormTemplate no banco
+    # * Atualiza/cria/deleta FormTemplateFields via nested_attributes
+    # * Redireciona para show do template se atualizar com sucesso
+    # * Renderiza view edit com status 422 se validações falharem
+    #
+    # ==== Exemplo
+    #   PATCH /admin/form_templates/1
+    #   # com dados válidos => redirect e "Template atualizado com sucesso!"
+    #
+    def update
+      if @form_template.update(form_template_params)
+        redirect_to admin_form_template_path(@form_template), notice: 'Template atualizado com sucesso!'
+      else
+        render :edit, status: :unprocessable_entity
+      end
+    end
+
+    ##
+    # Remove um template de formulário do sistema.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa @form_template definido pelo before_action)
+    #
+    # ==== Retorno
+    # * Nenhum (redireciona)
+    #
+    # ==== Efeitos Colaterais
+    # * Deleta registro de FormTemplate do banco
+    # * Remove FormTemplateFields associados devido a dependent: :destroy
+    # * Redireciona para lista de templates com mensagem de sucesso
+    #
+    # ==== Exemplo
+    #   DELETE /admin/form_templates/1 # => deleta e redireciona
+    #
+    def destroy
+      @form_template.destroy
+      redirect_to admin_form_templates_url, notice: 'Template deletado com sucesso!'
+    end
+
+    private
+
+    ##
+    # Busca e define o template a partir do ID nos parâmetros da URL.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa params[:id])
+    #
+    # ==== Retorno
+    # * Nenhum (define @form_template)
+    #
+    # ==== Efeitos Colaterais
+    # * Executa query no banco (FormTemplate.find)
+    # * Levanta ActiveRecord::RecordNotFound se ID não existir
+    #
+    def set_form_template
+      @form_template = FormTemplate.find(params[:id])
+    end
+
+    ##
+    # Define os parâmetros permitidos para criação/atualização de template.
+    # Inclui nested attributes para campos do formulário.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa params do request)
+    #
+    # ==== Retorno
+    # * +ActionController::Parameters+ - parâmetros filtrados e permitidos
+    #
+    # ==== Efeitos Colaterais
+    # * Nenhum (apenas filtragem de parâmetros)
+    #
+    def form_template_params
+      params.require(:form_template).permit(
+        :name, :description,
+        form_template_fields_attributes: [:id, :field_type, :label, :required, :options, :position, :_destroy]
+      )
+    end
+
+    ##
+    # Verifica se o usuário atual possui perfil de administrador.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa current_user do Devise)
+    #
+    # ==== Retorno
+    # * Nenhum (void ou redireciona)
+    #
+    # ==== Efeitos Colaterais
+    # * Redireciona para root_path com alerta se não for admin
+    #
+    def check_admin
+      redirect_to root_path, alert: 'Acesso negado!' unless current_user.admin?
+    end
+  end
+end
+
+--- app/controllers/admin/dashboard_controller.rb ---
+# app/controllers/admin/dashboard_controller.rb
+
+module Admin
+  ##
+  # Controller do dashboard administrativo.
+  # Exibe estatísticas e resumo geral do sistema para administradores.
+  #
+  class DashboardController < ApplicationController
+    before_action :authenticate_user!
+    before_action :check_admin
+
+    ##
+    # Exibe o dashboard com estatísticas de usuários do sistema.
+    #
+    # ==== Argumentos
+    # * Nenhum
+    #
+    # ==== Retorno
+    # * Nenhum (renderiza view)
+    #
+    # ==== Efeitos Colaterais
+    # * Carrega @users com todos os usuários do banco (User.all)
+    # * Calcula @total_users e @admin_count via queries COUNT no banco
+    # * Renderiza view admin/dashboard/index.html.erb
+    #
+    # ==== Exemplo
+    #   GET /admin # => renderiza dashboard com estatísticas
+    #
+    def index
+      @users = User.all
+      @total_users = User.count
+      @admin_count = User.where(role: :admin).count
+    end
+
+    private
+
+    ##
+    # Verifica se o usuário atual possui perfil de administrador.
+    # Redireciona para página inicial se não for admin.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa current_user do Devise)
+    #
+    # ==== Retorno
+    # * Nenhum (void ou redireciona)
+    #
+    # ==== Efeitos Colaterais
+    # * Redireciona para root_path com mensagem de alerta se não for admin
+    # * Interrompe a execução da action se redirecionar
+    #
+    def check_admin
+      redirect_to root_path, alert: 'Acesso negado!' unless current_user.admin?
+    end
+  end
+end
+
+--- app/controllers/admin/imports_controller.rb ---
+# app/controllers/admin/imports_controller.rb
+
+module Admin
+  ##
+  # Controller responsável pela importação de dados do SIGAA.
+  # Permite importar turmas e alunos através de arquivos JSON.
+  #
+  class ImportsController < ApplicationController
+    before_action :authenticate_user!
+    before_action :check_admin
+
+    ##
+    # Exibe a página de importação com estatísticas atuais.
+    #
+    # ==== Argumentos
+    # * Nenhum
+    #
+    # ==== Retorno
+    # * Nenhum (renderiza view)
+    #
+    # ==== Efeitos Colaterais
+    # * Executa queries COUNT no banco para carregar @total_klasses e @total_users
+    # * Renderiza view admin/imports/index.html.erb
+    #
+    # ==== Exemplo
+    #   GET /admin/imports # => renderiza página com estatísticas
+    #
+    def index
+      @total_klasses = Klass.count
+      @total_users = User.where(role: :user).count
+    end
+
+    ##
+    # Processa o arquivo JSON de importação de turmas.
+    # Valida o arquivo e delega o processamento ao ImportService.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa params[:file] do formulário)
+    #
+    # ==== Retorno
+    # * Nenhum (redireciona com mensagem de sucesso ou erro)
+    #
+    # ==== Efeitos Colaterais
+    # * Valida presença e tipo do arquivo enviado
+    # * Cria instância de ImportService e executa importação
+    # * Cria/atualiza registros de Klass, User e ClassMember no banco
+    # * Redireciona para admin_imports_path com mensagem de resultado
+    #
+    # ==== Exemplo
+    #   POST /admin/imports/import_klasses
+    #   # com arquivo válido => "✅ 5 turma(s) importada(s) com sucesso!"
+    #   # sem arquivo => "Por favor, selecione um arquivo"
+    #
+    def import_klasses
+      return redirect_with_error('Por favor, selecione um arquivo') if params[:file].blank?
+      return redirect_with_error('Por favor, envie um arquivo JSON válido') unless valid_json_file?
+
+      result = ImportService.new(params[:file].path).import_klasses
+      handle_import_result(result)
+    end
+
+    private
+
+    ##
+    # Verifica se o arquivo enviado é um JSON válido.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa params[:file])
+    #
+    # ==== Retorno
+    # * +Boolean+ - true se o content_type for 'application/json' ou extensão for '.json'
+    #
+    # ==== Efeitos Colaterais
+    # * Nenhum (apenas validação)
+    #
+    def valid_json_file?
+      file = params[:file]
+      file.content_type == 'application/json' || file.original_filename.end_with?('.json')
+    end
+
+    ##
+    # Redireciona para página de importação com mensagem de erro.
+    #
+    # ==== Argumentos
+    # * +message+ - (String) mensagem de erro a ser exibida
+    #
+    # ==== Retorno
+    # * Nenhum (redireciona)
+    #
+    # ==== Efeitos Colaterais
+    # * Redireciona para admin_imports_path com alert
+    #
+    def redirect_with_error(message)
+      redirect_to admin_imports_path, alert: message
+    end
+
+    ##
+    # Processa o resultado da importação e redireciona com mensagem apropriada.
+    #
+    # ==== Argumentos
+    # * +result+ - (Hash) resultado retornado pelo ImportService contendo:
+    #   * +:success+ (Boolean)
+    #   * +:imported+ (Integer)
+    #   * +:errors+ (Array<String>)
+    #   * +:error+ (String) - apenas se success: false
+    #
+    # ==== Retorno
+    # * Nenhum (redireciona via handle_success ou redirect_with_error)
+    #
+    # ==== Efeitos Colaterais
+    # * Chama handle_success se resultado for positivo
+    # * Chama redirect_with_error se houver falha crítica
+    #
+    def handle_import_result(result)
+      if result[:success]
+        handle_success(result)
+      else
+        redirect_with_error("❌ Erro na importação: #{result[:error]}")
+      end
+    end
+
+    ##
+    # Trata importações bem-sucedidas, incluindo avisos de erros parciais.
+    #
+    # ==== Argumentos
+    # * +result+ - (Hash) resultado da importação com :imported e :errors
+    #
+    # ==== Retorno
+    # * Nenhum (redireciona)
+    #
+    # ==== Efeitos Colaterais
+    # * Redireciona com notice se não houver erros parciais
+    # * Redireciona com alert contendo lista de erros se houver erros parciais
+    #
+    def handle_success(result)
+      message = "✅ #{result[:imported]} turma(s) importada(s) com sucesso!"
+
+      if result[:errors].present?
+        redirect_to admin_imports_path, alert: build_error_message(message, result[:errors])
+      else
+        redirect_to admin_imports_path, notice: message
+      end
+    end
+
+    ##
+    # Constrói mensagem formatada com erros parciais da importação.
+    #
+    # ==== Argumentos
+    # * +base_message+ - (String) mensagem base de sucesso
+    # * +errors+ - (Array<String>) lista de erros ocorridos durante importação
+    #
+    # ==== Retorno
+    # * +String+ - mensagem formatada com lista de erros
+    #
+    # ==== Efeitos Colaterais
+    # * Nenhum (apenas concatenação de strings)
+    #
+    # ==== Exemplo
+    #   build_error_message("5 turmas importadas", ["Erro ao importar João"])
+    #   # => "5 turmas importadas\n\n⚠️ Aviso: 1 erro(s) durante importação:\n• Erro ao importar João"
+    #
+    def build_error_message(base_message, errors)
+      message = "#{base_message}\n\n⚠️ Aviso: #{errors.count} erro(s) durante importação:"
+      errors.each { |error| message += "\n• #{error}" }
+      message
+    end
+
+    ##
+    # Verifica se o usuário atual possui perfil de administrador.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa current_user do Devise)
+    #
+    # ==== Retorno
+    # * Nenhum (void ou redireciona)
+    #
+    # ==== Efeitos Colaterais
+    # * Redireciona para root_path com alerta se não for admin
+    #
+    def check_admin
+      redirect_to root_path, alert: 'Acesso negado!' unless current_user.admin?
+    end
+  end
+end
+
+--- app/controllers/home_controller.rb ---
+# app/controllers/home_controller.rb
+
+##
+# Controller responsável pela página inicial do sistema.
+# Redireciona administradores para o dashboard e exibe formulários para alunos.
+#
+class HomeController < ApplicationController
+  before_action :authenticate_user!
+
+  ##
+  # Exibe a página inicial conforme o perfil do usuário.
+  # Administradores são redirecionados para o dashboard admin.
+  # Alunos visualizam seus formulários pendentes e completados.
+  #
+  # ==== Argumentos
+  # * Nenhum (usa current_user do Devise)
+  #
+  # ==== Retorno
+  # * Nenhum (renderiza view ou redireciona)
+  #
+  # ==== Efeitos Colaterais
+  # * Redireciona para admin_root_path se usuário for admin
+  # * Carrega @pending_forms e @completed_forms via queries no banco
+  # * Renderiza view home/index.html.erb para usuários dicentes
+  #
+  # ==== Exemplo
+  #   # Admin visitando a home
+  #   GET / # => redirect_to admin_root_path
+  #
+  #   # Aluno visitando a home
+  #   GET / # => renderiza home/index com formulários
+  #
+  def index
+    if current_user.admin?
+      redirect_to admin_root_path
+    else
+      @pending_forms = current_user.pending_forms.order(due_date: :asc)
+      @completed_forms = current_user.completed_forms.order(created_at: :desc)
+    end
+  end
+end
+
+--- app/controllers/student/forms_controller.rb ---
+# app/controllers/student/forms_controller.rb - CORRIGIDO
+
+module Student
+  ##
+  # Controller para gerenciamento de formulários pelos alunos.
+  # Permite visualizar, responder e submeter formulários das suas turmas.
+  #
+  class FormsController < ApplicationController
+    before_action :authenticate_user!
+    before_action :check_student
+    before_action :set_form, only: [:show, :answer, :submit_answer]
+    before_action :check_form_accessible, only: [:show, :answer, :submit_answer]
+
+    ##
+    # Lista formulários pendentes e completados do aluno atual.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa current_user)
+    #
+    # ==== Retorno
+    # * Nenhum (renderiza view)
+    #
+    # ==== Efeitos Colaterais
+    # * Carrega @pending_forms ordenados por due_date ASC via query
+    # * Carrega @completed_forms ordenados por created_at DESC via query
+    # * Renderiza view student/forms/index.html.erb
+    #
+    # ==== Exemplo
+    #   GET /student/forms # => lista formulários do aluno
+    #
+    def index
+      @pending_forms = current_user.pending_forms.order(due_date: :asc)
+      @completed_forms = current_user.completed_forms.order(created_at: :desc)
+    end
+
+    ##
+    # Exibe detalhes de um formulário para o aluno.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa @form definido pelo before_action)
+    #
+    # ==== Retorno
+    # * Nenhum (renderiza view)
+    #
+    # ==== Efeitos Colaterais
+    # * Busca ou cria FormResponse do aluno para este formulário
+    # * Define @form_response (existente ou novo objeto em memória)
+    # * Renderiza view student/forms/show.html.erb
+    #
+    # ==== Exemplo
+    #   GET /student/forms/1 # => exibe formulário
+    #
+    def show
+      @form_response = @form.form_responses.find_by(user: current_user)
+      @form_response ||= FormResponse.new(form: @form, user: current_user)
+    end
+
+    ##
+    # Prepara o formulário para ser respondido pelo aluno.
+    # Cria FormResponse e FormAnswers vazios se ainda não existirem.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa @form e current_user)
+    #
+    # ==== Retorno
+    # * Nenhum (renderiza view)
+    #
+    # ==== Efeitos Colaterais
+    # * Cria FormResponse no banco se não existir (sem validação)
+    # * Cria FormAnswers vazios para todos os campos do template
+    # * Executa @form_response.reload para buscar dados atualizados
+    # * Renderiza view student/forms/answer.html.erb
+    #
+    # ==== Exemplo
+    #   GET /student/forms/1/answer # => formulário pronto para responder
+    #
+    def answer
+      @form_response = @form.form_responses.find_by(user: current_user)
+
+      if @form_response.nil?
+        @form_response = FormResponse.new(form: @form, user: current_user)
+        @form_response.save(validate: false)
+        @form_response.build_answers_for_fields
+        @form_response.save(validate: false)
+      end
+
+      @form_response.reload
+
+      # Se não há respostas, criar agora
+      if @form_response.form_answers.empty?
+        @form_response.build_answers_for_fields
+        @form_response.save(validate: false)
+      end
+    end
+
+    ##
+    # Submete as respostas do aluno ao formulário.
+    # Atualiza FormAnswers e marca FormResponse como submetido.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa @form e params do formulário)
+    #
+    # ==== Retorno
+    # * Nenhum (redireciona)
+    #
+    # ==== Efeitos Colaterais
+    # * Atualiza registros de FormAnswer no banco com as respostas do aluno
+    # * Marca FormResponse como submetido (atualiza submitted_at)
+    # * Redireciona para root_path com mensagem de sucesso se salvou
+    # * Redireciona para answer com erro se falhar
+    #
+    # ==== Exemplo
+    #   POST /student/forms/1/submit_answer
+    #   # com respostas válidas => redirect e "Formulário respondido com sucesso!"
+    #
+    def submit_answer
+      @form_response = @form.form_responses.find_by(user: current_user)
+
+      if @form_response.nil?
+        redirect_to student_form_path(@form), alert: 'Resposta não encontrada'
+        return
+      end
+
+      if update_answers && @form_response.submit!
+        redirect_to root_path, notice: 'Formulário respondido com sucesso!'
+      else
+        redirect_to answer_student_form_path(@form), alert: 'Erro ao salvar respostas'
+      end
+    end
+
+    private
+
+    ##
+    # Busca e define o formulário a partir do ID nos parâmetros da URL.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa params[:id])
+    #
+    # ==== Retorno
+    # * Nenhum (define @form)
+    #
+    # ==== Efeitos Colaterais
+    # * Executa query no banco (Form.find)
+    # * Levanta ActiveRecord::RecordNotFound se ID não existir
+    #
+    def set_form
+      @form = Form.find(params[:id])
+    end
+
+    ##
+    # Verifica se o usuário é aluno (não administrador).
+    # Redireciona administradores para o dashboard.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa current_user)
+    #
+    # ==== Retorno
+    # * Nenhum (void ou redireciona)
+    #
+    # ==== Efeitos Colaterais
+    # * Redireciona para admin_root_path se usuário for admin
+    #
+    def check_student
+      redirect_to admin_root_path if current_user.admin?
+    end
+
+    ##
+    # Verifica se o formulário está acessível para o aluno atual.
+    # Checa se aluno pertence à turma e se formulário está publicado.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa current_user e @form)
+    #
+    # ==== Retorno
+    # * Nenhum (void ou redireciona)
+    #
+    # ==== Efeitos Colaterais
+    # * Executa query para verificar se aluno está na turma do formulário
+    # * Redireciona para root_path com alerta se acesso negado
+    #
+    def check_form_accessible
+      unless current_user.klasses.include?(@form.klass) && @form.published?
+        redirect_to root_path, alert: 'Acesso negado a este formulário'
+      end
+    end
+
+    ##
+    # Atualiza as respostas dos campos do formulário com os dados do aluno.
+    #
+    # ==== Argumentos
+    # * Nenhum (usa params e @form_response)
+    #
+    # ==== Retorno
+    # * +Boolean+ - true se atualizou com sucesso, false caso contrário
+    #
+    # ==== Efeitos Colaterais
+    # * Atualiza registros de FormAnswer no banco via nested_attributes
+    # * Executa validações dos FormAnswers
+    #
+    def update_answers
+      form_answers_params = params.require(:form_response).permit(form_answers_attributes: [:id, :answer])
+      @form_response.update(form_answers_params)
+    end
+  end
+end
+
+
+=== PROJECT STRUCTURE ===
+.
+├── Dockerfile
+├── Gemfile
+├── Gemfile.lock
+├── Grupo 10 - Sprint 3 ESW.md
+├── Procfile.dev
+├── README.md
+├── Rakefile
+├── app
+│   ├── assets
+│   │   ├── application.js
+│   │   ├── controllers
+│   │   ├── images
+│   │   ├── javascripts
+│   │   └── stylesheets
+│   ├── controllers
+│   │   ├── admin
+│   │   ├── application_controller.rb
+│   │   ├── concerns
+│   │   ├── home_controller.rb
+│   │   └── student
+│   ├── helpers
+│   │   ├── admin
+│   │   ├── application_helper.rb
+│   │   └── home_helper.rb
+│   ├── javascript
+│   │   ├── application.js
+│   │   └── controllers
+│   ├── jobs
+│   │   └── application_job.rb
+│   ├── mailers
+│   │   └── application_mailer.rb
+│   ├── models
+│   │   ├── application_record.rb
+│   │   ├── class_member.rb
+│   │   ├── concerns
+│   │   ├── form.rb
+│   │   ├── form_answer.rb
+│   │   ├── form_response.rb
+│   │   ├── form_template.rb
+│   │   ├── form_template_field.rb
+│   │   ├── klass.rb
+│   │   └── user.rb
+│   ├── services
+│   │   └── import_service.rb
+│   └── views
+│       ├── admin
+│       ├── devise
+│       ├── home
+│       ├── layouts
+│       ├── pwa
+│       └── student
+├── bin
+│   ├── brakeman
+│   ├── bundle
+│   ├── cucumber
+│   ├── dev
+│   ├── docker-entrypoint
+│   ├── importmap
+│   ├── jobs
+│   ├── kamal
+│   ├── rails
+│   ├── rake
+│   ├── rubocop
+│   ├── setup
+│   └── thrust
+├── check_coverage.sh
+├── class_members2.json
+├── class_members3.json
+├── class_members4.json
+├── classes.json
+├── config
+│   ├── application.rb
+│   ├── boot.rb
+│   ├── cable.yml
+│   ├── cache.yml
+│   ├── credentials.yml.enc
+│   ├── cucumber.yml
+│   ├── database.yml
+│   ├── deploy.yml
+│   ├── environment.rb
+│   ├── environments
+│   │   ├── development.rb
+│   │   ├── production.rb
+│   │   └── test.rb
+│   ├── importmap.rb
+│   ├── initializers
+│   │   ├── assets.rb
+│   │   ├── content_security_policy.rb
+│   │   ├── devise.rb
+│   │   ├── filter_parameter_logging.rb
+│   │   └── inflections.rb
+│   ├── locales
+│   │   ├── devise.en.yml
+│   │   └── en.yml
+│   ├── puma.rb
+│   ├── queue.yml
+│   ├── recurring.yml
+│   ├── routes.rb
+│   ├── storage.yml
+│   └── tailwind.config.js
+├── config.ru
+├── coverage
+│   ├── assets
+│   │   └── 0.13.2
+│   └── index.html
+├── db
+│   ├── cable_schema.rb
+│   ├── cache_schema.rb
+│   ├── migrate
+│   │   ├── 20251207235542_devise_create_users.rb
+│   │   ├── 20251208005928_create_klasses.rb
+│   │   ├── 20251208005929_create_class_members.rb
+│   │   ├── 20251208005930_add_fields_to_users.rb
+│   │   ├── 20251208031921_create_form_templates.rb
+│   │   ├── 20251208031922_create_form_template_fields.rb
+│   │   ├── 20251208031923_create_forms.rb
+│   │   ├── 20251208031924_create_form_responses.rb
+│   │   └── 20251208031925_create_form_answers.rb
+│   ├── queue_schema.rb
+│   ├── schema.rb
+│   └── seeds.rb
+├── doc
+│   ├── Admin
+│   │   ├── DashboardController.html
+│   │   ├── FormTemplatesController.html
+│   │   ├── FormsController.html
+│   │   ├── ImportsController.html
+│   │   └── UsersController.html
+│   ├── Admin.html
+│   ├── ApplicationController.html
+│   ├── ApplicationRecord.html
+│   ├── ClassMember.html
+│   ├── Form.html
+│   ├── FormAnswer.html
+│   ├── FormResponse.html
+│   ├── FormTemplate.html
+│   ├── FormTemplateField.html
+│   ├── HomeController.html
+│   ├── ImportService.html
+│   ├── Klass.html
+│   ├── Student
+│   │   └── FormsController.html
+│   ├── Student.html
+│   ├── User.html
+│   ├── created.rid
+│   ├── css
+│   │   ├── fonts.css
+│   │   └── rdoc.css
+│   ├── fonts
+│   │   ├── Lato-Light.ttf
+│   │   ├── Lato-LightItalic.ttf
+│   │   ├── Lato-Regular.ttf
+│   │   ├── Lato-RegularItalic.ttf
+│   │   ├── SourceCodePro-Bold.ttf
+│   │   └── SourceCodePro-Regular.ttf
+│   ├── images
+│   │   ├── add.png
+│   │   ├── arrow_up.png
+│   │   ├── brick.png
+│   │   ├── brick_link.png
+│   │   ├── bug.png
+│   │   ├── bullet_black.png
+│   │   ├── bullet_toggle_minus.png
+│   │   ├── bullet_toggle_plus.png
+│   │   ├── date.png
+│   │   ├── delete.png
+│   │   ├── find.png
+│   │   ├── loadingAnimation.gif
+│   │   ├── macFFBgHack.png
+│   │   ├── package.png
+│   │   ├── page_green.png
+│   │   ├── page_white_text.png
+│   │   ├── page_white_width.png
+│   │   ├── plugin.png
+│   │   ├── ruby.png
+│   │   ├── tag_blue.png
+│   │   ├── tag_green.png
+│   │   ├── transparent.png
+│   │   ├── wrench.png
+│   │   ├── wrench_orange.png
+│   │   └── zoom.png
+│   ├── index.html
+│   ├── js
+│   │   ├── darkfish.js
+│   │   ├── navigation.js
+│   │   ├── navigation.js.gz
+│   │   ├── search.js
+│   │   ├── search_index.js
+│   │   ├── search_index.js.gz
+│   │   ├── searcher.js
+│   │   └── searcher.js.gz
+│   └── table_of_contents.html
+├── er.pending_forms.count
+├── features
+│   ├── criar_gerenciar_templates.feature
+│   ├── criar_publicar_formularios.feature
+│   ├── importar_turmas_alunos.feature
+│   ├── login_sistema.feature
+│   ├── responder_formularios_aluno.feature
+│   ├── step_definitions
+│   │   ├── admin_response_steps.rb
+│   │   ├── authentication_steps.rb
+│   │   ├── form_field_steps.rb
+│   │   ├── form_steps.rb
+│   │   ├── import_steps.rb
+│   │   ├── navigation_steps.rb
+│   │   ├── student_form_steps.rb
+│   │   ├── template_steps.rb
+│   │   └── user_steps.rb
+│   ├── support
+│   │   ├── env.rb
+│   │   └── factory_bot.rb
+│   └── visualizar_respostas_admin.feature
+├── features-sprint-1
+│   ├── atualizar_dados_sigaa.feature
+│   ├── cadastrar_usuario_do_sistema.feature
+│   ├── criar_formulario.feature
+│   ├── criar_template_formulario.feature
+│   ├── definir_senha_cadastro.feature
+│   ├── edicao_e_delecao_templates.feature
+│   ├── exportar_relatorios_csv.feature
+│   ├── formularios_discentes_docentes.feature
+│   ├── gerenciar_turmas_departamento.feature
+│   ├── importar_dados_sigaa.feature
+│   ├── redefinir_senha.feature
+│   ├── responder_formulario.feature
+│   ├── sistema_login.feature
+│   ├── visualizacao_templates_criados.feature
+│   ├── visualizar_formularios_criados.feature
+│   └── visualizar_formularios_nao_respondidos.feature
+├── lib
+│   └── tasks
+│       ├── abc_analysis.rake
+│       ├── cucumber.rake
+│       └── saikuro_analysis.rake
+├── mise.toml
+├── project_structure.txt
+├── projeto_completo.txt
+├── public
+│   ├── 400.html
+│   ├── 404.html
+│   ├── 406-unsupported-browser.html
+│   ├── 422.html
+│   ├── 500.html
+│   ├── icon.png
+│   ├── icon.svg
+│   └── robots.txt
+├── script
+├── spec
+│   ├── examples.txt
+│   ├── factories
+│   │   ├── class_members.rb
+│   │   ├── form_answers.rb
+│   │   ├── form_responses.rb
+│   │   ├── form_template_fields.rb
+│   │   ├── form_templates.rb
+│   │   ├── forms.rb
+│   │   ├── klasses.rb
+│   │   └── users.rb
+│   ├── helpers
+│   │   ├── admin
+│   │   └── home_helper_spec.rb
+│   ├── models
+│   │   ├── class_member_spec.rb
+│   │   ├── form_answer_spec.rb
+│   │   ├── form_response_spec.rb
+│   │   ├── form_spec.rb
+│   │   ├── form_template_field_spec.rb
+│   │   ├── form_template_spec.rb
+│   │   ├── klass_spec.rb
+│   │   └── user_spec.rb
+│   ├── rails_helper.rb
+│   ├── requests
+│   │   ├── admin
+│   │   ├── home_spec.rb
+│   │   └── student
+│   ├── services
+│   │   └── import_service_spec.rb
+│   ├── spec_helper.rb
+│   ├── support
+│   │   └── devise.rb
+│   └── views
+│       ├── admin
+│       └── home
+├── storage
+│   ├── development.sqlite3
+│   └── test.sqlite3
+├── test
+│   ├── application_system_test_case.rb
+│   ├── controllers
+│   ├── fixtures
+│   │   └── files
+│   ├── helpers
+│   ├── integration
+│   ├── mailers
+│   ├── models
+│   ├── system
+│   └── test_helper.rb
+└── vendor
+    └── javascript
+
+77 directories, 224 files

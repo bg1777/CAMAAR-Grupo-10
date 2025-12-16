@@ -1,7 +1,6 @@
 <!-- app/views/admin/form_templates/edit.html.erb -->
 
 <div class="container py-5">
-
   <div class="row justify-content-center">
     <div class="col-lg-9">
 
@@ -13,7 +12,6 @@
         </div>
         <%= link_to 'Cancelar', admin_form_templates_path, class: 'btn btn-outline-secondary' %>
       </div>
-
 
       <!-- Main Form Card -->
       <div class="card shadow-sm border-0 rounded-4 mb-5">
@@ -60,18 +58,16 @@
             </div>
 
             <!-- Add Field Button -->
-            <div class="d-flex justify-content-start mb-4">
-              <%= link_to_add_fields "➕ Adicionar Campo",
-                  form,
-                  :form_template_fields,
-                  class: "btn btn-outline-primary btn-lg rounded-3" %>
+            <div class="mb-4">
+              <button type="button" class="btn btn-outline-primary btn-lg rounded-3" onclick="addField()">
+                ➕ Adicionar Campo
+              </button>
             </div>
 
             <!-- Actions -->
             <div class="d-flex gap-3">
               <%= form.submit "Salvar Alterações",
                   class: "btn btn-success btn-lg px-4 rounded-3" %>
-
               <%= link_to 'Cancelar',
                   admin_form_templates_path,
                   class: "btn btn-secondary btn-lg px-4 rounded-3" %>
@@ -84,5 +80,79 @@
 
     </div>
   </div>
-
 </div>
+
+<script>
+function addField() {
+  const container = document.getElementById('fields-container');
+  const currentFieldCount = container.querySelectorAll('.field-item').length;
+  const newIndex = currentFieldCount;
+  const newId = new Date().getTime();
+
+  const fieldHtml = `
+    <div class="card field-item p-3 mb-3 shadow-sm">
+      <div class="row">
+        <div class="col-md-3 mb-3">
+          <label class="form-label fw-semibold">Posição</label>
+          <input class="form-control" 
+                 min="1"
+                 value="${newIndex + 1}"
+                 name="form_template[form_template_fields_attributes][${newId}][position]"
+                 type="number">
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-semibold">Tipo de Campo</label>
+          <select class="form-select"
+                  name="form_template[form_template_fields_attributes][${newId}][field_type]">
+            <option value="">Selecione</option>
+            <option value="text">text</option>
+            <option value="textarea">textarea</option>
+            <option value="email">email</option>
+            <option value="number">number</option>
+            <option value="date">date</option>
+            <option value="select">select</option>
+            <option value="radio">radio</option>
+            <option value="checkbox">checkbox</option>
+          </select>
+        </div>
+
+        <div class="col-md-2 mb-3 d-flex align-items-end">
+          <div class="form-check">
+            <input class="form-check-input"
+                   name="form_template[form_template_fields_attributes][${newId}][required]"
+                   type="checkbox" value="1" id="required_${newId}">
+            <label class="form-check-label" for="required_${newId}">
+              Obrigatório?
+            </label>
+          </div>
+        </div>
+
+        <div class="col-md-3 mb-3 d-flex align-items-end">
+          <button type="button" class="btn btn-sm btn-danger" onclick="this.closest('.field-item').remove()">
+            🗑️ Deletar
+          </button>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Rótulo do Campo</label>
+        <input class="form-control" placeholder="Ex: Seu Nome"
+               name="form_template[form_template_fields_attributes][${newId}][label]"
+               type="text">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Opções (JSON)</label>
+        <small class="text-muted d-block mb-1">Só para select/radio/checkbox</small>
+        <textarea class="form-control" rows="2"
+                  placeholder='["Opção 1", "Opção 2"]'
+                  name="form_template[form_template_fields_attributes][${newId}][options]">
+        </textarea>
+      </div>
+    </div>
+  `;
+
+  container.insertAdjacentHTML('beforeend', fieldHtml);
+}
+</script>

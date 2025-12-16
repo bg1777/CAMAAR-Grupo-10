@@ -24,17 +24,17 @@ RSpec.describe FormResponse, type: :model do
   describe 'uniqueness validation' do
     it 'não permite duplicar resposta de mesmo user para mesmo form' do
       create(:form_response, form: form, user: student)
-      
+
       duplicate = build(:form_response, form: form, user: student)
       expect(duplicate).not_to be_valid
     end
 
     it 'permite mesmo user responder forms diferentes' do
       form2 = create(:form, form_template: form_template, klass: klass)
-      
+
       response1 = create(:form_response, form: form, user: student)
       response2 = build(:form_response, form: form2, user: student)
-      
+
       expect(response2).to be_valid
     end
   end
@@ -78,6 +78,88 @@ RSpec.describe FormResponse, type: :model do
     it 'retorna false quando resposta foi enviada' do
       response = create(:form_response, form: form, user: student, submitted_at: Time.current)
       expect(response.pending?).to be false
+    end
+  end
+
+  describe '#build_answers_for_fields' do
+    before do
+      # Criar fields para o template
+      create(:form_template_field, form_template: form_template, position: 1, field_type: 'text')
+      create(:form_template_field, form_template: form_template, position: 2, field_type: 'textarea')
+      create(:form_template_field, form_template: form_template, position: 3, field_type: 'email')
+    end
+
+    it 'não duplica answers se já existem' do
+      response = create(:form_response, form: form, user: student)
+      
+      # Primeira chamada
+      response.build_answers_for_fields
+      first_count = response.form_answers.count
+      
+      # Segunda chamada
+      response.build_answers_for_fields
+      
+      expect(response.form_answers.count).to eq(first_count)
+    end
+
+    it 'inicializa answers com valor vazio' do
+      response = create(:form_response, form: form, user: student)
+      
+      response.build_answers_for_fields
+      
+      expect(response.form_answers.all? { |a| a.answer.blank? }).to be true
+    end
+
+    it 'não salva se resposta não foi persistida' do
+      response = build(:form_response, form: form, user: student)
+      
+      response.build_answers_for_fields
+      
+      expect(response.persisted?).to be false
+    end
+  end
+
+  describe '#submit!' do
+    it 'marca resposta como submetida' do
+      response = create(:form_response, form: form, user: student, submitted_at: nil)
+      
+      expect(response.submitted_at).to be_nil
+      expect(response.completed?).to be false
+      
+      response.submit!
+      
+      expect(response.submitted_at).not_to be_nil
+      expect(response.completed?).to be true
+    end
+
+    it 'atualiza submitted_at com horário atual' do
+      response = create(:form_response, form: form, user: student, submitted_at: nil)
+      
+      before_submit = Time.current
+      response.submit!
+      after_submit = Time.current
+      
+      expect(response.submitted_at).to be_between(before_submit, after_submit)
+    end
+
+    it 'persiste submitted_at no banco' do
+      response = create(:form_response, form: form, user: student, submitted_at: nil)
+      
+      response.submit!
+      
+      reloaded = FormResponse.find(response.id)
+      expect(reloaded.submitted_at).not_to be_nil
+      expect(reloaded.completed?).to be true
+    end
+
+    it 'pode ser chamado múltiplas vezes' do
+      response = create(:form_response, form: form, user: student, submitted_at: nil)
+      
+      first_submit = response.submit!
+      second_submit = response.submit!
+      
+      expect(second_submit).to be true
+      expect(response.completed?).to be true
     end
   end
 end

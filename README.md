@@ -1,5 +1,7 @@
 # Wiki CAMAAR - Plataforma de Avaliação de Cursos
 
+OBS: md da sprint 3 está no projeto! O nome do arquivo é "Grupo 10 - Sprint 3 ESW.md"
+
 ---
 
 ## Informações do Projeto
@@ -603,3 +605,4 @@ feat(autenticacao): Implementar login com email e matrícula
 ```
 
 ---
+

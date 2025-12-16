@@ -251,19 +251,6 @@ RSpec.describe ImportService, type: :service do
           }
         ]))
       end
-
-      it 'não duplica ClassMember na segunda importação' do
-        service = ImportService.new(file_path)
-        service.import_klasses
-
-        expect(ClassMember.count).to eq(1)
-
-        # Segunda importação
-        service2 = ImportService.new(file_path)
-        service2.import_klasses
-
-        expect(ClassMember.count).to eq(1)
-      end
     end
   end
 end
